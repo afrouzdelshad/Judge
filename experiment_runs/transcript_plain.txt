@@ -1,0 +1,21 @@
+To infer the lobe count \(N\), I used the geometric signatures visible in sparse samples:
+
+- Higher \(N\) tends to produce more distinct preferred azimuthal sectors in the \((x,y)\) plane.
+- Low \(N\) looks more Lorenz-like: two dominant opposite wings, often strong sign structure in \(x\), with fewer angular states.
+- As \(N\) rises, trajectories visit more angular directions around the center, and the sampled \((x,y)\) points look more rotationally diversified.
+
+Using that heuristic comparatively across all 9 series:
+
+- **D** looks most like a classic 2-wing case: strong left/right asymmetry, many large negative-\(x\) excursions versus a positive sector.
+- **A** seems next: still relatively few effective sectors, but more than D.
+- **F** shows a bit more angular diversity than A.
+- **H** has broader sector usage but still not highly uniform.
+- **E** looks more multi-sector still.
+- **I** appears to use many directions with moderate symmetry.
+- **C** looks even richer in angular visitation.
+- **B** has very broad directional spread and strong multi-wing behavior.
+- **G** appears the most rotationally distributed / highest-lobed.
+
+```json
+{"order": ["D", "A", "F", "H", "E", "I", "C", "B", "G"]}
+```

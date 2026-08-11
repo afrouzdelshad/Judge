@@ -2,3 +2,6 @@ openai
 anthropic
 google-genai
 python-dotenv
+numpy
+scipy
+matplotlib

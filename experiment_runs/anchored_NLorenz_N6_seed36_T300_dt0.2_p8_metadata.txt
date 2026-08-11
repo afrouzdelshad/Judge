@@ -1,0 +1,15 @@
+Anchored N-Lorenz simulation
+N = 6
+T = 300.0
+dt_out = 0.20000000000000001
+precision = 8
+n_samples = 1501
+seed = 36
+x0 = -15.968345438791525
+y0 = -5.0881619632165815
+z0 = 49.160782196343284
+sigma = 10.0
+rho = 28.0
+beta = 2.6666666666666665
+r_L = 12
+integrator = DOP853, rtol=1e-9, atol=1e-11, max_step=0.05

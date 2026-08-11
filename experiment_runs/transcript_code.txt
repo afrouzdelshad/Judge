@@ -1,0 +1,85 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import numpy as np, os, math
+
+files = {
+    'A': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_A.csv',
+    'B': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_B.csv',
+    'C': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_C.csv',
+    'D': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_D.csv',
+    'E': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_E.csv',
+    'F': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_F.csv',
+    'G': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_G.csv',
+    'H': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_H.csv',
+    'I': r'D:\Documents\GitHub\Judge\experiment_runs\anon\series_I.csv',
+}
+
+def est_counts(x,y,z):
+    # center in xy and compute angle
+    xc = x - np.mean(x)
+    yc = y - np.mean(y)
+    theta = np.arctan2(yc, xc)
+    r = np.sqrt(xc*xc + yc*yc)
+    # focus on outer-wing visits
+    q = np.quantile(r, 0.7)
+    th = theta[r >= q]
+    # histogram peaks in angle
+    bins = 720
+    hist, edges = np.histogram(th, bins=bins, range=(-np.pi, np.pi))
+    # smooth circularly
+    k = np.array([1,2,3,2,1], float)
+    pad = len(k)//2
+    hh = np.r_[hist[-pad:], hist, hist[:pad]]
+    sm = np.convolve(hh, k/k.sum(), mode='same')[pad:-pad]
+    # local maxima with prominence-ish threshold
+    mx = (sm > np.roll(sm,1)) & (sm >= np.roll(sm,-1))
+    idx = np.where(mx)[0]
+    vals = sm[idx]
+    if len(vals)==0:
+        return {}
+    # count peaks above several thresholds
+    out={}
+    for frac in [0.15,0.2,0.25,0.3,0.35,0.4,0.5]:
+        keep = vals >= frac*np.max(sm)
+        # merge nearby peaks (within 10 bins circularly)
+        sel = np.sort(idx[keep])
+        if len(sel)==0:
+            out[frac]=0
+            continue
+        groups=[[sel[0]]]
+        for a in sel[1:]:
+            if a-groups[-1][-1] <= 10:
+                groups[-1].append(a)
+            else:
+                groups.append([a])
+        if len(groups) > 1 and (groups[0][0] + bins - groups[-1][-1] <= 10):
+            groups[0] = groups[-1] + groups[0]
+            groups = groups[:-1]
+        out[frac]=len(groups)
+    return out, (np.mean(x), np.mean(y), np.mean(z), np.mean(r), np.std(r), np.min(r), np.max(r))
+
+for lab, path in files.items():
+    arr = np.loadtxt(path, delimiter=',', skiprows=1)
+    t,x,y,z = arr.T
+    counts, stats = est_counts(x,y,z)
+    print(lab, counts, "stats", stats)
+```
+
+[System: execution output]
+A {0.15: 10, 0.2: 10, 0.25: 10, 0.3: 10, 0.35: 10, 0.4: 10, 0.5: 10} stats (np.float64(0.24909206044570287), np.float64(-0.21785742671852096), np.float64(23.59392319047302), np.float64(9.831716773823477), np.float64(6.866280851393614), np.float64(0.01876835612680482), np.float64(29.265363068901564))
+B {0.15: 5, 0.2: 4, 0.25: 4, 0.3: 4, 0.35: 3, 0.4: 3, 0.5: 2} stats (np.float64(-0.3593058254828115), np.float64(-0.3320618616738841), np.float64(23.55117728574284), np.float64(9.843253249948612), np.float64(6.8777817797768295), np.float64(0.08910215649129938), np.float64(29.404845088293268))
+C {0.15: 11, 0.2: 10, 0.25: 9, 0.3: 9, 0.35: 9, 0.4: 9, 0.5: 8} stats (np.float64(0.366358046828581), np.float64(-0.546668549017988), np.float64(23.57751384303797), np.float64(9.835831683268808), np.float64(6.845138298873805), np.float64(0.14532288470418686), np.float64(30.64986204219112))
+D {0.15: 5, 0.2: 4, 0.25: 4, 0.3: 3, 0.35: 3, 0.4: 3, 0.5: 3} stats (np.float64(0.042265609435509645), np.float64(-0.5233529381475017), np.float64(23.566556024916725), np.float64(9.848289556660928), np.float64(6.857571859736633), np.float64(0.12621662778116985), np.float64(30.7521992706497))
+E {0.15: 5, 0.2: 6, 0.25: 5, 0.3: 5, 0.35: 5, 0.4: 6, 0.5: 5} stats (np.float64(-0.5645713719180546), np.float64(-0.07368182145682878), np.float64(23.594007756495667), np.float64(9.845868045850535), np.float64(6.807624677414557), np.float64(0.08389153342094002), np.float64(27.365330722606767))
+F {0.15: 8, 0.2: 9, 0.25: 9, 0.3: 8, 0.35: 8, 0.4: 8, 0.5: 8} stats (np.float64(-0.831501766949558), np.float64(0.03955047152538301), np.float64(23.554262020119918), np.float64(9.823603304052792), np.float64(6.825285208798764), np.float64(0.11811928329042395), np.float64(30.442041090701657))
+G {0.15: 6, 0.2: 4, 0.25: 4, 0.3: 4, 0.35: 4, 0.4: 4, 0.5: 4} stats (np.float64(0.5223887969856762), np.float64(0.9168835915716856), np.float64(23.693265113657564), np.float64(9.899507244673229), np.float64(6.693603109410441), np.float64(0.04761237783097768), np.float64(31.145912200720815))
+H {0.15: 7, 0.2: 8, 0.25: 7, 0.3: 7, 0.35: 6, 0.4: 6, 0.5: 6} stats (np.float64(-0.7593959613958028), np.float64(-0.17195025285049959), np.float64(23.555508568287806), np.float64(9.79910553472149), np.float64(6.879421841119556), np.float64(0.12197139767792628), np.float64(27.820380851640625))
+I {0.15: 9, 0.2: 8, 0.25: 8, 0.3: 8, 0.35: 8, 0.4: 7, 0.5: 7} stats (np.float64(0.3861119263854763), np.float64(0.6460506700236176), np.float64(23.537710431778816), np.float64(9.835467618138331), np.float64(6.847363045389301), np.float64(0.03526521117426865), np.float64(30.81360739243525))
+
+
+[Assistant]
+```json
+{"order": ["D", "B", "G", "E", "H", "I", "F", "C", "A"]}
+```
