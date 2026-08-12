@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
-Task 1: rank same-initial-condition trajectories by N
-========================================================
+Task 1: order labeled trajectories by number of lobes N
+=========================================================
 
-One trajectory is simulated per N in [N_min, N_max], all from the SAME
-initial condition (same seed), so any difference the LLM sees is due to N
-alone. Each trajectory gets a random single-letter label, and the LLM must
-recover the ascending-N order of the labels -- either from a pasted table
-("plain") or by writing Python against a combined CSV ("code").
+Reads task1data_shuffled.csv (a "time" column, then one column per labeled
+trajectory holding "(x, y)" pairs) and asks an LLM to recover the ascending-N
+order of the labels -- either from a pasted table ("plain") or by writing
+Python against the CSV ("code").
 
 Usage
 -----
-    python task1.py --mode both --model claude-opus-4-8 --N-min 2 --N-max 10
+    python task1.py --mode both --model claude-opus-4-8
 
 Note: in "code" mode, model-written Python is exec'd locally with no
 sandboxing. Only use this with trusted API providers on a machine you
@@ -19,82 +18,115 @@ control.
 """
 
 import argparse
+import csv
+import json
+import re
+from pathlib import Path
 
-import numpy as np
-from scipy.stats import kendalltau
-
+from LLM_factory import chat_with, code_augmented_chat_with
 from prompt_tasks import TASK1_CODE_PROMPT, TASK1_PLAIN_PROMPT
-from task_common import run_experiment, simulate_series
 
-DEFAULT_OUTDIR = "experiment_runs/task1"
-
-
-def build_dataset(N_min, N_max, seed, T, dt_out):
-    """One run per N (same seed), shuffled onto random letter labels.
-
-    `seed` drives both the shared initial condition and the label shuffle.
-    """
-    Ns = list(range(N_min, N_max + 1))
-    np.random.default_rng(seed).shuffle(Ns)
-
-    labels = [chr(ord("A") + i) for i in range(len(Ns))]
-    label_to_N = dict(zip(labels, Ns))
-    label_runs = {label: simulate_series(N, seed, T, dt_out) for label, N in label_to_N.items()}
-    return label_to_N, label_runs
+DATA_FILE = "task1data_shuffled.csv"
+OUTDIR = "task1_runs"
 
 
-def score_order(pred_order, true_order, label_to_N, N_min):
-    if pred_order is None or sorted(pred_order) != sorted(true_order):
-        return {"parsed": pred_order is not None, "valid": False}
+def load_dataset(path):
+    """Read the CSV into (times, {label: [(x, y), ...]})."""
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    labels = rows[0][1:]
+    times = [float(row[0]) for row in rows[1:]]
+    columns = {label: [] for label in labels}
+    for row in rows[1:]:
+        for label, cell in zip(labels, row[1:]):
+            x, y = cell.strip("()").split(",")
+            columns[label].append((float(x), float(y)))
+    return times, columns
 
-    true_pos = {lab: i for i, lab in enumerate(true_order)}
-    pred_pos = {lab: i for i, lab in enumerate(pred_order)}
-    tau, _ = kendalltau([true_pos[l] for l in true_order], [pred_pos[l] for l in true_order])
 
-    return {
-        "parsed": True,
-        "valid": True,
-        "exact_position_matches": sum(true_pos[l] == pred_pos[l] for l in true_order),
-        "kendall_tau": float(tau),
-        "mae_N": float(np.mean([abs((N_min + pred_pos[l]) - label_to_N[l]) for l in true_order])),
-    }
+def format_table(times, columns, n_points):
+    """Wide, quote-free text table of all labeled series for the 'plain' prompt."""
+    labels = sorted(columns)
+    step = max(1, len(times) // n_points)
+    idx = range(0, len(times), step)
+
+    header = "t," + ",".join(f"{lab}_x,{lab}_y" for lab in labels)
+    lines = [header]
+    for i in idx:
+        row = [f"{times[i]:.4g}"]
+        for lab in labels:
+            x, y = columns[lab][i]
+            row += [f"{x:.4g}", f"{y:.4g}"]
+        lines.append(",".join(row))
+    return "\n".join(lines)
+
+
+def extract_order(text):
+    """Return the "order" list from the last ```json block that has one."""
+    for block in reversed(re.findall(r"```json\s*\n(.*?)```", text, re.DOTALL)):
+        try:
+            data = json.loads(block)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and "order" in data:
+            return data["order"]
+    return None
+
+
+def run_plain(model, labels, times, columns, points):
+    system_prompt = TASK1_PLAIN_PROMPT.format(n=len(labels))
+    user_prompt = format_table(times, columns, points)
+    reply = chat_with(model, system_prompt, user_prompt)
+    return extract_order(reply), reply
+
+
+def run_code(model, labels, data_file, max_iters):
+    system_prompt = TASK1_CODE_PROMPT.format(
+        n=len(labels), data_file=str(Path(data_file).resolve()), max_iters=max_iters
+    )
+    user_prompt = "Begin your analysis. Remember the protocol above."
+    reply, transcript = code_augmented_chat_with(model, system_prompt, user_prompt, max_iters)
+    return extract_order(reply), transcript
 
 
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    p.add_argument("--N-min", type=int, default=2, dest="N_min")
-    p.add_argument("--N-max", type=int, default=10, dest="N_max")
-    p.add_argument("--seed", type=int, default=30,
-                   help="single seed controlling both the shared initial condition and the label shuffle")
-    p.add_argument("--time", type=float, default=300.0)
-    p.add_argument("--dt", type=float, default=0.2, dest="dt_out")
-    p.add_argument("--precision", type=int, default=8)
-    p.add_argument("--points", type=int, default=120,
-                   help="points shown per series in the 'plain' prompt")
+    p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
+    p.add_argument("--points", type=int, default=120, help="rows shown per series in the 'plain' prompt")
     p.add_argument("--max-iters", type=int, default=6, dest="max_iters")
-    p.add_argument("--model", type=str, default="claude-opus-4-8")
+    p.add_argument("--model", default="claude-opus-4-8")
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
-    p.add_argument("--outdir", type=str, default=DEFAULT_OUTDIR)
+    p.add_argument("--outdir", default=OUTDIR)
     return p.parse_args(argv)
 
 
 def main(argv=None):
     args = parse_args(argv)
+    times, columns = load_dataset(args.data_file)
+    labels = sorted(columns)
+    print(f"Loaded {len(labels)} labeled trajectories from {args.data_file}: {labels}\n")
 
-    print(f"Simulating N={args.N_min}..{args.N_max} (shared seed={args.seed}) ...")
-    label_to_N, label_runs = build_dataset(args.N_min, args.N_max, args.seed, args.time, args.dt_out)
-    true_order = sorted(label_to_N, key=lambda l: label_to_N[l])
-    print(f"Labels -> true N: {label_to_N}")
-    print(f"True ascending order: {true_order}\n")
+    outdir = Path(args.outdir)
+    outdir.mkdir(parents=True, exist_ok=True)
+    results = {"model": args.model}
 
-    run_experiment(
-        model=args.model, mode=args.mode, outdir=args.outdir, label_runs=label_runs,
-        plain_prompt=TASK1_PLAIN_PROMPT, code_prompt=TASK1_CODE_PROMPT,
-        prompt_kwargs=dict(n=len(label_to_N), n_min=args.N_min, n_max=args.N_max),
-        answer_key="order",
-        score_fn=lambda order: score_order(order, true_order, label_to_N, args.N_min),
-        points=args.points, precision=args.precision, max_iters=args.max_iters,
-    )
+    if args.mode in ("plain", "both"):
+        print(f"[plain] querying {args.model} ...")
+        order, transcript = run_plain(args.model, labels, times, columns, args.points)
+        (outdir / "transcript_plain.txt").write_text(transcript, encoding="utf-8")
+        print(f"[plain] order: {order}\n")
+        results["plain"] = order
+
+    if args.mode in ("code", "both"):
+        print(f"[code] querying {args.model} ...")
+        order, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
+        (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
+        print(f"[code] order: {order}\n")
+        results["code"] = order
+
+    results_path = outdir / f"results_{args.model}.json"
+    results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+    print(f"Results written to {results_path}")
 
 
 if __name__ == "__main__":
