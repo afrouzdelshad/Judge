@@ -106,7 +106,7 @@ def _execute_code(code):
     return buf.getvalue() or "(no output)"
 
 
-def code_augmented_chat_with(model_name, system_prompt, user_prompt, max_iters=6):
+def code_augmented_chat_with(model_name, system_prompt, user_prompt, max_iters=3):
     """Like chat_with, but lets the model execute Python code against local data.
 
     Repeats up to `max_iters` times: send the prompt, and if the reply
@@ -121,7 +121,13 @@ def code_augmented_chat_with(model_name, system_prompt, user_prompt, max_iters=6
     """
     transcript = user_prompt
     reply = None
-    for _ in range(max_iters):
+    for i in range(max_iters):
+        if i == max_iters - 1:
+            transcript += (
+                "\n\n[System: This is your final iteration. Do not write any more code. "
+                "You must give your final answer now, including the required ```json block.]"
+            )
+
         reply = chat_with(model_name, system_prompt, transcript)
         transcript += f"\n\n[Assistant]\n{reply}"
 

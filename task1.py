@@ -44,15 +44,13 @@ def load_dataset(path):
     return times, columns
 
 
-def format_table(times, columns, n_points):
+def format_table(times, columns):
     """Wide, quote-free text table of all labeled series for the 'plain' prompt."""
     labels = sorted(columns)
-    step = max(1, len(times) // n_points)
-    idx = range(0, len(times), step)
 
     header = "t," + ",".join(f"{lab}_x,{lab}_y" for lab in labels)
     lines = [header]
-    for i in idx:
+    for i in range(len(times)):
         row = [f"{times[i]:.4g}"]
         for lab in labels:
             x, y = columns[lab][i]
@@ -73,9 +71,9 @@ def extract_order(text):
     return None
 
 
-def run_plain(model, labels, times, columns, points):
+def run_plain(model, labels, times, columns):
     system_prompt = TASK1_PLAIN_PROMPT.format(n=len(labels))
-    user_prompt = format_table(times, columns, points)
+    user_prompt = format_table(times, columns)
     reply = chat_with(model, system_prompt, user_prompt)
     return extract_order(reply), reply
 
@@ -92,8 +90,7 @@ def run_code(model, labels, data_file, max_iters):
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
-    p.add_argument("--points", type=int, default=120, help="rows shown per series in the 'plain' prompt")
-    p.add_argument("--max-iters", type=int, default=6, dest="max_iters")
+    p.add_argument("--max-iters", type=int, default=3, dest="max_iters")
     p.add_argument("--model", default="claude-opus-4-8")
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
@@ -112,7 +109,7 @@ def main(argv=None):
 
     if args.mode in ("plain", "both"):
         print(f"[plain] querying {args.model} ...")
-        order, transcript = run_plain(args.model, labels, times, columns, args.points)
+        order, transcript = run_plain(args.model, labels, times, columns)
         (outdir / "transcript_plain.txt").write_text(transcript, encoding="utf-8")
         print(f"[plain] order: {order}\n")
         results["plain"] = order
