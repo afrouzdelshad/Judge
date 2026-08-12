@@ -38,3 +38,34 @@ python experiment.py --mode both --model gpt-5.4 --N-max 10
 
 Results (predicted order + scores) are written to `experiment_runs/results_<model>.json`,
 and the full transcripts to `experiment_runs/transcript_plain.txt` / `transcript_code.txt`.
+
+## Task 1 / 2 / 3: focused LLM judgment tasks
+
+`task1.py`, `task2.py`, `task3.py` are three narrower variants of the same idea, each
+simulating its own dataset and comparing an LLM's raw-data judgment (`plain`) against
+its judgment when it can write and execute Python against the data (`code`). Prompts
+live in `prompt_tasks.py` (one shared `BASE_SYSTEM_PROMPT`, plus a `PLAIN`/`CODE` prompt
+pair per task); the dataset/prompting/code-execution plumbing they all share lives in
+`task_common.py`. Every dataset is written as a single combined CSV: one `time` column,
+then `<label>_x`, `<label>_y`, `<label>_z` per labeled trajectory, no quoting.
+
+```
+python task1.py --mode both --model gpt-5.4 --N-min 2 --N-max 10
+python task2.py --mode both --model gpt-5.4 --N-min 2 --N-max 10 --delta 3
+python task3.py --mode both --model gpt-5.4
+```
+
+- **task1 -- rank by N**: one trajectory per N in `[N_min, N_max]`, all from the SAME
+  initial condition (`--seed`), so differences are due to N alone. The LLM recovers the
+  ascending-N order of the shuffled labels. Scored by Kendall's tau / exact-position
+  matches / mean absolute N error.
+- **task2 -- spot the outlier(s)**: `N_max-N_min+1` trajectories share one lobe count
+  `--n-base` (default: midpoint of `N_min`/`N_max`), each from a different seed; `--delta`
+  (1-10) additional trajectories use a clearly different lobe count (at least `--gap`
+  away). The LLM must name exactly the outlier labels. Scored by precision/recall/F1.
+- **task3 -- group by complexity**: `--per-group` trajectories at each of three known
+  lobe counts `--N-low`/`--N-mid`/`--N-high` (default 2/10/20). The LLM partitions the
+  shuffled labels into "low"/"medium"/"high" groups. Scored by per-label accuracy.
+
+Each script writes `experiment_runs/task<i>/dataset.csv`, `transcript_plain.txt` /
+`transcript_code.txt`, and `results_<model>.json`, mirroring `experiment.py`'s layout.

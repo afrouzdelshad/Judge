@@ -1,0 +1,43 @@
+{
+  "model": "gpt-5.5",
+  "plain": {
+    "answer": [
+      "G",
+      "A",
+      "F",
+      "D",
+      "E",
+      "C",
+      "I",
+      "B",
+      "H"
+    ],
+    "score": {
+      "parsed": true,
+      "valid": true,
+      "exact_position_matches": 9,
+      "kendall_tau": 1.0,
+      "mae_N": 0.0
+    }
+  },
+  "code": {
+    "answer": [
+      "F",
+      "G",
+      "A",
+      "E",
+      "B",
+      "I",
+      "D",
+      "C",
+      "H"
+    ],
+    "score": {
+      "parsed": true,
+      "valid": true,
+      "exact_position_matches": 1,
+      "kendall_tau": 0.5555555555555556,
+      "mae_N": 1.5555555555555556
+    }
+  }
+}

@@ -46,8 +46,6 @@ adaptive with its own step cap (MAX_STEP), so coarsening --dt-out subsamples
 an equally accurate trajectory rather than integrating it less accurately.
 """
 
-from __future__ import annotations
-
 import argparse
 from pathlib import Path
 
