@@ -1,52 +1,61 @@
-"""System prompts for the task1 lobe-ordering experiment.
+"""System prompts for the lobe-ordering (task1) and outlier-detection (task2)
+experiments.
 
-TASK1_PLAIN_PROMPT is used when the data is pasted directly into the prompt;
-TASK1_CODE_PROMPT extends it with CODE_PROTOCOL so the model can instead
-write and execute Python against the CSV file. Both get the remaining
-{placeholders} filled in by task1.py via str.format(**kwargs).
+Each task has a PLAIN prompt (data pasted directly into the prompt) and a
+CODE prompt (extends it with CODE_PROTOCOL so the model can instead write
+and execute Python against the CSV file). Remaining {placeholders} are
+filled in by task1.py / task2.py via str.format(**kwargs).
 """
-
-BASE_SYSTEM_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory \
-wanders around N distinct "lobes" arranged around a central axis, where N is a positive \
-integer that differs between trajectories. You are NOT given the governing equations or \
-any formula; you must infer properties of each trajectory purely from the shape and \
-statistics of the raw (t, x, y) data itself."""
 
 CODE_PROTOCOL = """
 
-Instead of the data being pasted in, you are given the path to a CSV file holding every \
-labeled trajectory side by side: a "time" column, then one column per label (its letter), \
-each cell holding an "(x, y)" pair as a string like "(1.23, -4.56)". You can request \
-Python code to be executed against it.
+Instead of pasted data, you are given the path to a CSV file with this exact layout:
+ - Row 1 is the header: "time", then one column per trajectory label (a single letter each), in no particular order.
+ - Every following row is one time step, sorted by ascending time: a float time value, then one "(x, y)" cell per label column, e.g. "(1.23, -4.56)" -- literally formatted with parentheses and a comma, as a string. Standard CSV quoting is used, so each "(x, y)" cell is one quoted field; the comma inside it is not a column separator.
+
+You can request Python code to be executed against this file.
 
 File:
 {data_file}
 
-Protocol (repeat as many exchanges as you need, up to {max_iters} total):
- - To run code, reply with ONLY a single fenced ```python code block. It will be executed, \
-and whatever it prints will be shown to you as the next message. Python's `csv` module \
-plus `ast.literal_eval` on each cell is a good way to load the file; `import numpy` \
-yourself if you want it.
- - When confident, reply with ONLY the final fenced answer block described above -- no \
-code block in that same message."""
+Protocol (up to {max_iters} exchanges total):
+ - To run code, reply with ONLY a single fenced ```python code block. Its output is returned as your next message. `csv` plus `ast.literal_eval` per cell is a good way to load the file; `import numpy` yourself if you want it.
+ - When confident, reply with ONLY the final fenced answer block described above -- no code block in that same message."""
 
 
-TASK1_PLAIN_PROMPT = BASE_SYSTEM_PROMPT + """
+# ---------------------------------------------------------------------------
+# Task 1: order trajectories by ascending lobe count N
+# ---------------------------------------------------------------------------
 
-You will be given {n} trajectories, each labeled with a single letter, in no particular \
-order. Each was generated with a different number of lobes N -- a higher N means more, \
-tighter lobes arranged around the central axis.
+TASK1_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis; N is an unknown positive integer that differs between trajectories. You are given only the raw (t, x, y) data -- no governing equations -- and must infer N for each trajectory from its shape and statistics.
 
-Your task: order the labels by ascending N (fewest lobes first, most lobes last).
+You will be given {n} trajectories, each labeled with a single letter, in no particular order. Order the labels by ascending N (fewest lobes first, most last).
 
-When ready, give your FINAL answer as a single fenced json block of exactly this form \
-(and nothing else in that block):
+Give your final answer as a single fenced json block containing all {n} labels, each exactly once:
 
 ```json
-{{"order": ["<label with lowest N>", "...", "<label with highest N>"]}}
+{{"order": ["<lowest N>", "...", "<highest N>"]}}
 ```
 
-The list must contain all {n} labels, each exactly once. You may reason in plain text \
-before the block, but the block must appear exactly once, at the end of your message."""
+You may reason first, but the block must appear exactly once, at the end of your message."""
 
 TASK1_CODE_PROMPT = TASK1_PLAIN_PROMPT + CODE_PROTOCOL
+
+
+# ---------------------------------------------------------------------------
+# Task 2: spot the one trajectory with a different lobe count
+# ---------------------------------------------------------------------------
+
+TASK2_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis. You are given only the raw (t, x, y) data and must infer N for each trajectory from its shape and statistics.
+
+You will be given {n} trajectories, each labeled with a single letter, in no particular order. {n_minus_1} of them share the same N (each started from a different initial condition, so their paths differ in phase and shape, but the lobe count is the same); exactly one trajectory has a different N. Find the label of that one outlier.
+
+Give your final answer as a single fenced json block:
+
+```json
+{{"outlier": "<label>"}}
+```
+
+You may reason first, but the block must appear exactly once, at the end of your message."""
+
+TASK2_CODE_PROMPT = TASK2_PLAIN_PROMPT + CODE_PROTOCOL

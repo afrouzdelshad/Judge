@@ -38,3 +38,30 @@ scored -- just recorded.
 Note: in `code` mode, model-written Python is exec'd locally with no
 sandboxing. Only use this with trusted API providers on a machine you
 control.
+
+## Task 2: spot the trajectory with a different lobe count
+
+`task2data_shuffled.csv` is shaped like the task 1 dataset, but of its 20
+labeled trajectories, 19 share the same number of lobes N (each started
+from a different initial condition, so their paths differ) and exactly one
+has a different N. The labels are shuffled so the outlier's position is
+random.
+
+`task2.py` asks an LLM to find the label of that one outlier, in the same
+two conditions as task 1 (`plain` / `code`):
+
+```
+python task2.py --mode both --model claude-opus-4-8
+```
+
+Same flags as `task1.py` (`--mode`, `--model`, `--data-file`, `--max-iters`,
+`--outdir`), plus `--key-file task2_key.csv`. If that key file exists (columns
+`output_label,is_outlier[,original_N]`, one row per label), results are
+scored against it; otherwise the outlier is just recorded, unscored.
+
+Each run writes `task2_runs/transcript_plain.txt` / `transcript_code.txt`
+and `task2_runs/results_<model>.json`.
+
+Note: in `code` mode, model-written Python is exec'd locally with no
+sandboxing. Only use this with trusted API providers on a machine you
+control.
