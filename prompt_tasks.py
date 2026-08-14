@@ -27,7 +27,7 @@ Protocol (up to {max_iters} exchanges total):
 # Task 1: order trajectories by ascending lobe count N
 # ---------------------------------------------------------------------------
 
-TASK1_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis; N is an unknown positive integer that differs between trajectories. You are given only the raw (t, x, y) data -- no governing equations -- and must infer N for each trajectory from its shape and statistics.
+TASK1_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis; N is an unknown positive integer that differs between trajectories. You are given only the raw (t, x, y) data and must infer N for each trajectory from its shape and statistics.
 
 You will be given {n} trajectories, each labeled with a single letter, in no particular order. Order the labels by ascending N (fewest lobes first, most last).
 
