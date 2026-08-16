@@ -14,8 +14,9 @@ Usage
 -----
     python task2.py --mode both --model claude-opus-4-8
 
-If task2_key.csv is present (columns: output_label,is_outlier[,original_N]),
-results are scored against it; otherwise the outlier is just recorded.
+If task2_key.csv is present (one label per line, blank except for the line
+holding the true outlier's output_label), results are scored against it;
+otherwise the outlier is just recorded.
 
 Note: in "code" mode, model-written Python is exec'd locally with no
 sandboxing. Only use this with trusted API providers on a machine you
@@ -23,7 +24,6 @@ control.
 """
 
 import argparse
-import csv
 import json
 import re
 from pathlib import Path
@@ -32,19 +32,24 @@ from LLM_factory import chat_with_batch, code_augmented_chat_with
 from prompt_tasks import TASK2_CODE_PROMPT, TASK2_PLAIN_PROMPT
 from task1 import format_table, load_dataset
 
-DATA_FILE = "task2data_shuffled.csv"
+DATA_FILE = "task2_data.csv"
 KEY_FILE = "task2_key.csv"
 OUTDIR = "task2_runs"
 
 
 def load_key(path):
-    """Return the true outlier label from a task2_key.csv, or None if absent."""
+    """Return the true outlier label from a task2_key.csv, or None if absent.
+
+    File is one line per label slot, blank except for the single line holding
+    the outlier's output_label (same one-column convention as task1_key.csv).
+    """
     if not Path(path).exists():
         return None
-    with open(path, newline="", encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            if row["is_outlier"].strip().lower() in ("1", "true", "yes"):
-                return row["output_label"]
+    with open(path, encoding="utf-8") as f:
+        for line in f:
+            label = line.strip()
+            if label:
+                return label
     return None
 
 
