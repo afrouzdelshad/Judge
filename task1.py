@@ -23,7 +23,7 @@ import json
 import re
 from pathlib import Path
 
-from LLM_factory import chat_with, code_augmented_chat_with
+from LLM_factory import chat_with_batch, code_augmented_chat_with
 from prompt_tasks import TASK1_CODE_PROMPT, TASK1_PLAIN_PROMPT
 
 DATA_FILE = "task1data_shuffled.csv"
@@ -71,11 +71,14 @@ def extract_order(text):
     return None
 
 
-def run_plain(model, labels, times, columns):
+def run_plain_batch(model, labels, times, columns, n):
+    """Same 'plain' prompt run n times via chat_with_batch (cache + batch discount)."""
     system_prompt = TASK1_PLAIN_PROMPT.format(n=len(labels))
     user_prompt = format_table(times, columns)
-    reply = chat_with(model, system_prompt, user_prompt)
-    return extract_order(reply), reply
+    print(f"[plain] querying {model} x{n} (batched) ...")
+    replies = chat_with_batch(model, system_prompt, user_prompt, n=n)
+    orders = [extract_order(r) if r else None for r in replies]
+    return orders, replies
 
 
 def run_code(model, labels, data_file, max_iters):
@@ -94,6 +97,7 @@ def parse_args(argv=None):
     p.add_argument("--model", default="claude-opus-4-8")
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
+    p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
     return p.parse_args(argv)
 
 
@@ -103,27 +107,46 @@ def main(argv=None):
     labels = sorted(columns)
     print(f"Loaded {len(labels)} labeled trajectories from {args.data_file}: {labels}\n")
 
-    outdir = Path(args.outdir)
-    outdir.mkdir(parents=True, exist_ok=True)
-    results = {"model": args.model}
+    base_outdir = Path(args.outdir)
+    scale = args.scale
 
+    # Plain mode: one prompt, all `scale` repeats fired via chat_with_batch.
+    plain_orders, plain_transcripts = [None] * scale, [None] * scale
     if args.mode in ("plain", "both"):
-        print(f"[plain] querying {args.model} ...")
-        order, transcript = run_plain(args.model, labels, times, columns)
-        (outdir / "transcript_plain.txt").write_text(transcript, encoding="utf-8")
-        print(f"[plain] order: {order}\n")
-        results["plain"] = order
+        plain_orders, plain_transcripts = run_plain_batch(args.model, labels, times, columns, scale)
 
-    if args.mode in ("code", "both"):
-        print(f"[code] querying {args.model} ...")
-        order, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
-        (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
-        print(f"[code] order: {order}\n")
-        results["code"] = order
+    trials = []
+    for i in range(scale):
+        if scale > 1:
+            print(f"=== trial {i + 1}/{scale} ===")
+        outdir = base_outdir / f"trial_{i + 1}" if scale > 1 else base_outdir
+        outdir.mkdir(parents=True, exist_ok=True)
+        results = {"model": args.model}
 
-    results_path = outdir / f"results_{args.model}.json"
-    results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
-    print(f"Results written to {results_path}")
+        if args.mode in ("plain", "both"):
+            order, transcript = plain_orders[i], plain_transcripts[i]
+            (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+            print(f"[plain] order: {order}\n")
+            results["plain"] = order
+
+        if args.mode in ("code", "both"):
+            print(f"[code] querying {args.model} ...")
+            order, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
+            (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
+            print(f"[code] order: {order}\n")
+            results["code"] = order
+
+        results_path = outdir / f"results_{args.model}.json"
+        results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+        print(f"Results written to {results_path}")
+        trials.append(results)
+
+    if scale > 1:
+        summary_path = base_outdir / f"summary_{args.model}.json"
+        summary_path.write_text(
+            json.dumps({"model": args.model, "scale": scale, "trials": trials}, indent=2), encoding="utf-8"
+        )
+        print(f"Summary written to {summary_path}")
 
 
 if __name__ == "__main__":
