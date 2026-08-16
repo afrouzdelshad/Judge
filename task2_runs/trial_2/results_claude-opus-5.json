@@ -1,6 +1,8 @@
 {
   "model": "claude-opus-5",
-  "true_outlier": null,
+  "true_outlier": "L",
   "plain": "L",
-  "code": "L"
+  "plain_correct": true,
+  "code": "L",
+  "code_correct": true
 }

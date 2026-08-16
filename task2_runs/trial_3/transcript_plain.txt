@@ -1,0 +1,29 @@
+## Analysis
+
+Since all trajectories come from the same family, the lobes should sit at fixed angular directions around the central axis. So for each trajectory I looked at the *angles* (atan2(y,x)) of the large‑radius excursions and checked how many distinct angular clusters appear.
+
+**Typical trajectory (e.g. A):** large excursions occur at
+≈ −26°, 49°, 121°, 192°, 265° → spacing ≈ 72° → **N = 5**
+
+Checking the same way for B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T — every one of them visits only those same five directions (≈ −25°, 48°, 120°, 192°, 264°), i.e. 5 lobes each. Example excursion peaks:
+
+- B: (−2.1,−22.3), (−25.5,−5.4), (−11.0,19.3), (17.4,21.7), (14.2,−6.7) → 5 directions
+- H: (−23.5,−5.7), (−13.7,21.1), (13.3,14.9), (21.6,−9.7), (−2.3,−21.1) → 5 directions
+- T: (21.9,−8.6), (−1.9,−20.5), (−25.9,−4.4), (−10.3,18.1), (15.3,16.0) → 5 directions
+
+**Trajectory L is different.** Its large excursions occur at roughly
+
+11°, 47°, 82°, 118°, 155°, 190°, 228°, 264°, 299°, 334°
+
+i.e. **ten** lobes spaced ≈36° apart. Concrete examples that no other trajectory ever visits:
+- (−16.7, 8.0), (−22.1, 10.1), (−22.6, 10.5) → ≈155°
+- (3.0, 21.0), (3.4, 22.5), (2.5, 20.5) → ≈82°
+- (22.7, 4.6), (25.2, 5.2), (24.4, 4.7) → ≈11°
+- (−17.2,−19.1), (−14.4,−14.5) → ≈228°
+- (11.9,−21.6), (12.5,−22.0) → ≈−61°
+
+These interleave exactly halfway between the five lobes shared by all the others, so L has twice as many lobes.
+
+```json
+{"outlier": "L"}
+```

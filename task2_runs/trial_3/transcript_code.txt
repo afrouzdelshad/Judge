@@ -1,0 +1,90 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task2_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]; labels=hdr[1:]
+t=np.array([float(r[0]) for r in rows[1:]])
+data={}
+for i,l in enumerate(labels):
+    pts=np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
+    data[l]=pts
+print(len(t), labels)
+for l in labels:
+    p=data[l]; x,y=p[:,0],p[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    tot=abs(th[-1]-th[0])/(2*np.pi)
+    # count r maxima
+    m=((r[1:-1]>r[:-2])&(r[1:-1]>r[2:])).sum()
+    print(l, round(tot,2), m, round(m/tot,2) if tot>0 else 0, round(r.mean(),2), round(r.std(),2))
+```
+
+[System: execution output]
+1001 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A 6.41 141 22.01 9.73 6.48
+B 9.25 138 14.92 9.77 6.68
+C 11.53 133 11.54 9.77 6.96
+D 16.07 132 8.22 9.71 7.08
+E 9.4 135 14.36 10.04 6.57
+F 7.75 133 17.16 9.77 6.89
+G 9.8 137 13.98 9.92 6.65
+H 12.28 132 10.75 9.82 6.88
+I 11.0 134 12.18 9.85 6.87
+J 12.15 133 10.95 9.81 6.91
+K 9.56 133 13.91 9.85 6.83
+L 6.36 134 21.05 9.77 6.96
+M 12.06 136 11.28 9.75 6.87
+N 10.95 135 12.33 9.8 6.81
+O 14.11 135 9.57 9.74 6.89
+P 13.2 134 10.15 9.85 6.86
+Q 11.43 136 11.9 9.84 6.73
+R 14.98 132 8.81 9.75 7.02
+S 17.53 137 7.82 9.73 6.98
+T 7.73 134 17.33 9.81 6.79
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task2_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+t=np.array([float(r[0]) for r in rows[1:]])
+data={l:np.array([ast.literal_eval(r[i+1]) for r in rows[1:]]) for i,l in enumerate(labels)}
+
+def smooth(a,w):
+    k=np.ones(w)/w
+    return np.convolve(a,k,mode='valid')
+
+for w in [5,9,15,21]:
+    out=[]
+    for l in labels:
+        p=data[l]; x,y=p[:,0],p[:,1]
+        cx,cy=x.mean(),y.mean()
+        r=np.hypot(x-cx,y-cy)
+        th=np.unwrap(np.arctan2(y-cy,x-cx))
+        rs=smooth(r,w); ths=smooth(th,w)
+        m=((rs[1:-1]>rs[:-2])&(rs[1:-1]>rs[2:]))
+        idx=np.where(m)[0]+1
+        rev=abs(ths[-1]-ths[0])/(2*np.pi)
+        out.append((l,len(idx),round(len(idx)/rev,2)))
+    print(w,out)
+```
+
+[System: execution output]
+5 [('A', 134, np.float64(21.21)), ('B', 133, np.float64(14.45)), ('C', 132, np.float64(11.41)), ('D', 131, np.float64(8.2)), ('E', 135, np.float64(14.48)), ('F', 132, np.float64(16.85)), ('G', 133, np.float64(13.78)), ('H', 132, np.float64(10.82)), ('I', 132, np.float64(12.02)), ('J', 133, np.float64(10.87)), ('K', 133, np.float64(13.89)), ('L', 131, np.float64(20.81)), ('M', 132, np.float64(11.02)), ('N', 132, np.float64(12.07)), ('O', 132, np.float64(9.54)), ('P', 133, np.float64(10.21)), ('Q', 133, np.float64(11.61)), ('R', 131, np.float64(8.75)), ('S', 131, np.float64(7.44)), ('T', 132, np.float64(17.38))]
+9 [('A', 129, np.float64(20.86)), ('B', 118, np.float64(12.86)), ('C', 121, np.float64(10.46)), ('D', 123, np.float64(7.75)), ('E', 122, np.float64(13.27)), ('F', 121, np.float64(14.91)), ('G', 124, np.float64(12.8)), ('H', 119, np.float64(9.82)), ('I', 119, np.float64(10.82)), ('J', 122, np.float64(10.05)), ('K', 117, np.float64(12.22)), ('L', 120, np.float64(19.15)), ('M', 119, np.float64(9.99)), ('N', 125, np.float64(11.47)), ('O', 120, np.float64(8.72)), ('P', 124, np.float64(9.6)), ('Q', 120, np.float64(10.47)), ('R', 119, np.float64(7.93)), ('S', 123, np.float64(6.99)), ('T', 123, np.float64(16.08))]
+15 [('A', 118, np.float64(19.09)), ('B', 112, np.float64(12.25)), ('C', 106, np.float64(9.16)), ('D', 108, np.float64(6.88)), ('E', 111, np.float64(12.22)), ('F', 105, np.float64(12.71)), ('G', 109, np.float64(11.29)), ('H', 108, np.float64(8.95)), ('I', 108, np.float64(9.78)), ('J', 107, np.float64(8.9)), ('K', 104, np.float64(10.86)), ('L', 113, np.float64(18.21)), ('M', 105, np.float64(8.88)), ('N', 114, np.float64(10.5)), ('O', 115, np.float64(8.39)), ('P', 113, np.float64(8.82)), ('Q', 111, np.float64(9.66)), ('R', 107, np.float64(7.17)), ('S', 109, np.float64(6.22)), ('T', 107, np.float64(14.11))]
+21 [('A', 125, np.float64(20.41)), ('B', 119, np.float64(13.07)), ('C', 119, np.float64(10.29)), ('D', 123, np.float64(7.91)), ('E', 120, np.float64(13.36)), ('F', 121, np.float64(14.6)), ('G', 119, np.float64(12.41)), ('H', 122, np.float64(10.13)), ('I', 120, np.float64(10.88)), ('J', 122, np.float64(10.22)), ('K', 118, np.float64(12.33)), ('L', 119, np.float64(19.35)), ('M', 118, np.float64(10.05)), ('N', 120, np.float64(11.15)), ('O', 121, np.float64(8.85)), ('P', 124, np.float64(9.72)), ('Q', 120, np.float64(10.43)), ('R', 121, np.float64(8.17)), ('S', 124, np.float64(7.08)), ('T', 118, np.float64(15.65))]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"outlier": "A"}
+```

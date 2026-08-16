@@ -1,31 +1,30 @@
-## Analysis
+## Analysis Approach
 
-Looking at each trajectory in the (x,y) plane, the motion consists of **outward spirals along fixed ray directions** (the lobes), separated by fast transits near the origin. So the lobe directions can be read off from stretches where the angle θ = atan2(y,x) stays nearly constant while the radius grows.
+Since these trajectories orbit a central axis, the "lobes" show up as **preferred angular directions** θ = atan2(y,x) at which the trajectory makes large-radius excursions (r ≈ 20–25). A trajectory loops several times within one lobe, then rotates to the next lobe. So I extracted the angles of large-|r| points for each letter.
 
-**Typical trajectory (e.g. A):**
-- t≈14.6–15.5: θ ≈ −166°, r → 22
-- t≈17.0: θ ≈ +122°, r → 23
-- t≈18.8: θ ≈ +50°, r → 26
-- t≈19.4–20.8: θ ≈ −23°, r → 19
-- t≈23.6: θ ≈ −94°, r → 22
+**Typical trajectory (e.g. A, M, P, Q, R, S, T…):**
+- M: (−2.3,−21.6)→265°, (−19.9,−5.1)→194°, (−12.6,21.9)→123°, (14.7,16.0)→50°, (19.7,−8.0)→−21°
+- P: −25°, −93°, 194°, 122°, 50°
+- T: −22°, −94°, −164°, 121°, 47°
 
-Directions: **−166, −94, −22, +50, +122** → spacing ≈ 72° → **N = 5**.
+All of these show **5 lobe directions spaced ~72° apart** (≈ 47°, 119°, 191°, 263°, 335°). Intermediate angles only appear at *small* radius during lobe-to-lobe transitions. I confirmed this pattern for A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T.
 
-Spot‑checking B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T all gives exactly the same five ray directions (≈ −166/−94/−22/+50/+122); angles like −58° or −133° appear only as brief low‑radius transits (r ≈ 2–5).
+**Trajectory L is different.** Its large-radius excursions occur at *twice as many* directions, spaced ~36°:
 
-**Trajectory L is different.** It has genuine outward spirals at *twice as many* directions:
+| t | (x, y) | r | θ |
+|---|---|---|---|
+| 0.1 | (−25.4, −5.3) | 26 | 192° |
+| 4.3 | (−22.1, 10.1) | 24 | 155° |
+| 5.9 | (−11.8, 22.1) | 25 | 118° |
+| 7.4 | (3.4, 22.5) | 23 | 82° |
+| 8.1 | (14.6, 16.0) | 22 | 48° |
+| 8.9 | (22.7, 4.6) | 23 | 12° |
+| 9.7 | (21.6, −10.2) | 24 | −25° |
+| 10.5 | (11.9, −21.6) | 25 | −61° |
+| 11.2 | (−2.4, −21.1) | 21 | −97° |
+| 12.2 | (−17.2, −19.1) | 26 | −132° |
 
-| time | θ | r grows to |
-|---|---|---|
-| 0.3–3.0 | +154° | 19 |
-| 6.2–6.6 | +84° | 21 |
-| 8.5–8.9 | +12° | 23 |
-| 9.3–9.7 | −24° | 24 |
-| 10.1–10.5 | −60° | 25 |
-| 10.9–11.2 | −96° | 21 |
-| 11.8–12.2 | −132° | 26 |
-
-Successive lobes are separated by **36°**, and the intermediate directions (+12, +84, +154, −60, −132) — which are only fast near‑origin transits for every other trajectory — are here full-blown large-radius lobes. That gives **N = 10** for L.
+L rotates steadily through **10 distinct lobes** (36° apart), including the intermediate directions that the others only cross at tiny radius.
 
 ```json
 {"outlier": "L"}

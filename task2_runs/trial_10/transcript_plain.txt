@@ -1,0 +1,29 @@
+## Analysis
+
+For these trajectories, a "lobe" shows up as an interval where the point oscillates radially **at a nearly fixed angle** θ = atan2(y,x), with r growing from ~1 up to ~20–25 and back. Transitions between lobes pass through the origin at small radius (so intermediate angles at tiny r don't count).
+
+**Typical trajectory (e.g. B):** sustained large‑radius oscillations occur only at
+θ ≈ −96°, −168°, +120°, +48°, −24° → 5 lobes, spacing 72°.
+
+Spot‑checking A, C, D, E, F, G, H, I, J, K, M, … all show the same five directions (−168, −96, −24, 48, 120), with any intermediate angles occurring only while r ≲ 3 (i.e., during a hand‑off through the center).
+
+**Trajectory L is different.** It shows full radial excursions (r up to ~20–25) at *twice as many* directions:
+
+| time window | angle | max r |
+|---|---|---|
+| 0–4.3 | ≈153° | 24 |
+| 5.0–5.9 | ≈120° | 25 |
+| 6.2–7.5 | ≈84° | 23 |
+| 7.8–8.2 | ≈48° | 22 |
+| 8.6–9.0 | ≈12° | 23 |
+| 9.3–9.7 | ≈−24° | 24 |
+| 10.2–10.5 | ≈−60° | 25 |
+| 11.0–11.2 | ≈−96° | 21 |
+| 11.9–12.2 | ≈−132° | 26 |
+| 12.6–12.7 | ≈−168° | 11 |
+
+That's 36° spacing → 10 lobes, versus 72° spacing (5 lobes) for every other trajectory.
+
+```json
+{"outlier": "L"}
+```

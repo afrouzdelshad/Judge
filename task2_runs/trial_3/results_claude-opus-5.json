@@ -3,6 +3,6 @@
   "true_outlier": "L",
   "plain": "L",
   "plain_correct": true,
-  "code": "L",
-  "code_correct": true
+  "code": "A",
+  "code_correct": false
 }

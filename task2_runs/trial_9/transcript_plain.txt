@@ -1,0 +1,29 @@
+## Analysis Approach
+
+Since the lobes sit at fixed angular positions around the central axis, I computed the polar angle θ = atan2(y, x) for the high‑radius excursions of each trajectory and looked for angular clusters.
+
+**Typical trajectory (e.g. A):** large-radius excursions occur at
+θ ≈ −25°, +50°, +121°, +193°, +265° → spacing ≈ 72° → **N = 5**
+
+Checking the others (B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T) gives the same five directions (≈ −24°, 48°, 120°, −168°, −96°), each with repeated spiral-outs in those five directions. (Only the t = 0 points sit off-lobe, as expected for random initial conditions.)
+
+**Trajectory L** behaves differently. Following its large-r excursions:
+
+| time | (x, y) | θ |
+|---|---|---|
+| 0.7 | (−15.2, 7.2) | 155° |
+| 5.0 | (−10.2, 18.2) | 119° |
+| 6.6 | (3.0, 21.0) | 82° |
+| 8.1 | (14.6, 16.0) | 48° |
+| 8.9 | (22.7, 4.6) | 11° |
+| 9.7 | (21.6, −10.2) | −25° |
+| 10.5 | (11.9, −21.6) | −61° |
+| 11.2 | (−2.4, −21.1) | −97° |
+| 12.2 | (−17.2, −19.1) | −132° |
+| 13.5 | (−18.4, −3.4) | −169° |
+
+Each of these directions shows repeated spiral-outs (a genuine lobe), giving spacing ≈ 36° → **N = 10**, i.e. the five common lobes *plus* five intermediate ones.
+
+```json
+{"outlier": "L"}
+```

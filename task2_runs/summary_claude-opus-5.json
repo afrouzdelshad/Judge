@@ -1,18 +1,88 @@
 {
   "model": "claude-opus-5",
-  "scale": 2,
+  "scale": 10,
   "trials": [
     {
       "model": "claude-opus-5",
-      "true_outlier": null,
+      "true_outlier": "L",
       "plain": "L",
-      "code": "A"
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
     },
     {
       "model": "claude-opus-5",
-      "true_outlier": null,
+      "true_outlier": "L",
       "plain": "L",
-      "code": "L"
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "A",
+      "code_correct": false
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true,
+      "code": "L",
+      "code_correct": true
     }
-  ]
+  ],
+  "plain_correct_rate": 1.0,
+  "code_correct_rate": 0.9
 }

@@ -1,0 +1,104 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task2_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]; labels=hdr[1:]
+data={l:[] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for i,l in enumerate(labels):
+        data[l].append(ast.literal_eval(r[i+1]))
+t=np.array(t)
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    total=abs(th[-1]-th[0])/(2*np.pi)
+    # count local maxima of r
+    m=(r[1:-1]>r[:-2])&(r[1:-1]>r[2:])
+    n=m.sum()
+    # fft approach: resample r vs theta
+    print(l, round(total,2), n, round(n/total,2) if total>0 else 0, round(r.mean(),2), round(r.std(),2))
+```
+
+[System: execution output]
+A 6.41 141 22.01 9.73 6.48
+B 9.25 138 14.92 9.77 6.68
+C 11.53 133 11.54 9.77 6.96
+D 16.07 132 8.22 9.71 7.08
+E 9.4 135 14.36 10.04 6.57
+F 7.75 133 17.16 9.77 6.89
+G 9.8 137 13.98 9.92 6.65
+H 12.28 132 10.75 9.82 6.88
+I 11.0 134 12.18 9.85 6.87
+J 12.15 133 10.95 9.81 6.91
+K 9.56 133 13.91 9.85 6.83
+L 6.36 134 21.05 9.77 6.96
+M 12.06 136 11.28 9.75 6.87
+N 10.95 135 12.33 9.8 6.81
+O 14.11 135 9.57 9.74 6.89
+P 13.2 134 10.15 9.85 6.86
+Q 11.43 136 11.9 9.84 6.73
+R 14.98 132 8.81 9.75 7.02
+S 17.53 137 7.82 9.73 6.98
+T 7.73 134 17.33 9.81 6.79
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task2_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]; labels=hdr[1:]
+data={l:[] for l in labels}
+for r_ in rows[1:]:
+    for i,l in enumerate(labels):
+        data[l].append(ast.literal_eval(r_[i+1]))
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    rr=np.hypot(x-cx,y-cy); th=np.arctan2(y-cy,x-cx)
+    m=(rr[1:-1]>rr[:-2])&(rr[1:-1]>rr[2:])
+    idx=np.where(m)[0]+1
+    tm=th[idx]
+    res=[]
+    for k in range(1,13):
+        res.append(abs(np.mean(np.exp(1j*k*tm))))
+    best=int(np.argmax(res))+1
+    print(l,best,[round(v,2) for v in res])
+```
+
+[System: execution output]
+A 5 [np.float64(0.17), np.float64(0.16), np.float64(0.21), np.float64(0.48), np.float64(0.84), np.float64(0.07), np.float64(0.17), np.float64(0.33), np.float64(0.62), np.float64(0.56), np.float64(0.3), np.float64(0.26)]
+B 5 [np.float64(0.13), np.float64(0.2), np.float64(0.22), np.float64(0.35), np.float64(0.89), np.float64(0.03), np.float64(0.17), np.float64(0.31), np.float64(0.45), np.float64(0.75), np.float64(0.26), np.float64(0.24)]
+C 5 [np.float64(0.05), np.float64(0.07), np.float64(0.06), np.float64(0.15), np.float64(0.97), np.float64(0.02), np.float64(0.07), np.float64(0.06), np.float64(0.22), np.float64(0.93), np.float64(0.11), np.float64(0.06)]
+D 5 [np.float64(0.05), np.float64(0.02), np.float64(0.02), np.float64(0.14), np.float64(0.98), np.float64(0.05), np.float64(0.02), np.float64(0.04), np.float64(0.23), np.float64(0.93), np.float64(0.13), np.float64(0.02)]
+E 5 [np.float64(0.05), np.float64(0.16), np.float64(0.15), np.float64(0.14), np.float64(0.98), np.float64(0.03), np.float64(0.18), np.float64(0.14), np.float64(0.21), np.float64(0.93), np.float64(0.11), np.float64(0.2)]
+F 5 [np.float64(0.08), np.float64(0.07), np.float64(0.06), np.float64(0.23), np.float64(0.96), np.float64(0.05), np.float64(0.08), np.float64(0.07), np.float64(0.33), np.float64(0.88), np.float64(0.19), np.float64(0.05)]
+G 5 [np.float64(0.07), np.float64(0.21), np.float64(0.18), np.float64(0.21), np.float64(0.93), np.float64(0.01), np.float64(0.19), np.float64(0.22), np.float64(0.28), np.float64(0.88), np.float64(0.11), np.float64(0.23)]
+H 5 [np.float64(0.04), np.float64(0.07), np.float64(0.06), np.float64(0.13), np.float64(0.98), np.float64(0.05), np.float64(0.08), np.float64(0.05), np.float64(0.21), np.float64(0.93), np.float64(0.13), np.float64(0.08)]
+I 5 [np.float64(0.03), np.float64(0.03), np.float64(0.0), np.float64(0.09), np.float64(0.98), np.float64(0.02), np.float64(0.05), np.float64(0.03), np.float64(0.15), np.float64(0.93), np.float64(0.07), np.float64(0.06)]
+J 5 [np.float64(0.06), np.float64(0.15), np.float64(0.13), np.float64(0.14), np.float64(0.98), np.float64(0.04), np.float64(0.16), np.float64(0.1), np.float64(0.23), np.float64(0.93), np.float64(0.12), np.float64(0.17)]
+K 5 [np.float64(0.04), np.float64(0.09), np.float64(0.08), np.float64(0.1), np.float64(0.99), np.float64(0.02), np.float64(0.1), np.float64(0.06), np.float64(0.15), np.float64(0.94), np.float64(0.08), np.float64(0.11)]
+L 10 [np.float64(0.08), np.float64(0.03), np.float64(0.11), np.float64(0.04), np.float64(0.06), np.float64(0.02), np.float64(0.11), np.float64(0.09), np.float64(0.33), np.float64(0.92), np.float64(0.18), np.float64(0.02)]
+M 5 [np.float64(0.08), np.float64(0.08), np.float64(0.04), np.float64(0.24), np.float64(0.95), np.float64(0.05), np.float64(0.11), np.float64(0.04), np.float64(0.38), np.float64(0.84), np.float64(0.18), np.float64(0.11)]
+N 5 [np.float64(0.08), np.float64(0.13), np.float64(0.18), np.float64(0.26), np.float64(0.94), np.float64(0.08), np.float64(0.08), np.float64(0.22), np.float64(0.4), np.float64(0.81), np.float64(0.24), np.float64(0.05)]
+O 5 [np.float64(0.1), np.float64(0.09), np.float64(0.14), np.float64(0.27), np.float64(0.96), np.float64(0.09), np.float64(0.06), np.float64(0.19), np.float64(0.4), np.float64(0.83), np.float64(0.25), np.float64(0.05)]
+P 5 [np.float64(0.02), np.float64(0.23), np.float64(0.21), np.float64(0.11), np.float64(0.98), np.float64(0.07), np.float64(0.23), np.float64(0.18), np.float64(0.2), np.float64(0.93), np.float64(0.15), np.float64(0.24)]
+Q 5 [np.float64(0.09), np.float64(0.12), np.float64(0.13), np.float64(0.25), np.float64(0.94), np.float64(0.02), np.float64(0.08), np.float64(0.19), np.float64(0.33), np.float64(0.88), np.float64(0.17), np.float64(0.12)]
+R 5 [np.float64(0.05), np.float64(0.08), np.float64(0.08), np.float64(0.12), np.float64(0.98), np.float64(0.02), np.float64(0.08), np.float64(0.08), np.float64(0.19), np.float64(0.94), np.float64(0.08), np.float64(0.08)]
+S 5 [np.float64(0.08), np.float64(0.06), np.float64(0.08), np.float64(0.24), np.float64(0.96), np.float64(0.08), np.float64(0.05), np.float64(0.13), np.float64(0.37), np.float64(0.84), np.float64(0.21), np.float64(0.02)]
+T 5 [np.float64(0.09), np.float64(0.07), np.float64(0.05), np.float64(0.26), np.float64(0.95), np.float64(0.06), np.float64(0.07), np.float64(0.0), np.float64(0.4), np.float64(0.85), np.float64(0.19), np.float64(0.06)]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"outlier": "L"}
+```

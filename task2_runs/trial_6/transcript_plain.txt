@@ -1,0 +1,31 @@
+## Analysis Approach
+
+Since the lobes are radial "petals" around the origin, I identified for each trajectory the **angular directions of its large‑radius excursions** (θ = atan2(y,x) at each radial maximum). The lobe axes show up as tight angular clusters.
+
+**Typical trajectory (e.g. A):**
+excursion angles cluster at ≈ 336°, 48°, 120°, 192°, 264° — five directions spaced ~72° apart, visited in retrograde order (192→120→48→336→264→…). So **N = 5**.
+
+I verified this same set of five clusters {48, 120, 192, 264, 336} for B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T. For instance:
+- B: (17.4,21.7)=51°, (14.3,−6.7)=−25°, (−17.8,−4.7)=193°, (−12.2,21.4)=120°, (−2.1,−24.0)=−95°
+- S: (17.3,18.7)=47°, (25.5,−11.0)=−23°, (−21.5,−3.2)=189°, (−12.7,20.6)=118°, (−2.3,−23.5)=−95°
+
+**Trajectory L is different.** Its large excursions land on *ten* distinct directions spaced ~36°:
+
+| t | (x, y) | θ |
+|---|---|---|
+| 4.3 | (−22.07, 10.10) | 155° |
+| 5.0 | (−10.17, 18.17) | 119° |
+| 7.4 | (3.38, 22.52) | 82° |
+| 20.3 | (15.57, 16.71) | 47° |
+| 8.9 / 21.2 | (22.66, 4.56) / (25.24, 5.16) | 11° |
+| 9.7 | (21.55, −10.21) | −25° |
+| 10.5 | (11.88, −21.61) | −61° |
+| 11.2 | (−2.44, −21.12) | −97° |
+| 12.2 | (−17.22, −19.07) | 228° |
+| 12.9 | (−17.38, −2.79) | 189° |
+
+The petals at ~11°, 82°, 155°, 228°, 299° never appear in any other trajectory (repeated visits confirm they are true lobe axes, with r dropping to ~3 between excursions). L therefore precesses 36° per excursion and closes after **10 lobes**, not 5.
+
+```json
+{"outlier": "L"}
+```

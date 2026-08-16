@@ -1,0 +1,28 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) of the large‑radius excursions, since the lobes sit at fixed angular positions around the central axis. A trajectory with N lobes shows far‑field points clustered at angles spaced 360°/N apart.
+
+**Typical trajectory (e.g. A):** far points cluster at ≈ 51°, 123°, 195°, 267°, 339° → spacing ≈ 72° → **N = 5**, and lobe‑to‑lobe hops step by ~72°.
+
+Checking the others the same way (B: 51/122/194/266/338; C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T all likewise) — every one visits only the five directions ≈ 50°, 122°, 194°, 266°, 338°.
+
+**Trajectory L is different.** Following it continuously:
+
+| t range | (x, y) at max radius | angle |
+|---|---|---|
+| 0.3–4.5 | (−22.1, 10.1) | ≈155° |
+| 4.6–6.0 | (−11.8, 22.1) | ≈119° |
+| 6.1–7.5 | (3.4, 22.5) | ≈83° |
+| 7.6–8.4 | (14.6, 16.0) | ≈48° |
+| 8.5–9.0 | (22.7, 4.6) | ≈11° |
+| 9.1–9.9 | (21.6, −10.2) | ≈335° |
+| 10.0–10.6 | (11.9, −21.6) | ≈299° |
+| 10.9–11.4 | (−2.4, −21.1) | ≈263° |
+| 11.8–12.3 | (−17.2, −19.1) | ≈228° |
+| 12.5–13.0 | (−17.4, −2.8) | ≈191° |
+
+These are genuine spiral lobes (radius grows to ~25 while the angle holds steady), spaced **36°** apart — ten lobes, not five. Points like (−17.2, −19.1) at r ≈ 26 (θ ≈ 228°) simply never occur in any other trajectory.
+
+```json
+{"outlier": "L"}
+```

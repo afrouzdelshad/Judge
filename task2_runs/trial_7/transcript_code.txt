@@ -1,0 +1,59 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task2_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]; labels=hdr[1:]
+data={l:[] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+t=np.array(t)
+for l in labels:
+    a=np.array(data[l]); x=a[:,0]; y=a[:,1]
+    xc=x-x.mean(); yc=y-y.mean()
+    th=np.unwrap(np.arctan2(yc,xc))
+    r=np.hypot(xc,yc)
+    tot=abs(th[-1]-th[0])/(2*np.pi)
+    # resample r vs theta
+    s=np.sign(th[-1]-th[0]); thm=s*th
+    idx=np.argsort(thm)
+    thg=np.linspace(thm.min(),thm.max(),4096)
+    rg=np.interp(thg,thm[idx],r[idx])
+    F=np.abs(np.fft.rfft(rg-rg.mean()))
+    freqs=np.arange(len(F))/ (thg[-1]-thg[0]) *2*np.pi
+    top=np.argsort(F)[::-1][:5]
+    print(l, round(tot,2), [(round(freqs[i],2), round(F[i],1)) for i in top])
+```
+
+[System: execution output]
+A 6.41 [(np.float64(5.0), np.float64(7769.2)), (np.float64(6.06), np.float64(2906.5)), (np.float64(4.09), np.float64(2731.3)), (np.float64(5.91), np.float64(2540.5)), (np.float64(3.03), np.float64(2451.2))]
+B 9.25 [(np.float64(4.97), np.float64(8749.6)), (np.float64(10.05), np.float64(3395.4)), (np.float64(5.08), np.float64(3086.1)), (np.float64(3.03), np.float64(2999.6)), (np.float64(2.05), np.float64(2364.4))]
+C 11.53 [(np.float64(4.99), np.float64(9975.0)), (np.float64(9.99), np.float64(3739.5)), (np.float64(14.98), np.float64(2173.6)), (np.float64(6.03), np.float64(1690.7)), (np.float64(5.08), np.float64(1609.4))]
+D 16.07 [(np.float64(4.98), np.float64(8185.7)), (np.float64(5.04), np.float64(3654.5)), (np.float64(10.02), np.float64(3480.9)), (np.float64(15.0), np.float64(2709.6)), (np.float64(5.98), np.float64(2430.0))]
+E 9.4 [(np.float64(4.96), np.float64(8242.7)), (np.float64(5.07), np.float64(4202.3)), (np.float64(10.04), np.float64(4078.2)), (np.float64(4.01), np.float64(2250.8)), (np.float64(15.0), np.float64(2168.8))]
+F 7.75 [(np.float64(4.98), np.float64(8888.1)), (np.float64(9.96), np.float64(3644.4)), (np.float64(5.1), np.float64(2890.2)), (np.float64(10.08), np.float64(2487.4)), (np.float64(6.02), np.float64(1908.3))]
+G 9.8 [(np.float64(4.97), np.float64(9180.2)), (np.float64(9.95), np.float64(3408.3)), (np.float64(10.05), np.float64(2764.6)), (np.float64(15.02), np.float64(2757.4)), (np.float64(4.87), np.float64(2658.9))]
+H 12.28 [(np.float64(4.96), np.float64(7247.3)), (np.float64(5.05), np.float64(6105.3)), (np.float64(10.01), np.float64(4052.0)), (np.float64(6.02), np.float64(2509.4)), (np.float64(4.88), np.float64(2248.6))]
+I 11.0 [(np.float64(5.0), np.float64(10646.1)), (np.float64(9.99), np.float64(4496.5)), (np.float64(14.99), np.float64(2017.5)), (np.float64(2.19), np.float64(1944.8)), (np.float64(1.05), np.float64(1935.9))]
+J 12.15 [(np.float64(5.03), np.float64(7427.2)), (np.float64(4.95), np.float64(3909.2)), (np.float64(5.11), np.float64(3576.1)), (np.float64(9.98), np.float64(2989.8)), (np.float64(15.01), np.float64(2518.9))]
+K 9.56 [(np.float64(4.99), np.float64(10419.1)), (np.float64(9.98), np.float64(3925.4)), (np.float64(6.03), np.float64(2023.4)), (np.float64(10.08), np.float64(1944.2)), (np.float64(4.88), np.float64(1890.9))]
+L 6.36 [(np.float64(10.01), np.float64(9488.4)), (np.float64(20.02), np.float64(4174.6)), (np.float64(9.07), np.float64(2853.0)), (np.float64(20.96), np.float64(1950.0)), (np.float64(10.95), np.float64(1685.1))]
+M 12.06 [(np.float64(5.04), np.float64(6498.8)), (np.float64(4.96), np.float64(6174.2)), (np.float64(10.0), np.float64(4341.2)), (np.float64(4.79), np.float64(2910.1)), (np.float64(0.83), np.float64(2405.7))]
+N 10.95 [(np.float64(5.02), np.float64(9123.1)), (np.float64(4.93), np.float64(2460.8)), (np.float64(10.04), np.float64(2304.2)), (np.float64(6.01), np.float64(2197.7)), (np.float64(9.95), np.float64(2019.5))]
+O 14.11 [(np.float64(5.03), np.float64(7099.4)), (np.float64(4.96), np.float64(5149.5)), (np.float64(9.99), np.float64(4048.9)), (np.float64(0.64), np.float64(2668.0)), (np.float64(0.28), np.float64(2606.2))]
+P 13.2 [(np.float64(4.99), np.float64(10360.4)), (np.float64(9.98), np.float64(3203.6)), (np.float64(5.98), np.float64(2357.3)), (np.float64(4.01), np.float64(1897.4)), (np.float64(9.0), np.float64(1865.7))]
+Q 11.43 [(np.float64(5.01), np.float64(9105.8)), (np.float64(10.02), np.float64(3965.4)), (np.float64(3.99), np.float64(2869.4)), (np.float64(0.08), np.float64(2816.4)), (np.float64(1.87), np.float64(2532.1))]
+R 14.98 [(np.float64(4.98), np.float64(7185.1)), (np.float64(5.04), np.float64(4818.0)), (np.float64(10.02), np.float64(3839.6)), (np.float64(5.11), np.float64(3193.5)), (np.float64(14.99), np.float64(2570.7))]
+S 17.53 [(np.float64(4.98), np.float64(6715.7)), (np.float64(5.04), np.float64(3969.7)), (np.float64(10.02), np.float64(3784.8)), (np.float64(0.56), np.float64(3409.5)), (np.float64(1.01), np.float64(3188.9))]
+T 7.73 [(np.float64(4.98), np.float64(9071.3)), (np.float64(9.96), np.float64(3246.4)), (np.float64(6.0), np.float64(2668.3)), (np.float64(5.11), np.float64(2422.2)), (np.float64(15.07), np.float64(2093.2))]
+
+
+[Assistant]
+```json
+{"outlier": "L"}
+```
