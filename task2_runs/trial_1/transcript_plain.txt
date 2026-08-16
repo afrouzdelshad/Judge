@@ -1,0 +1,26 @@
+## Analysis
+
+I looked at the angular position θ = atan2(y, x) of each trajectory and identified where the orbit *lingers and spirals* (radius growing/shrinking over many samples) versus where it merely passes through during a lobe‑switch.
+
+**Typical trajectory (e.g. A):** sustained spiraling occurs only near θ ≈ −98°, −23°, +51°, +121°, +191° — five directions separated by ≈72°. Transitions between them sweep through intermediate angles quickly at small radius. Checking B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T gives the same five clusters (≈ −95°, −23°, +49°, +120°, +192°), i.e. **N = 5**.
+
+**Trajectory L:** it spirals (multi-turn, radius 2 → 23 → back) at *ten* distinct directions:
+
+| lobe | θ (deg) |
+|---|---|
+| t≈0.5–2.2 | 153 |
+| t≈5.0–5.9, 17.3–18.1 | 118 |
+| t≈6.6–7.5 | 82 |
+| t≈19.9–20.4 | 47 |
+| t≈20.7–21.2 | 12 |
+| t≈21.5–21.9 | −25 |
+| t≈10.5, 24.2 | −61 |
+| t≈11.2, 24.9 | −97 |
+| t≈12.2 | −132 |
+| t≈0.1, 13.3–15.6 | 190 |
+
+Spacing ≈36°, i.e. **N = 10** — twice the lobe count of every other trajectory.
+
+```json
+{"outlier": "L"}
+```

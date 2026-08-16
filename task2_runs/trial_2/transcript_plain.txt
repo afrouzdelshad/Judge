@@ -1,0 +1,32 @@
+## Analysis
+
+Looking at each trajectory in the (x,y) plane, the motion consists of **outward spirals along fixed ray directions** (the lobes), separated by fast transits near the origin. So the lobe directions can be read off from stretches where the angle θ = atan2(y,x) stays nearly constant while the radius grows.
+
+**Typical trajectory (e.g. A):**
+- t≈14.6–15.5: θ ≈ −166°, r → 22
+- t≈17.0: θ ≈ +122°, r → 23
+- t≈18.8: θ ≈ +50°, r → 26
+- t≈19.4–20.8: θ ≈ −23°, r → 19
+- t≈23.6: θ ≈ −94°, r → 22
+
+Directions: **−166, −94, −22, +50, +122** → spacing ≈ 72° → **N = 5**.
+
+Spot‑checking B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T all gives exactly the same five ray directions (≈ −166/−94/−22/+50/+122); angles like −58° or −133° appear only as brief low‑radius transits (r ≈ 2–5).
+
+**Trajectory L is different.** It has genuine outward spirals at *twice as many* directions:
+
+| time | θ | r grows to |
+|---|---|---|
+| 0.3–3.0 | +154° | 19 |
+| 6.2–6.6 | +84° | 21 |
+| 8.5–8.9 | +12° | 23 |
+| 9.3–9.7 | −24° | 24 |
+| 10.1–10.5 | −60° | 25 |
+| 10.9–11.2 | −96° | 21 |
+| 11.8–12.2 | −132° | 26 |
+
+Successive lobes are separated by **36°**, and the intermediate directions (+12, +84, +154, −60, −132) — which are only fast near‑origin transits for every other trajectory — are here full-blown large-radius lobes. That gives **N = 10** for L.
+
+```json
+{"outlier": "L"}
+```
