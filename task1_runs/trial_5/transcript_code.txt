@@ -1,0 +1,105 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task1_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]
+labels=hdr[1:]
+t=np.array([float(r[0]) for r in rows[1:]])
+data={}
+for i,l in enumerate(labels):
+    pts=np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
+    data[l]=pts
+print(len(t), t[0], t[-1], labels)
+for l in labels:
+    p=data[l]
+    x,y=p[:,0],p[:,1]
+    r=np.hypot(x,y)
+    th=np.unwrap(np.arctan2(y,x))
+    # count local maxima of r
+    mx=np.sum((r[1:-1]>r[:-2])&(r[1:-1]>=r[2:]))
+    tot=abs(th[-1]-th[0])/(2*np.pi)
+    print(l, "rmean=%.2f"%r.mean(), "rmin=%.2f rmax=%.2f"%(r.min(),r.max()),
+          "maxima=%d"%mx, "turns=%.2f"%tot, "maxperturn=%.2f"%(mx/tot if tot>0 else -1))
+```
+
+[System: execution output]
+1001 0.0 100.0 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A rmean=9.83 rmin=0.13 rmax=29.52 maxima=133 turns=19.00 maxperturn=7.00
+B rmean=9.74 rmin=0.18 rmax=29.20 maxima=132 turns=5.36 maxperturn=24.62
+C rmean=9.76 rmin=0.28 rmax=28.32 maxima=132 turns=2.85 maxperturn=46.39
+D rmean=9.76 rmin=0.18 rmax=28.32 maxima=132 turns=3.27 maxperturn=40.32
+E rmean=9.83 rmin=0.04 rmax=30.83 maxima=133 turns=6.66 maxperturn=19.98
+F rmean=9.73 rmin=0.33 rmax=28.36 maxima=132 turns=4.92 maxperturn=26.80
+G rmean=9.75 rmin=0.10 rmax=28.32 maxima=132 turns=4.50 maxperturn=29.30
+H rmean=9.72 rmin=0.34 rmax=28.32 maxima=131 turns=3.47 maxperturn=37.74
+I rmean=9.82 rmin=0.04 rmax=29.49 maxima=133 turns=3.47 maxperturn=38.27
+J rmean=9.92 rmin=0.01 rmax=29.69 maxima=134 turns=13.23 maxperturn=10.12
+K rmean=9.83 rmin=0.06 rmax=30.13 maxima=133 turns=11.78 maxperturn=11.29
+L rmean=9.74 rmin=0.16 rmax=29.19 maxima=132 turns=12.36 maxperturn=10.68
+M rmean=9.82 rmin=0.17 rmax=28.44 maxima=133 turns=8.29 maxperturn=16.04
+N rmean=9.82 rmin=0.11 rmax=29.11 maxima=133 turns=5.58 maxperturn=23.86
+O rmean=9.70 rmin=0.28 rmax=28.32 maxima=131 turns=34.97 maxperturn=3.75
+P rmean=9.79 rmin=0.23 rmax=28.32 maxima=132 turns=5.63 maxperturn=23.44
+Q rmean=9.82 rmin=0.19 rmax=29.11 maxima=133 turns=3.51 maxperturn=37.87
+R rmean=9.83 rmin=0.10 rmax=29.79 maxima=133 turns=3.86 maxperturn=34.45
+S rmean=9.85 rmin=0.18 rmax=28.74 maxima=133 turns=7.12 maxperturn=18.69
+T rmean=9.75 rmin=0.14 rmax=28.32 maxima=132 turns=2.95 maxperturn=44.79
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"D:\Documents\GitHub\LLMJudge\task1_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+data={}
+for i,l in enumerate(labels):
+    data[l]=np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
+
+for l in labels:
+    p=data[l]; x,y=p[:,0],p[:,1]
+    r=np.hypot(x,y); th=np.arctan2(y,x)%(2*np.pi)
+    idx=[i for i in range(1,len(r)-1) if r[i]>r[i-1] and r[i]>=r[i+1]]
+    ang=np.sort(th[idx])
+    # cluster angles on circle with gap threshold
+    gaps=np.diff(np.concatenate([ang,[ang[0]+2*np.pi]]))
+    # try thresholds
+    res={}
+    for thr in [0.05,0.1,0.15,0.2,0.3]:
+        res[thr]=int(np.sum(gaps>thr))
+    # also histogram-based
+    print(l, res, "n_max=%d"%len(idx))
+```
+
+[System: execution output]
+A {0.05: 3, 0.1: 3, 0.15: 3, 0.2: 3, 0.3: 3} n_max=133
+B {0.05: 12, 0.1: 12, 0.15: 12, 0.2: 12, 0.3: 12} n_max=132
+C {0.05: 20, 0.1: 20, 0.15: 20, 0.2: 20, 0.3: 4} n_max=132
+D {0.05: 18, 0.1: 18, 0.15: 18, 0.2: 18, 0.3: 18} n_max=132
+E {0.05: 9, 0.1: 9, 0.15: 9, 0.2: 9, 0.3: 9} n_max=133
+F {0.05: 13, 0.1: 13, 0.15: 13, 0.2: 13, 0.3: 13} n_max=132
+G {0.05: 14, 0.1: 14, 0.15: 14, 0.2: 14, 0.3: 14} n_max=132
+H {0.05: 19, 0.1: 19, 0.15: 19, 0.2: 19, 0.3: 19} n_max=131
+I {0.05: 17, 0.1: 17, 0.15: 17, 0.2: 17, 0.3: 17} n_max=133
+J {0.05: 4, 0.1: 4, 0.15: 4, 0.2: 4, 0.3: 4} n_max=134
+K {0.05: 5, 0.1: 5, 0.15: 5, 0.2: 5, 0.3: 5} n_max=133
+L {0.05: 6, 0.1: 6, 0.15: 6, 0.2: 6, 0.3: 6} n_max=132
+M {0.05: 7, 0.1: 7, 0.15: 7, 0.2: 7, 0.3: 7} n_max=133
+N {0.05: 10, 0.1: 10, 0.15: 10, 0.2: 10, 0.3: 10} n_max=133
+O {0.05: 2, 0.1: 2, 0.15: 2, 0.2: 2, 0.3: 2} n_max=131
+P {0.05: 11, 0.1: 11, 0.15: 11, 0.2: 11, 0.3: 11} n_max=132
+Q {0.05: 16, 0.1: 16, 0.15: 16, 0.2: 16, 0.3: 16} n_max=133
+R {0.05: 15, 0.1: 15, 0.15: 15, 0.2: 15, 0.3: 15} n_max=133
+S {0.05: 8, 0.1: 8, 0.15: 8, 0.2: 8, 0.3: 8} n_max=133
+T {0.05: 21, 0.1: 21, 0.15: 21, 0.2: 21, 0.3: 0} n_max=132
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"order": ["O", "A", "J", "K", "L", "M", "S", "E", "N", "P", "B", "F", "G", "R", "Q", "I", "D", "H", "C", "T"]}
+```

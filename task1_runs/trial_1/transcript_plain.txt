@@ -1,0 +1,32 @@
+## Approach
+
+Each trajectory consists of large radial "bursts." I computed the polar angle θ = atan2(y, x) at each burst peak. The bursts land on a discrete set of directions, and successive bursts advance by a fixed angular step Δθ. Unwrapping the angle sequence gives Δθ = 360°/N directly.
+
+Examples:
+- **O**: only two burst directions (≈ +55°, ≈ −130°) → step 180° → N = 2
+- **A**: directions ≈ 50°, 172°, −70° → step 120° → N = 3
+- **B**: 16°, −13°, −44°, −74°, −103°, … → step ≈ 30° → N = 12
+- **T**: 46°, 28°, 12°, −6°, −23°, −39°, −57°, … → step ≈ 17.1° → N = 21
+
+Full results (angular step → N):
+
+| Traj | step | N | | Traj | step | N |
+|---|---|---|---|---|---|---|
+| O | 180° | 2 | | N | 36° | 10 |
+| A | 120° | 3 | | P | 32.7° | 11 |
+| J | 90° | 4 | | B | 30° | 12 |
+| K | 72° | 5 | | F | 27.7° | 13 |
+| L | 60° | 6 | | G | 25.7° | 14 |
+| M | 51.4° | 7 | | R | 24° | 15 |
+| S | 45° | 8 | | Q | 22.5° | 16 |
+| E | 40° | 9 | | I | 21.2° | 17 |
+| | | | | D | 20° | 18 |
+| | | | | H | 19° | 19 |
+| | | | | C | 18° | 20 |
+| | | | | T | 17.1° | 21 |
+
+The values form a clean sequence 2–21, one per trajectory.
+
+```json
+{"order": ["O", "A", "J", "K", "L", "M", "S", "E", "N", "P", "B", "F", "G", "R", "Q", "I", "D", "H", "C", "T"]}
+```

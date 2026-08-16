@@ -26,7 +26,8 @@ from pathlib import Path
 from LLM_factory import chat_with_batch, code_augmented_chat_with
 from prompt_tasks import TASK1_CODE_PROMPT, TASK1_PLAIN_PROMPT
 
-DATA_FILE = "task1data_shuffled.csv"
+DATA_FILE = "task1_data.csv"
+KEY_FILE = "task1_key.csv"
 OUTDIR = "task1_runs"
 
 
@@ -57,6 +58,26 @@ def format_table(times, columns):
             row += [f"{x:.4g}", f"{y:.4g}"]
         lines.append(",".join(row))
     return "\n".join(lines)
+
+
+def load_key(path):
+    """Return {output_label: original_N} from a task1_key.csv, or None if absent.
+
+    File is one output_label per line; its 1-indexed line number is its original_N.
+    """
+    if not Path(path).exists():
+        return None
+    with open(path, encoding="utf-8") as f:
+        labels = [line.strip() for line in f if line.strip()]
+    return {label: n for n, label in enumerate(labels, start=1)}
+
+
+def kendall_tau(order, true_n):
+    """Kendall's tau, rescaled to [0, 1], between a predicted order and the true N values (see README)."""
+    ranks = [true_n[lab] for lab in order]
+    n = len(ranks)
+    concordant = sum(ranks[i] < ranks[j] for i in range(n) for j in range(i + 1, n))
+    return concordant / (n * (n - 1) // 2)
 
 
 def extract_order(text):
@@ -93,6 +114,7 @@ def run_code(model, labels, data_file, max_iters):
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
+    p.add_argument("--key-file", default=KEY_FILE, dest="key_file")
     p.add_argument("--max-iters", type=int, default=3, dest="max_iters")
     p.add_argument("--model", default="claude-opus-4-8")
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
@@ -106,6 +128,8 @@ def main(argv=None):
     times, columns = load_dataset(args.data_file)
     labels = sorted(columns)
     print(f"Loaded {len(labels)} labeled trajectories from {args.data_file}: {labels}\n")
+
+    true_n = load_key(args.key_file)
 
     base_outdir = Path(args.outdir)
     scale = args.scale
@@ -126,15 +150,19 @@ def main(argv=None):
         if args.mode in ("plain", "both"):
             order, transcript = plain_orders[i], plain_transcripts[i]
             (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
-            print(f"[plain] order: {order}\n")
             results["plain"] = order
+            if order and true_n:
+                results["plain_tau"] = kendall_tau(order, true_n)
+            print(f"[plain] order: {order}  tau={results.get('plain_tau')}\n")
 
         if args.mode in ("code", "both"):
             print(f"[code] querying {args.model} ...")
             order, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
             (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
-            print(f"[code] order: {order}\n")
             results["code"] = order
+            if order and true_n:
+                results["code_tau"] = kendall_tau(order, true_n)
+            print(f"[code] order: {order}  tau={results.get('code_tau')}\n")
 
         results_path = outdir / f"results_{args.model}.json"
         results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
