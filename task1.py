@@ -63,13 +63,13 @@ def format_table(times, columns):
 def load_key(path):
     """Return {output_label: original_N} from a task1_key.csv, or None if absent.
 
-    File is one output_label per line; its 1-indexed line number is its original_N.
+    File is a "Label,N" header followed by one row per label.
     """
     if not Path(path).exists():
         return None
-    with open(path, encoding="utf-8") as f:
-        labels = [line.strip() for line in f if line.strip()]
-    return {label: n for n, label in enumerate(labels, start=1)}
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        return {row["Label"]: int(row["N"]) for row in reader if row.get("Label")}
 
 
 def kendall_tau(order, true_n):

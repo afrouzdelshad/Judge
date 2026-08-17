@@ -12,11 +12,11 @@ either from a pasted table ("plain") or by writing Python against the CSV
 
 Usage
 -----
-    python task2.py --mode both --model claude-opus-4-8
+    python task2a.py --mode both --model claude-opus-4-8
 
-If task2_key.csv is present (one label per line, blank except for the line
-holding the true outlier's output_label), results are scored against it;
-otherwise the outlier is just recorded.
+If task2a_key.csv is present ("Label,N" header, one row holding the true
+outlier's label and N), results are scored against it; otherwise the
+outlier is just recorded.
 
 Note: in "code" mode, model-written Python is exec'd locally with no
 sandboxing. Only use this with trusted API providers on a machine you
@@ -24,6 +24,7 @@ control.
 """
 
 import argparse
+import csv
 import json
 import re
 from pathlib import Path
@@ -32,24 +33,24 @@ from LLM_factory import chat_with_batch, code_augmented_chat_with
 from prompt_tasks import TASK2_CODE_PROMPT, TASK2_PLAIN_PROMPT
 from task1 import format_table, load_dataset
 
-DATA_FILE = "task2_data.csv"
-KEY_FILE = "task2_key.csv"
+DATA_FILE = "task2a_data.csv"
+KEY_FILE = "task2a_key.csv"
 OUTDIR = "task2_runs"
 
 
 def load_key(path):
-    """Return the true outlier label from a task2_key.csv, or None if absent.
+    """Return the true outlier label from a task2a_key.csv, or None if absent.
 
-    File is one line per label slot, blank except for the single line holding
-    the outlier's output_label (same one-column convention as task1_key.csv).
+    File is a "Label,N" header followed by a single row for the outlier
+    (same convention as task1_key.csv, just one row instead of all of them).
     """
     if not Path(path).exists():
         return None
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            label = line.strip()
-            if label:
-                return label
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            if row.get("Label"):
+                return row["Label"]
     return None
 
 
