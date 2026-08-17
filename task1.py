@@ -92,12 +92,12 @@ def extract_order(text):
     return None
 
 
-def run_plain_batch(model, labels, times, columns, n):
-    """Same 'plain' prompt run n times via chat_with_batch (cache + batch discount)."""
+def run_plain_batch(model, labels, times, columns, n, use_batch=True):
+    """Same 'plain' prompt run n times via chat_with_batch (cache [+ batch] discount)."""
     system_prompt = TASK1_PLAIN_PROMPT.format(n=len(labels))
     user_prompt = format_table(times, columns)
-    print(f"[plain] querying {model} x{n} (batched) ...")
-    replies = chat_with_batch(model, system_prompt, user_prompt, n=n)
+    print(f"[plain] querying {model} x{n} ({'batched' if use_batch else 'realtime'}) ...")
+    replies = chat_with_batch(model, system_prompt, user_prompt, n=n, use_batch=use_batch)
     orders = [extract_order(r) if r else None for r in replies]
     return orders, replies
 
@@ -120,6 +120,8 @@ def parse_args(argv=None):
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
     p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
+    p.add_argument("--no-batch", action="store_true", dest="no_batch",
+                    help="skip the Anthropic Message Batches API for plain mode; fire concurrent realtime calls instead (loses the batch discount, but no queueing delay)")
     return p.parse_args(argv)
 
 
@@ -137,7 +139,9 @@ def main(argv=None):
     # Plain mode: one prompt, all `scale` repeats fired via chat_with_batch.
     plain_orders, plain_transcripts = [None] * scale, [None] * scale
     if args.mode in ("plain", "both"):
-        plain_orders, plain_transcripts = run_plain_batch(args.model, labels, times, columns, scale)
+        plain_orders, plain_transcripts = run_plain_batch(
+            args.model, labels, times, columns, scale, use_batch=not args.no_batch
+        )
 
     trials = []
     for i in range(scale):
