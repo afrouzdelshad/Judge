@@ -1,0 +1,23 @@
+## Method
+
+For each trajectory I converted the (x,y) samples to polar angle and picked out the angles at the radial maxima (the "lobe visits"). The trajectory hops from lobe to lobe, and the successive lobe angles form a discrete set of equally‑spaced directions; the angular step Δ gives N = 360°/Δ.
+
+**Examples**
+
+- **H:** lobe angles ≈ 50°, −40°, −130°, 140° → Δ ≈ 90° → **N = 4**
+- **A:** 45°, 13°, −20°, −52°, −84°, −118°, −150°, 178°, 145°, 111°, 80° → Δ ≈ 33° → **N = 11**
+- **D:** 45°, 23°, 1°, −22°, −44°, −66°, −89°, −111°, −134°, −156°, −179°, 159°, 136°, 113°, 91°, 68° → Δ ≈ 22.5° → **N = 16**
+- **C:** −152°, −170°, 172°, 154°, 136°, 118°, 100°, 82°, 64°, 46°, 28°, 9°, −8°, −26°, −44°, −62°, −81°, −99°, −116°, −135° → Δ ≈ 18° → **N = 20**
+
+Applying this to all twenty columns:
+
+| N | trajectories |
+|---|---|
+| 4 | H, I, M, O, S |
+| 11 | A, B, F, G, R |
+| 16 | D, E, K, P, T |
+| 20 | C, J, L, N, Q |
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

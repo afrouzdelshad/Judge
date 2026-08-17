@@ -1,5 +1,3 @@
-The trajectories’ early angular progression and later large-radius lobe directions indicate the fewest-lobe cases rotate through the largest angular jumps; ordering by increasing inferred lobe count gives:
-
 ```json
-{"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
+{"order":["T","C","H","D","I","Q","R","G","F","B","P","N","E","S","M","L","K","J","A","O"]}
 ```

@@ -1,0 +1,105 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3b_data.csv"
+rows = list(csv.reader(open(path)))
+hdr = rows[0]
+labels = hdr[1:]
+T = len(rows)-1
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {}
+for i,lab in enumerate(labels):
+    arr = np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
+    data[lab] = arr
+
+print(T, t[0], t[-1], labels)
+for lab in labels:
+    a = data[lab]
+    print(lab, a.mean(0).round(3), a.std(0).round(3), a.min(0).round(2), a.max(0).round(2))
+```
+
+[System: execution output]
+1001 0.0 100.0 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A [-1.883 -0.357] [8.524 8.225] [-27.05 -27.75] [24.24 26.07]
+B [-1.357 -0.596] [8.6   8.222] [-26.92 -28.61] [28.53 26.32]
+C [1.096 2.848] [8.286 8.225] [-26.42 -25.08] [25.82 32.13]
+D [1.905 1.559] [8.382 8.264] [-27.18 -24.49] [26.96 26.92]
+E [0.301 2.143] [8.39  8.377] [-28.58 -27.54] [23.22 29.17]
+F [ 0.284 -0.903] [8.324 8.594] [-27.02 -27.82] [27.25 24.62]
+G [-2.446  0.031] [8.668 7.964] [-28.89 -27.04] [28.05 26.16]
+H [1.587 1.598] [7.766 8.859] [-18.61 -24.02] [17.06 22.04]
+I [1.87  0.668] [8.517 8.293] [-25.9  -28.91] [26.1  27.38]
+J [0.086 0.123] [8.485 8.545] [-25.45 -25.83] [26.25 26.5 ]
+K [ 0.14  -1.036] [7.836 9.048] [-24.2  -27.83] [27.34 27.17]
+L [-0.154 -1.012] [8.738 8.179] [-26.08 -25.13] [25.24 26.79]
+M [-0.352  0.655] [8.583 8.38 ] [-27.5  -25.23] [25.14 25.03]
+N [-0.739  2.155] [8.233 8.454] [-24.97 -26.21] [23.74 26.2 ]
+O [0.479 0.463] [7.882 9.083] [-28.45 -25.11] [28.6  26.51]
+P [-0.647  1.064] [8.235 8.626] [-24.39 -27.51] [23.97 26.41]
+Q [0.759 1.185] [8.812 8.026] [-25.38 -27.22] [25.67 26.59]
+R [ 0.364 -0.056] [8.607 8.363] [-28.93 -27.06] [29.28 26.4 ]
+S [-2.359 -2.355] [7.691 8.682] [-16.9  -22.27] [18.75 29.15]
+T [-0.874 -0.907] [8.679 8.186] [-25.85 -25.36] [26.29 24.67]
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3b_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+data={lab:np.array([ast.literal_eval(r[i+1]) for r in rows[1:]]) for i,lab in enumerate(labels)}
+
+for lab in labels:
+    a=data[lab]; x,y=a[:,0],a[:,1]
+    r=np.hypot(x,y); th=np.arctan2(y,x)
+    m=r>np.percentile(r,60)
+    h,_=np.histogram(th[m],bins=360,range=(-np.pi,np.pi))
+    # fourier magnitudes of angular histogram
+    F=np.abs(np.fft.rfft(h-h.mean()))[:15]
+    order=np.argsort(F)[::-1][:4]
+    print(lab, "top k:",order, np.round(F[order]/F.max(),2))
+```
+
+[System: execution output]
+A top k: [8 1 7 9] [1.   0.23 0.22 0.21]
+B top k: [ 8  4  3 11] [1.   0.23 0.22 0.22]
+C top k: [10  9  4  3] [1.   0.98 0.96 0.84]
+D top k: [14  1 13 10] [1.   0.27 0.26 0.17]
+E top k: [11  3  8 14] [1.   0.4  0.4  0.39]
+F top k: [ 8  5  3 13] [1.   0.24 0.24 0.23]
+G top k: [8 1 7 9] [1.   0.3  0.26 0.25]
+H top k: [2 4 6 8] [1.   0.76 0.56 0.48]
+I top k: [8 2 6 1] [1.   0.25 0.24 0.24]
+J top k: [ 3 13 12  4] [1.   0.97 0.86 0.75]
+K top k: [ 8  2  6 10] [1.   0.24 0.22 0.21]
+L top k: [ 3  1 10  9] [1.   0.94 0.82 0.74]
+M top k: [ 6 12  4 10] [1.   0.7  0.11 0.1 ]
+N top k: [10  9  1  8] [1.   1.   1.   0.76]
+O top k: [ 6 12  2  8] [1.   0.75 0.19 0.18]
+P top k: [11  2  9 13] [1.   0.2  0.2  0.19]
+Q top k: [ 3 14  5  1] [1.   0.8  0.79 0.69]
+R top k: [ 8  2 10  6] [1.  0.1 0.1 0.1]
+S top k: [2 4 6 8] [1.   0.83 0.64 0.49]
+T top k: [11  8  3  4] [1.   0.21 0.2  0.2 ]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+Based on angular-histogram Fourier analysis (dominant angular wavenumber = lobe count), the trajectories cluster as follows:
+
+- H, S → strong k=2 with 4,6,8 harmonics
+- J, L, Q → dominant k=3
+- M, O → k=6 with clean 12 harmonic
+- A, B, F, G, I, K, R → very clean k=8
+- C, N → k≈10
+- E, P, T → k=11
+- D → k=14
+
+```json
+{"groups": [["H","S"],["J","L","Q"],["M","O"],["A","B","F","G","I","K","R"],["C","N"],["E","P","T"],["D"]], "X": 7, "Y": 3}
+```

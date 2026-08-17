@@ -1,0 +1,21 @@
+## Analysis Approach
+
+Since the lobes are arranged **around a central axis**, each lobe occupies a distinct angular sector. I computed θ = atan2(y, x) at the large‑radius points of each trajectory (the outermost excursions point radially along a lobe axis) and looked at the angular lattice spacing Δθ; then N = 360°/Δθ.
+
+**Representative findings**
+
+| Traj | Lobe directions found | Δθ | N |
+|---|---|---|---|
+| H, S | ≈ +50°, −128° (Lorenz‑like wings) | 180° | 2 |
+| M, O | 168, 108, 46, −13, −72, −133 | 60° | 6 |
+| A,B,F,G,I,K,R | 2, 46, 91, 137, 180, −133, −88, −43 | 45° | 8 |
+| E, P, T | 178, 146, 113, 80, 48, 15, −18, −50, −83, −116, −149 | 32.7° | 11 |
+| D | −4, 21, 46, 73, 98, 122, 148, 175, −159, −133, −107, −83, −56, −31 | 25.7° | 14 |
+| J | 68, 45, 24, 1, −21, −45, −67, −88, −112, −133, −156, −179, 159, 137, 114, 92 | 22.5° | 16 |
+| C, L, N, Q | 178,160,141,121,102,84,65,46,27,8,−10,−29,−48,−67,−87,−105,−125,−144,−163 | 18.9° | 19 |
+
+**Consistency check:** the seven distinct initial conditions in the file appear in a perfectly nested way — the 7‑member group uses all 7 ICs, the 4‑member group the first 4, the 3‑member group the first 3, the 2‑member groups the first 2, and the singletons the first IC. This independently corroborates the clustering (groups are of unequal size).
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

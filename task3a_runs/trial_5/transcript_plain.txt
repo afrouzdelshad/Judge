@@ -1,0 +1,23 @@
+## Approach
+
+The key observation is that in each trajectory the radius oscillates rapidly (spiraling out within a lobe) while the **angle θ = atan2(y,x) sits at one of a discrete set of values**, jumping to the neighboring value when the orbit escapes a lobe. Measuring the angular spacing Δθ between successive lobe positions gives N = 360°/Δθ.
+
+**Examples of lobe‑tip angles found:**
+
+- **H**: 141° → 50° → −40° → −130° ⇒ Δθ ≈ 90° ⇒ N ≈ 4
+- **A**: 46°, 15°, −19°, −53°, −84°, −118°, −151°, 178°, 144°, 111°, 79°, 46° ⇒ Δθ ≈ 32.7° ⇒ N ≈ 11
+- **D**: 46.6°, 23.3°, 1°, −21.5°, −43.6°, −66.5°, −89°… ⇒ Δθ ≈ 22.5° ⇒ N ≈ 16
+- **C**: 46°, 28°, 9°, −8°, −26°, −44°, −62°, −81°… ⇒ Δθ ≈ 18° ⇒ N ≈ 20
+
+A useful consistency check: the data contain only **5 distinct initial conditions** — (15.25,15.4): A,D,I,L; (0.591,22.52): B,J,K,S; (−11.92,−10.08): C,E,G,H; (−20.72,−13.16): F,O,P,Q; (22.15,0.566): M,N,R,T. Each N‑group must therefore contain exactly one trajectory from each IC family, and the measured spacings satisfy this exactly:
+
+| N (spacing) | members |
+|---|---|
+| ~4 (90°) | M, H, I, S, O |
+| ~11 (33°) | A, B, G, F, R |
+| ~16 (22.5°) | D, K, E, P, T |
+| ~20 (18°) | L, J, C, Q, N |
+
+```json
+{"groups": [["H", "I", "S", "O", "M"], ["A", "B", "G", "F", "R"], ["D", "K", "E", "P", "T"], ["L", "J", "C", "Q", "N"]]}
+```

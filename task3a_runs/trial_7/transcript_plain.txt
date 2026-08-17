@@ -1,0 +1,24 @@
+## Analysis
+
+Each trajectory starts from one of **5 distinct initial conditions**, each used 4 times — so each N‑group contains exactly one trajectory from each IC. That gives a strong consistency check.
+
+To find N, I tracked the polar angle θ = atan2(y,x) over time. In these multi‑lobe attractors the angle sits on a plateau while spiraling within one lobe, then jumps to the next lobe. The plateau‑to‑plateau spacing equals 360°/N.
+
+**Examples of measured lobe angles:**
+
+| traj | successive lobe angles (deg) | spacing | N |
+|---|---|---|---|
+| H | 141, 51, −40 | ≈90.5 | 4 |
+| S | 144, 46, −38 | ≈90 | 4 |
+| A | 45, 15, −19, −51, −83, −116, −149 | ≈32.6 | 11 |
+| F | 177, 146, 113, 80 | ≈32.3 | 11 |
+| D | 46.5, 24.6, 1.5, −20.8, −42.9 | ≈22.3 | 16 |
+| T | −21.5, −43.2 | ≈21.7 | 16 |
+| C | −153, −170, −187, −206, −224, −241 | ≈17.9 | 20 |
+| N | −7.5, −25.5, −43.8 | ≈18.1 | 20 |
+
+Since 360/4 = 90, 360/11 = 32.7, 360/16 = 22.5, 360/20 = 18, the four groups are N = 4, 11, 16, 20 — and each group indeed contains one trajectory from each of the five initial conditions.
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

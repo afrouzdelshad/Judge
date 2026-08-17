@@ -1,33 +1,33 @@
 ## Analysis Approach
 
-For each trajectory I computed the polar angle θ = atan2(y,x) at each large‑radius excursion. In these systems the trajectory hops between **fixed angular sectors (lobes)**, so the set of excursion directions falls on a grid spaced 360°/N. Counting the distinct directions (or measuring the spacing and requiring the steps to sum to 360°) gives N.
+For each trajectory I computed the polar angle θ = atan2(y, x) at the successive **radial maxima** (the outer tip of each spiral turn). Within one lobe the tip angle stays essentially constant; when the orbit hops to the next lobe the tip angle shifts by a fixed amount Δθ ≈ 360°/N. Measuring Δθ over several consecutive hops gives N directly.
 
-**Result for each trajectory:**
+**Sample measurements (tip angles in degrees):**
 
-| Traj | excursion directions (deg) | spacing | N |
+| Traj | successive lobe angles | Δθ | N |
 |---|---|---|---|
-| A | 155,119,83,47,11,−25,−61,−97,−133,−169 | 36° | **10** |
-| B | same grid | 36° | **10** |
-| **C** | 16,−14,−44,−74,−104,−134,−163,166,136,106,76,46 | 30° | **12** |
-| D | same as A | 36° | **10** |
-| E | same as A | 36° | **10** |
-| F | same as A | 36° | **10** |
-| G | same as A | 36° | **10** |
-| **H** | 49,−4,−55,−107,−158,152,98 | 51.4° | **7** |
-| I | same as A | 36° | **10** |
-| J | same as A | 36° | **10** |
-| K | same as A | 36° | **10** |
-| **L** | 80,63,46,29,11,−6,−23,−40,−57,−76,−91,−108,−126,−145,−160,180,166,146,131,115,97 | 17.1° | **21** |
-| M | same as A | 36° | **10** |
-| **N** | 65,45,26,−14,−34,−74,−93,−113,−135,−153,−174,165,126,85 | 20° | **18** |
-| O | same as A | 36° | **10** |
-| P | same as A | 36° | **10** |
-| **Q** | 72,46,21,−5,−31,−58,−82,−108,−135,−161,175,148,122,98 | 25.7° | **14** |
-| R | same as A | 36° | **10** |
-| **S** | 175, 55, −65 (very wide lobes) | 120° | **3** |
-| T | same as A | 36° | **10** |
+| A | 119, 83, 47, 11, −25, −61, −97 | −36 | **10** |
+| B | −26 (long stay), −62, −97, −133 | −36 | **10** |
+| C | 45, 17, −14, −43, −74, −103 | −30 | **12** |
+| D | 10, −25, −61 | −36 | **10** |
+| E | −62, −97, −133 | −36 | **10** |
+| F | −60, −96, −132, −169, 156 | −36 | **10** |
+| G | 46, 11, −26, −62 | −36 | **10** |
+| H | 46, −3, −55, −106, −158, 152 | −51 | **7** |
+| I | −170, 156, 118 | −36 | **10** |
+| J | −25, −61, −96, −132 | −36 | **10** |
+| K | −26, −62, −97 | −36 | **10** |
+| L | 80, 63, 46, 29, 11, −6, −23, −40 | −17.2 | **21** |
+| M | −170, 155, 118 | −36 | **10** |
+| N | 66, 46, 26, 7, −13, −34, −54 | −20 | **18** |
+| O | 46, 11, −26 | −36 | **10** |
+| P | −170, 155, 119 | −36 | **10** |
+| Q | 72, 46, 20, −4, −31, −57 | −25.7 | **14** |
+| R | 46, 11, −26 | −36 | **10** |
+| S | −74, 168, 48, −67, 171 | −120 | **3** |
+| T | 81, 47, 12, −24 | −36 | **10** |
 
-Fourteen trajectories share the identical 10‑lobe grid (directions at 155°+36k), making **N = 10** the majority. Six trajectories sit on clearly different angular grids.
+Fourteen trajectories show a clean 36° hop (N = 10), which is the majority. Six deviate clearly: C (30° → 12), H (51° → 7), L (17° → 21), N (20° → 18), Q (26° → 14), S (120° → 3).
 
 ```json
 {"outliers": ["C", "H", "L", "N", "Q", "S"]}

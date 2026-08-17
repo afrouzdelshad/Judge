@@ -8,14 +8,18 @@
     "Q",
     "S"
   ],
-  "plain": null,
-  "code": [
+  "plain": [
     "C",
     "H",
-    "S",
     "L",
     "N",
-    "Q"
+    "Q",
+    "S"
   ],
-  "code_f1": 1.0
+  "plain_f1": 1.0,
+  "code": [
+    "H",
+    "S"
+  ],
+  "code_f1": 0.5
 }

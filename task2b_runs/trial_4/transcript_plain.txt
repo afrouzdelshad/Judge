@@ -1,19 +1,22 @@
-## Approach
+## Analysis Approach
 
-For each trajectory I computed the polar angle θ = atan2(y,x) at the successive large‑radius excursions ("lobe visits"). In every case the trajectory dwells at one angular position for a while, then hops to the next one at a fixed angular increment Δ. The lobe count is then N ≈ 360°/Δ, which I verified by counting the lobe hops needed to complete one full revolution.
+For each trajectory I computed the azimuthal angle θ = atan2(y, x) at the moments of large radial excursion (lobe visits). In these systems the orbit dwells in one lobe (radius oscillates while θ stays nearly fixed), then hops to the neighboring lobe, advancing θ by exactly 360°/N. Measuring the angular step (and confirming it closes a full 360° cycle) gives N directly.
 
-**Examples**
+**Example (A):** dwell angles 119°, 83°, 47°, 11°, −25°, −61°, −97°, −133°, −169°, 155° → step −36° → 10 lobes (cycle closes after 10 hops).
 
-- **A:** lobe angles ≈ 119, 83, 46, 11, −25, −60, −97, −134, −169, 154 → Δ≈36° → **N = 10** (10 hops close the circle).
-- **B, D, E, F, G, I, J, K, M, O, P, R, T:** identical pattern, Δ≈35–37°, 10 lobes → **N = 10**.
-- **C:** 45, 16, −13, −44, −73, −103, −135, −162, 166, 135, 107, 76 → Δ≈30° → **N = 12**.
-- **H:** 97, 45, −4, −54, −107, −160, 151 → Δ≈51° → **N = 7**.
-- **Q:** 72, 47, 21, −4, −31, −56, −81, −107, −133, −159, 176, 149, 123, 98 → Δ≈25.7° → **N = 14**.
-- **N:** 65, 46, 26, 7, −13, −34, −53, −74, −93, −114, … → Δ≈19.8° → **N = 18**.
-- **L:** 80, 63, 46, 29, 11, −5, −22, −40, −57, −75, −91, −108, … → Δ≈17.1° → **N = 21**.
-- **S:** only three angular stations (≈55°, ≈176°, ≈−65°), Δ≈120° → **N = 3**.
+**Results:**
 
-Majority N = 10 (14 trajectories); the remaining six each deviate.
+| Traj | dwell-angle step | N |
+|---|---|---|
+| A, B, D, E, F, G, I, J, K, M, O, P, R, T | ≈ −36° | **10** |
+| C | ≈ −30° (45,17,−13,−42,−73,−104,−133,−162,166,136,…) | **12** |
+| H | ≈ −51.4° (47,−2,−53,−105,−157,152,100 → closes in 7) | **7** |
+| L | ≈ −17.1° (80,63,46,29,11,−5,−23,−40,… closes in 21) | **21** |
+| N | ≈ −20° (65,45,26,6,−14,−34,−54,… closes in 18) | **18** |
+| Q | ≈ −25.7° (72,46,21,−4,−31,−56,−82,… closes in 14) | **14** |
+| S | ≈ −120° (172, 52, −68 only) | **3** |
+
+The majority value is **N = 10** (14 trajectories); six trajectories deviate.
 
 ```json
 {"outliers": ["C", "H", "L", "N", "Q", "S"]}

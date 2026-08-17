@@ -1,26 +1,25 @@
-## Approach
+## Analysis Approach
 
-For each trajectory I converted (x,y) to polar coordinates. The motion consists of a fast radial "excursion" (spiral out to r≈20 and back toward the axis) along a **fixed direction**, after which the direction jumps by a constant angular increment Δθ. The excursion directions therefore form a discrete set of equally spaced angles, and
+For each trajectory I computed the polar angle θ = atan2(y, x) at the radial maxima (the "excursions"). In these systems the lobes sit at fixed angles forming a regular grid of spacing 360°/N, so the set of visited angles reveals N directly.
 
-**N = 360° / Δθ** (verified by counting the excursion directions over one complete revolution).
+**The dominant grid** (found in A, B, D, E, F, G, I, J, K, M, O, P, R, T) is:
 
-Sample results (lobe directions in degrees, large‑radius points only):
+≈ {11°, 47°, 83°, 119°, 155°, −169°, −133°, −97°, −61°, −25°} → spacing 36° → **N = 10**
 
-| Traj | successive lobe directions | Δθ | N |
+These 14 trajectories all land repeatedly on exactly this lattice (e.g. A at t=23.5 → 10.8°, B at t=20.2 → 10.6°, T at t=18.4 → 11.3°, etc.).
+
+**Deviating trajectories:**
+
+| Traj | Sample lobe angles | Spacing | N |
 |---|---|---|---|
-| A | 48, 12, −25, −60, −96, −133, −169, 155, 119, 84 | 36 | 10 |
-| B | −26, −60, −96, −135, −169, 154, 118, 82, 47, 11 | 36 | 10 |
-| **C** | 48, 17, −13, −42, −74, −103, −133, −162, 167, 136, 107, 77 | 30 | **12** |
-| D,E,F,G | 36° steps, 10 directions/turn | 36 | 10 |
-| **H** | 44, −2, −53, −105, −158, 152, 99 | 51.4 | **7** |
-| I,J,K,M | 36° steps | 36 | 10 |
-| **L** | −5, −22, −39, −56, −74, −91, −108, −126 … (21 dirs.) | 17.1 | **21** |
-| **N** | 65, 47, 26, 7, −14, −34, −53, −74 … (18 dirs.) | 20 | **18** |
-| O,P,R,T | 36° steps | 36 | 10 |
-| **Q** | 72, 47, 21, −4, −31, −56, −83, −107 … (14 dirs.) | 25.7 | **14** |
-| **S** | 174, 54, −66, 174 … | 120 | **3** |
+| C | 165, 135, 105, 75, 45, 15, −15, −45, −75, −105, −135, −165 | 30° | 12 |
+| H | 151, 97, 47, −3, −55, −107, −158 | ≈51.4° | 7 |
+| L | 96, 80, 63, 46, 29, 11, −5, −22, −40, −58, −76, −92, … | ≈17.1° | ~21 |
+| N | 65, 46, 26, 6, −14, −34, −54, −74, −94, −115, … | ≈20° | 18 |
+| Q | 98, 73, 46, 20, −5, −31, −56, −83, −108, −135, −163, 175, 148, 122 | ≈25.7° | 14 |
+| S | ≈50, ≈−68, ≈172 only | 120° | 3 |
 
-Fourteen trajectories (A, B, D, E, F, G, I, J, K, M, O, P, R, T) clearly show Δθ ≈ 36° → N = 10, which is the majority. Six trajectories deviate.
+Each of these visits angles that never fall on the 36° lattice (e.g. C at −44°, H at −4°, L at +29°, N at +6°, Q at +20°, S at −70°), and each returns to its starting angle after a different number of excursions.
 
 ```json
 {"outliers": ["C", "H", "L", "N", "Q", "S"]}

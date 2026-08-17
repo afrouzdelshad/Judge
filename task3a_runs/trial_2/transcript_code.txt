@@ -1,0 +1,104 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]; labels=hdr[1:]
+data={l:[] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+t=np.array(t)
+print(len(t), t[:3], t[-1])
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    tot=abs(th[-1]-th[0])/(2*np.pi)
+    # count radius local maxima
+    m=(r[1:-1]>r[:-2])&(r[1:-1]>r[2:])
+    nmax=m.sum()
+    print(l, "revs=%.2f"%tot, "rmax=%d"%nmax, "ratio=%.2f"%(nmax/tot), "rmean=%.2f"%r.mean(), "rstd=%.3f"%(r.std()/r.mean()))
+```
+
+[System: execution output]
+1001 [0.  0.1 0.2] 100.0
+A revs=5.09 rmax=135 ratio=26.53 rmean=9.91 rstd=0.681
+B revs=3.29 rmax=145 ratio=44.08 rmean=10.26 rstd=0.578
+C revs=2.48 rmax=139 ratio=55.94 rmean=9.99 rstd=0.649
+D revs=3.48 rmax=134 ratio=38.55 rmean=9.87 rstd=0.686
+E revs=3.12 rmax=135 ratio=43.24 rmean=9.88 rstd=0.676
+F revs=5.14 rmax=136 ratio=26.47 rmean=9.82 rstd=0.690
+G revs=3.41 rmax=135 ratio=39.57 rmean=9.76 rstd=0.702
+H revs=16.08 rmax=133 ratio=8.27 rmean=9.83 rstd=0.696
+I revs=12.98 rmax=133 ratio=10.24 rmean=9.81 rstd=0.702
+J revs=1.69 rmax=147 ratio=86.88 rmean=9.74 rstd=0.660
+K revs=3.37 rmax=134 ratio=39.77 rmean=9.93 rstd=0.686
+L revs=2.88 rmax=134 ratio=46.49 rmean=9.75 rstd=0.711
+M revs=18.11 rmax=131 ratio=7.23 rmean=9.75 rstd=0.719
+N revs=2.83 rmax=139 ratio=49.08 rmean=9.85 rstd=0.686
+O revs=14.19 rmax=137 ratio=9.65 rmean=9.80 rstd=0.693
+P revs=3.67 rmax=140 ratio=38.14 rmean=9.77 rstd=0.689
+Q revs=3.06 rmax=133 ratio=43.44 rmean=9.75 rstd=0.717
+R revs=5.03 rmax=134 ratio=26.62 rmean=9.87 rstd=0.689
+S revs=18.86 rmax=141 ratio=7.48 rmean=9.89 rstd=0.664
+T revs=2.65 rmax=140 ratio=52.85 rmean=9.71 rstd=0.700
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path=r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+data={l:[] for l in labels}
+for r in rows[1:]:
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    r=np.hypot(x-cx,y-cy); th=np.arctan2(y-cy,x-cx)
+    m=np.where((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))[0]+1
+    ang=th[m]
+    res=[]
+    for k in range(1,25):
+        res.append((abs(np.exp(1j*k*ang).mean()),k))
+    res.sort(reverse=True)
+    print(l, [(k,round(v,2)) for v,k in res[:5]])
+```
+
+[System: execution output]
+A [(11, np.float64(0.94)), (22, np.float64(0.82)), (21, np.float64(0.38)), (23, np.float64(0.3)), (10, np.float64(0.23))]
+B [(11, np.float64(0.59)), (10, np.float64(0.56)), (23, np.float64(0.55)), (20, np.float64(0.54)), (12, np.float64(0.48))]
+C [(19, np.float64(0.57)), (20, np.float64(0.56)), (21, np.float64(0.48)), (18, np.float64(0.32)), (6, np.float64(0.28))]
+D [(16, np.float64(0.93)), (15, np.float64(0.27)), (24, np.float64(0.2)), (17, np.float64(0.19)), (9, np.float64(0.17))]
+E [(16, np.float64(0.76)), (15, np.float64(0.47)), (17, np.float64(0.37)), (14, np.float64(0.25)), (3, np.float64(0.22))]
+F [(11, np.float64(0.89)), (22, np.float64(0.6)), (21, np.float64(0.51)), (23, np.float64(0.44)), (10, np.float64(0.35))]
+G [(11, np.float64(0.84)), (21, np.float64(0.58)), (23, np.float64(0.5)), (22, np.float64(0.49)), (10, np.float64(0.43))]
+H [(4, np.float64(0.99)), (8, np.float64(0.94)), (12, np.float64(0.87)), (16, np.float64(0.78)), (20, np.float64(0.68))]
+I [(4, np.float64(0.98)), (8, np.float64(0.92)), (12, np.float64(0.82)), (16, np.float64(0.71)), (20, np.float64(0.58))]
+J [(18, np.float64(0.52)), (17, np.float64(0.44)), (21, np.float64(0.4)), (16, np.float64(0.33)), (19, np.float64(0.3))]
+K [(16, np.float64(0.99)), (13, np.float64(0.15)), (3, np.float64(0.13)), (18, np.float64(0.12)), (12, np.float64(0.12))]
+L [(20, np.float64(0.72)), (19, np.float64(0.5)), (21, np.float64(0.36)), (18, np.float64(0.23)), (23, np.float64(0.16))]
+M [(4, np.float64(0.98)), (8, np.float64(0.94)), (12, np.float64(0.87)), (16, np.float64(0.77)), (20, np.float64(0.66))]
+N [(20, np.float64(0.6)), (19, np.float64(0.59)), (21, np.float64(0.44)), (17, np.float64(0.19)), (5, np.float64(0.18))]
+O [(4, np.float64(0.92)), (8, np.float64(0.85)), (12, np.float64(0.73)), (16, np.float64(0.57)), (15, np.float64(0.43))]
+P [(15, np.float64(0.56)), (16, np.float64(0.5)), (17, np.float64(0.41)), (14, np.float64(0.4)), (6, np.float64(0.23))]
+Q [(20, np.float64(0.87)), (19, np.float64(0.36)), (21, np.float64(0.24)), (9, np.float64(0.14)), (10, np.float64(0.13))]
+R [(11, np.float64(0.93)), (22, np.float64(0.8)), (21, np.float64(0.39)), (23, np.float64(0.33)), (10, np.float64(0.26))]
+S [(4, np.float64(0.88)), (8, np.float64(0.77)), (12, np.float64(0.58)), (11, np.float64(0.53)), (15, np.float64(0.52))]
+T [(15, np.float64(0.6)), (16, np.float64(0.5)), (17, np.float64(0.42)), (14, np.float64(0.33)), (18, np.float64(0.15))]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

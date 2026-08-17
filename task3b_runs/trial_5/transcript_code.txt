@@ -1,0 +1,123 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3b_data.csv"
+with open(path) as f:
+    rd = csv.reader(f)
+    hdr = next(rd)
+    rows = list(rd)
+
+labels = hdr[1:]
+t = np.array([float(r[0]) for r in rows])
+data = {}
+for i,lab in enumerate(labels):
+    pts = np.array([ast.literal_eval(r[i+1]) for r in rows])
+    data[lab] = pts
+
+print(len(t), t[0], t[-1], labels)
+for lab in labels:
+    p = data[lab]
+    cx, cy = p[:,0].mean(), p[:,1].mean()
+    x = p[:,0]-cx; y=p[:,1]-cy
+    r = np.hypot(x,y)
+    th = np.unwrap(np.arctan2(y,x))
+    turns = abs(th[-1]-th[0])/(2*np.pi)
+    # count local maxima of r
+    loc = ((r[1:-1]>r[:-2])&(r[1:-1]>r[2:])).sum()
+    print(lab, "turns=%.2f"%turns, "rmaxima=%d"%loc, "ratio=%.2f"%(loc/max(turns,1e-9)), "rmean=%.3f"%r.mean(), "rstd=%.3f"%r.std())
+```
+
+[System: execution output]
+1001 0.0 100.0 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A turns=4.64 rmaxima=141 ratio=30.38 rmean=9.702 rstd=6.795
+B turns=4.61 rmaxima=138 ratio=29.94 rmean=9.923 rstd=6.565
+C turns=2.40 rmaxima=148 ratio=61.78 rmean=9.969 rstd=6.078
+D turns=5.62 rmaxima=145 ratio=25.78 rmean=9.770 rstd=6.565
+E turns=3.29 rmaxima=145 ratio=44.08 rmean=10.263 rstd=5.935
+F turns=4.75 rmaxima=135 ratio=28.43 rmean=9.917 rstd=6.693
+G turns=13.52 rmaxima=141 ratio=10.43 rmean=9.691 rstd=6.681
+H turns=40.16 rmaxima=133 ratio=3.31 rmean=9.574 rstd=6.866
+I turns=6.12 rmaxima=139 ratio=22.70 rmean=9.786 rstd=6.748
+J turns=3.37 rmaxima=134 ratio=39.77 rmean=9.929 rstd=6.813
+K turns=6.19 rmaxima=136 ratio=21.97 rmean=9.927 rstd=6.689
+L turns=2.82 rmaxima=134 ratio=47.44 rmean=9.800 rstd=6.870
+M turns=11.49 rmaxima=131 ratio=11.40 rmean=9.721 rstd=7.028
+N turns=1.57 rmaxima=146 ratio=93.10 rmean=9.819 rstd=6.546
+O turns=10.15 rmaxima=134 ratio=13.20 rmean=9.875 rstd=6.862
+P turns=3.41 rmaxima=135 ratio=39.57 rmean=9.762 rstd=6.850
+Q turns=2.77 rmaxima=140 ratio=50.60 rmean=9.782 rstd=6.810
+R turns=7.62 rmaxima=132 ratio=17.32 rmean=9.817 rstd=6.903
+S turns=39.64 rmaxima=139 ratio=3.51 rmean=9.664 rstd=6.413
+T turns=5.14 rmaxima=136 ratio=26.47 rmean=9.819 rstd=6.777
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3b_data.csv"
+with open(path) as f:
+    rd = csv.reader(f); hdr=next(rd); rows=list(rd)
+labels=hdr[1:]
+data={lab: np.array([ast.literal_eval(r[i+1]) for r in rows]) for i,lab in enumerate(labels)}
+
+for lab in labels:
+    p=data[lab]
+    x=p[:,0]; y=p[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.arctan2(y-cy,x-cx)
+    r=np.hypot(x-cx,y-cy)
+    # angular histogram weighted, look for k-fold symmetry
+    res=[]
+    for k in range(1,13):
+        c=np.abs(np.mean(np.exp(1j*k*th)))
+        # also weighted by radius (lobe tips far out)
+        w=(r>np.percentile(r,80))
+        c2=np.abs(np.mean(np.exp(1j*k*th[w])))
+        res.append((k,round(c,3),round(c2,3)))
+    best=max(res,key=lambda z:z[2])
+    print(lab, "x range %.1f %.1f  y %.1f %.1f"%(x.min(),x.max(),y.min(),y.max()), "best k=",best, [f"{k}:{c2}" for k,c,c2 in res])
+```
+
+[System: execution output]
+A x range -27.0 24.2  y -27.7 26.1 best k= (8, np.float64(0.309), np.float64(0.835)) ['1:0.022', '2:0.027', '3:0.085', '4:0.108', '5:0.093', '6:0.116', '7:0.314', '8:0.835', '9:0.34', '10:0.082', '11:0.072', '12:0.096']
+B x range -26.9 28.5  y -28.6 26.3 best k= (8, np.float64(0.366), np.float64(0.879)) ['1:0.055', '2:0.032', '3:0.143', '4:0.071', '5:0.132', '6:0.053', '7:0.227', '8:0.879', '9:0.317', '10:0.085', '11:0.135', '12:0.077']
+C x range -26.4 25.8  y -25.1 32.1 best k= (8, np.float64(0.333), np.float64(0.211)) ['1:0.186', '2:0.146', '3:0.167', '4:0.084', '5:0.113', '6:0.136', '7:0.053', '8:0.211', '9:0.161', '10:0.035', '11:0.042', '12:0.1']
+D x range -27.2 27.0  y -24.5 26.9 best k= (12, np.float64(0.257), np.float64(0.34)) ['1:0.015', '2:0.061', '3:0.059', '4:0.152', '5:0.046', '6:0.114', '7:0.091', '8:0.08', '9:0.079', '10:0.053', '11:0.087', '12:0.34']
+E x range -28.6 23.2  y -27.5 29.2 best k= (11, np.float64(0.182), np.float64(0.648)) ['1:0.229', '2:0.112', '3:0.108', '4:0.197', '5:0.094', '6:0.084', '7:0.131', '8:0.184', '9:0.189', '10:0.339', '11:0.648', '12:0.578']
+F x range -27.0 27.3  y -27.8 24.6 best k= (8, np.float64(0.51), np.float64(0.938)) ['1:0.026', '2:0.113', '3:0.158', '4:0.021', '5:0.137', '6:0.144', '7:0.145', '8:0.938', '9:0.176', '10:0.104', '11:0.163', '12:0.051']
+G x range -28.9 28.0  y -27.0 26.2 best k= (8, np.float64(0.254), np.float64(0.745)) ['1:0.065', '2:0.073', '3:0.11', '4:0.026', '5:0.134', '6:0.055', '7:0.394', '8:0.745', '9:0.402', '10:0.237', '11:0.077', '12:0.047']
+H x range -18.6 17.1  y -24.0 22.0 best k= (2, np.float64(0.621), np.float64(0.964)) ['1:0.109', '2:0.964', '3:0.098', '4:0.864', '5:0.077', '6:0.728', '7:0.049', '8:0.585', '9:0.017', '10:0.463', '11:0.014', '12:0.372']
+I x range -25.9 26.1  y -28.9 27.4 best k= (8, np.float64(0.309), np.float64(0.826)) ['1:0.062', '2:0.118', '3:0.045', '4:0.08', '5:0.102', '6:0.099', '7:0.313', '8:0.826', '9:0.34', '10:0.199', '11:0.059', '12:0.079']
+J x range -25.5 26.2  y -25.8 26.5 best k= (3, np.float64(0.125), np.float64(0.098)) ['1:0.012', '2:0.097', '3:0.098', '4:0.095', '5:0.04', '6:0.037', '7:0.045', '8:0.05', '9:0.048', '10:0.025', '11:0.043', '12:0.08']
+K x range -24.2 27.3  y -27.8 27.2 best k= (8, np.float64(0.49), np.float64(0.913)) ['1:0.11', '2:0.164', '3:0.104', '4:0.07', '5:0.097', '6:0.14', '7:0.117', '8:0.913', '9:0.262', '10:0.199', '11:0.084', '12:0.073']
+L x range -26.1 25.2  y -25.1 26.8 best k= (8, np.float64(0.032), np.float64(0.082)) ['1:0.022', '2:0.048', '3:0.077', '4:0.035', '5:0.046', '6:0.044', '7:0.052', '8:0.082', '9:0.074', '10:0.056', '11:0.063', '12:0.048']
+M x range -27.5 25.1  y -25.2 25.0 best k= (6, np.float64(0.523), np.float64(0.963)) ['1:0.019', '2:0.064', '3:0.06', '4:0.062', '5:0.093', '6:0.963', '7:0.118', '8:0.066', '9:0.06', '10:0.056', '11:0.188', '12:0.862']
+N x range -25.0 23.7  y -26.2 26.2 best k= (10, np.float64(0.081), np.float64(0.21)) ['1:0.054', '2:0.176', '3:0.13', '4:0.074', '5:0.02', '6:0.151', '7:0.043', '8:0.146', '9:0.017', '10:0.21', '11:0.17', '12:0.092']
+O x range -28.5 28.6  y -25.1 26.5 best k= (6, np.float64(0.568), np.float64(0.953)) ['1:0.028', '2:0.132', '3:0.111', '4:0.121', '5:0.099', '6:0.953', '7:0.065', '8:0.129', '9:0.117', '10:0.105', '11:0.169', '12:0.838']
+P x range -24.4 24.0  y -27.5 26.4 best k= (11, np.float64(0.279), np.float64(0.85)) ['1:0.03', '2:0.137', '3:0.081', '4:0.004', '5:0.065', '6:0.071', '7:0.055', '8:0.114', '9:0.092', '10:0.356', '11:0.85', '12:0.317']
+Q x range -25.4 25.7  y -27.2 26.6 best k= (3, np.float64(0.228), np.float64(0.22)) ['1:0.04', '2:0.149', '3:0.22', '4:0.074', '5:0.079', '6:0.049', '7:0.019', '8:0.016', '9:0.058', '10:0.089', '11:0.041', '12:0.038']
+R x range -28.9 29.3  y -27.1 26.4 best k= (8, np.float64(0.592), np.float64(0.967)) ['1:0.015', '2:0.074', '3:0.028', '4:0.03', '5:0.027', '6:0.074', '7:0.056', '8:0.967', '9:0.069', '10:0.077', '11:0.026', '12:0.028']
+S x range -16.9 18.7  y -22.3 29.2 best k= (2, np.float64(0.688), np.float64(0.93)) ['1:0.272', '2:0.93', '3:0.218', '4:0.768', '5:0.155', '6:0.609', '7:0.131', '8:0.496', '9:0.146', '10:0.432', '11:0.169', '12:0.408']
+T x range -25.8 26.3  y -25.4 24.7 best k= (11, np.float64(0.306), np.float64(0.857)) ['1:0.048', '2:0.057', '3:0.139', '4:0.145', '5:0.033', '6:0.093', '7:0.132', '8:0.138', '9:0.12', '10:0.247', '11:0.857', '12:0.34']
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+Based on my analysis, the key discriminator was the angular Fourier symmetry of the outer‑radius (lobe‑tip) points, cross‑checked against the net rotation per radial oscillation (precession rate).
+
+- **H, S**: sharp 2‑fold symmetry (k=2 with full even‑harmonic ladder), distinctly compressed amplitude, very high net turns → lowest N (≈2).
+- **M, O**: clean k=6 and k=12 peaks → N≈6.
+- **A, B, F, G, I, K, R**: strong, unambiguous k=8 peak (0.75–0.97, sidebands at 7/9 from slow precession) → N≈8.
+- **E, P, T**: dominant k=11 peak → N≈11.
+- **C, D, J, L, N, Q**: no peak within k≤12 (only broad, weak power near the top of the tested range), lowest net rotation per oscillation → highest lobe counts.
+
+Group sizes came out uneven (notably the 8‑fold cluster is unusually large), so my Y is an average estimate.
+
+```json
+{"groups": [["H", "S"], ["M", "O"], ["A", "B", "F", "G", "I", "K", "R"], ["E", "P", "T"], ["C", "D", "J", "L", "N", "Q"]], "X": 5, "Y": 4}
+```

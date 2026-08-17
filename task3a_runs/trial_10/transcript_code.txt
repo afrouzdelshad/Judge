@@ -1,0 +1,107 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows = list(csv.reader(open(path)))
+hdr = rows[0]
+labels = hdr[1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {}
+for i,lab in enumerate(labels):
+    arr = np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
+    data[lab] = arr
+
+print(len(t), t[0], t[-1], labels)
+for lab in labels:
+    a = data[lab]
+    x,y = a[:,0], a[:,1]
+    r = np.hypot(x,y)
+    th = np.unwrap(np.arctan2(y,x))
+    # count local maxima of r
+    lm = np.sum((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))
+    total_turn = (th[-1]-th[0])/(2*np.pi)
+    print(lab, "n=%d"%len(x), "rmean=%.2f"%r.mean(), "rmin=%.2f rmax=%.2f"%(r.min(),r.max()),
+          "locmax=%d"%lm, "turns=%.2f"%total_turn, "maxperturn=%.2f"%(lm/abs(total_turn)))
+```
+
+[System: execution output]
+1001 0.0 100.0 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A n=1001 rmean=9.92 rmin=0.08 rmax=29.21 locmax=133 turns=-5.09 maxperturn=26.14
+B n=1001 rmean=10.43 rmin=0.09 rmax=29.88 locmax=141 turns=-3.24 maxperturn=43.48
+C n=1001 rmean=10.07 rmin=0.06 rmax=28.15 locmax=136 turns=-2.33 maxperturn=58.41
+D n=1001 rmean=9.88 rmin=0.06 rmax=29.25 locmax=133 turns=-3.50 maxperturn=38.05
+E n=1001 rmean=9.93 rmin=0.12 rmax=29.64 locmax=134 turns=-3.11 maxperturn=43.12
+F n=1001 rmean=9.87 rmin=0.08 rmax=28.62 locmax=133 turns=-5.09 maxperturn=26.11
+G n=1001 rmean=9.81 rmin=0.06 rmax=28.15 locmax=132 turns=-5.39 maxperturn=24.50
+H n=1001 rmean=9.85 rmin=0.17 rmax=28.82 locmax=133 turns=-14.07 maxperturn=9.45
+I n=1001 rmean=9.83 rmin=0.11 rmax=28.39 locmax=132 turns=-13.99 maxperturn=9.44
+J n=1001 rmean=10.13 rmin=0.19 rmax=31.75 locmax=137 turns=-2.67 maxperturn=51.22
+K n=1001 rmean=9.93 rmin=0.13 rmax=27.73 locmax=134 turns=-3.37 maxperturn=39.79
+L n=1001 rmean=9.79 rmin=0.13 rmax=28.98 locmax=132 turns=-3.06 maxperturn=43.16
+M n=1001 rmean=9.76 rmin=0.11 rmax=29.11 locmax=131 turns=-18.11 maxperturn=7.23
+N n=1001 rmean=9.89 rmin=0.09 rmax=29.44 locmax=133 turns=-2.72 maxperturn=48.94
+O n=1001 rmean=9.87 rmin=0.18 rmax=27.98 locmax=133 turns=-14.20 maxperturn=9.37
+P n=1001 rmean=9.89 rmin=0.04 rmax=29.79 locmax=133 turns=-3.60 maxperturn=36.99
+Q n=1001 rmean=9.76 rmin=0.06 rmax=28.30 locmax=131 turns=-3.06 maxperturn=42.80
+R n=1001 rmean=9.89 rmin=0.09 rmax=28.64 locmax=133 turns=-5.01 maxperturn=26.56
+S n=1001 rmean=10.04 rmin=0.05 rmax=31.13 locmax=135 turns=-12.86 maxperturn=10.50
+T n=1001 rmean=9.85 rmin=0.20 rmax=28.34 locmax=133 turns=-3.63 maxperturn=36.62
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+data={lab:np.array([ast.literal_eval(r[i+1]) for r in rows[1:]]) for i,lab in enumerate(labels)}
+for lab in labels:
+    a=data[lab]; x,y=a[:,0],a[:,1]; r=np.hypot(x,y); th=np.arctan2(y,x)
+    idx=np.where((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))[0]+1
+    idx=idx[r[idx]>0.6*r.max()]  # outer lobe tips
+    ang=th[idx]
+    scores=[]
+    for k in range(1,13):
+        scores.append(abs(np.mean(np.exp(1j*k*ang))))
+    best=int(np.argmax(scores))+1
+    print(lab, len(idx), "best k=%d"%best, " ".join("%d:%.2f"%(k+1,s) for k,s in enumerate(scores)))
+```
+
+[System: execution output]
+A 120 best k=11 1:0.06 2:0.07 3:0.10 4:0.13 5:0.06 6:0.07 7:0.13 8:0.11 9:0.07 10:0.08 11:0.99 12:0.04
+B 92 best k=11 1:0.12 2:0.12 3:0.10 4:0.16 5:0.08 6:0.09 7:0.16 8:0.11 9:0.10 10:0.12 11:0.99 12:0.12
+C 118 best k=6 1:0.12 2:0.18 3:0.16 4:0.08 5:0.08 6:0.20 7:0.05 8:0.07 9:0.11 10:0.10 11:0.11 12:0.05
+D 120 best k=8 1:0.04 2:0.08 3:0.04 4:0.07 5:0.13 6:0.04 7:0.11 8:0.18 9:0.13 10:0.04 11:0.12 12:0.09
+E 118 best k=10 1:0.12 2:0.03 3:0.15 4:0.03 5:0.15 6:0.16 7:0.05 8:0.15 9:0.04 10:0.17 11:0.15 12:0.05
+F 125 best k=11 1:0.08 2:0.08 3:0.16 4:0.17 5:0.08 6:0.09 7:0.18 8:0.16 9:0.08 10:0.08 11:0.99 12:0.09
+G 127 best k=11 1:0.13 2:0.13 3:0.11 4:0.03 5:0.09 6:0.09 7:0.04 8:0.13 9:0.14 10:0.14 11:0.99 12:0.11
+H 128 best k=4 1:0.05 2:0.06 3:0.05 4:0.99 5:0.06 6:0.06 7:0.05 8:0.96 9:0.07 10:0.06 11:0.05 12:0.90
+I 129 best k=4 1:0.08 2:0.04 3:0.10 4:0.99 5:0.06 6:0.04 7:0.12 8:0.96 9:0.05 10:0.04 11:0.14 12:0.91
+J 96 best k=1 1:0.17 2:0.10 3:0.06 4:0.11 5:0.05 6:0.08 7:0.06 8:0.09 9:0.03 10:0.03 11:0.04 12:0.09
+K 130 best k=3 1:0.02 2:0.09 3:0.12 4:0.11 5:0.04 6:0.02 7:0.06 8:0.02 9:0.05 10:0.03 11:0.03 12:0.12
+L 130 best k=2 1:0.10 2:0.11 3:0.09 4:0.09 5:0.09 6:0.08 7:0.08 8:0.08 9:0.05 10:0.03 11:0.04 12:0.09
+M 124 best k=4 1:0.01 2:0.08 3:0.03 4:0.99 5:0.02 6:0.08 7:0.05 8:0.95 9:0.04 10:0.08 11:0.07 12:0.89
+N 119 best k=5 1:0.13 2:0.08 3:0.07 4:0.12 5:0.15 6:0.04 7:0.07 8:0.06 9:0.09 10:0.06 11:0.10 12:0.06
+O 129 best k=4 1:0.14 2:0.12 3:0.12 4:0.99 5:0.15 6:0.11 7:0.10 8:0.95 9:0.16 10:0.11 11:0.08 12:0.88
+P 116 best k=6 1:0.13 2:0.12 3:0.05 4:0.07 5:0.05 6:0.13 7:0.09 8:0.10 9:0.09 10:0.12 11:0.04 12:0.08
+Q 127 best k=9 1:0.05 2:0.07 3:0.10 4:0.07 5:0.04 6:0.05 7:0.09 8:0.03 9:0.12 10:0.10 11:0.11 12:0.03
+R 124 best k=11 1:0.07 2:0.02 3:0.14 4:0.02 5:0.07 6:0.07 7:0.03 8:0.14 9:0.03 10:0.07 11:0.99 12:0.06
+S 100 best k=4 1:0.07 2:0.06 3:0.08 4:0.99 5:0.06 6:0.08 7:0.08 8:0.95 9:0.05 10:0.10 11:0.09 12:0.89
+T 131 best k=1 1:0.19 2:0.05 3:0.06 4:0.02 5:0.08 6:0.01 7:0.04 8:0.02 9:0.05 10:0.01 11:0.09 12:0.02
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+Based on the analysis:
+
+- **N=4 group** (strong 4‑fold angular symmetry of lobe tips, k=4,8,12 ≈ 0.99): H, I, M, O, S — fastest precession (≈13–18 turns/100 t).
+- **N=11 group** (k=11 ≈ 0.99): A, B, F, G, R (≈3–5.4 turns).
+- The remaining ten show no symmetry peak for k ≤ 12, so N > 12; their net precession rate (which scales roughly as 1/N) splits them into two clusters: turns ≈ 3.1–3.6 (lower N) and turns ≈ 2.3–3.06 (higher N).
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

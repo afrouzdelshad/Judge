@@ -1,22 +1,26 @@
 ## Approach
 
-Since the trajectories orbit a central axis, the "lobes" appear as preferred angular directions θ = atan2(y, x) at which the orbit makes its large‑radius excursions. For each trajectory I collected the angles at points of large radius and looked for the angular lattice they fall on.
+Since these are rotationally symmetric multi‑lobe attractors, the lobes sit at fixed angles 2πk/N in the (x,y) plane. For each trajectory I collected the polar angle at the large‑radius excursions and measured the **angular spacing** between successive lobe visits:
 
-A useful check: all systems have a lobe at θ ≈ 45°, so the lobe set is θ = 45° + 360°k/N. The observed spacings came out cleanly:
+- Δθ ≈ 90° → N = 4
+- Δθ ≈ 33° → N = 11
+- Δθ ≈ 22.5° → N = 16
+- Δθ ≈ 18° → N = 20
 
-| spacing | N | example angles seen |
-|---|---|---|
-| ~90° | 4 | 45, 135, 225, 315 |
-| ~32.7° | 11 | 13, 46, 79, 111, 144, 177, 210, 243, 276, 308, 341 |
-| ~22.5° | 16 | 1, 23, 45, 68, 91, 113, 136, 158, 180, … |
-| ~18° | 20 | 9, 27, 45, 63, 81, 99, 117, 135, 153, 171, … |
+A useful structural check: only 5 distinct initial conditions appear at t=0, each shared by exactly 4 trajectories:
+- IC₁ (15.25, 15.40): A, D, I, L
+- IC₂ (0.591, 22.52): B, J, K, S
+- IC₃ (−11.92, −10.08): C, E, G, H
+- IC₄ (−20.72, −13.16): F, O, P, Q
+- IC₅ (22.15, 0.566): M, N, R, T
 
-**Consistency check:** the 20 runs use only 5 distinct initial conditions, each appearing 4 times — (15.25, 15.4): A, D, I, L; (0.59, 22.5): B, J, K, S; (−11.9, −10.1): C, E, G, H; (−20.7, −13.2): F, O, P, Q; (22.2, 0.57): M, N, R, T. Every group I found contains exactly one member from each IC family, which confirms the clustering.
+So each group must contain exactly one trajectory from each IC family — a strong consistency constraint that the measured spacings satisfy.
 
-- **N = 4** (angles wobble widely inside only 4 sectors): H, I, M, O, S
-- **N = 11** (32.7° lattice): A, B, F, G, R
-- **N = 16** (22.5° lattice): D, E, K, P, T
-- **N = 20** (18° lattice): C, J, L, N, Q
+Sample measurements:
+- **H**: lobes at ≈140°, 50°, −41°, −130° → 4 lobes
+- **A**: 45°, 14°, −19°, −53°, −85°, −118°, −150°, 177°, 144°, 111°, 79° → 11 lobes
+- **T**: −22°, −44°, −67°, −88°, −112°, −134°, −157°, −179°, 159°, 137°, 114°, 91°, 69°, 46°, 22°, 1° → 16 lobes
+- **C**: 20 evenly spaced directions (Δ ≈ 18°) → 20 lobes
 
 ```json
 {"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}

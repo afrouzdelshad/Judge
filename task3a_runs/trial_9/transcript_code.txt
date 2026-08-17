@@ -1,0 +1,68 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+p=r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(p)))
+hdr=rows[0]; labels=hdr[1:]
+T=len(rows)-1
+data={l:np.zeros((T,2)) for l in labels}
+t=np.zeros(T)
+for i,r in enumerate(rows[1:]):
+    t[i]=float(r[0])
+    for j,l in enumerate(labels):
+        x,y=ast.literal_eval(r[j+1]); data[l][i]=(x,y)
+print(T,labels)
+for l in labels:
+    xy=data[l]
+    x,y=xy[:,0],xy[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    rr=np.hypot(x-cx,y-cy)
+    total=abs(th[-1]-th[0])/(2*np.pi)
+    # count radial maxima
+    m=0
+    for i in range(1,T-1):
+        if rr[i]>rr[i-1] and rr[i]>=rr[i+1]: m+=1
+    # FFT of r resampled in theta
+    ths=th if th[-1]>th[0] else -th
+    idx=np.argsort(ths)
+    grid=np.linspace(ths[idx][0],ths[idx][-1],4096)
+    rg=np.interp(grid,ths[idx],rr[idx])
+    rg=rg-rg.mean()
+    F=np.abs(np.fft.rfft(rg))
+    freqs=np.fft.rfftfreq(len(grid),d=(grid[-1]-grid[0])/(len(grid)-1))*2*np.pi
+    top=np.argsort(F)[::-1][:5]
+    print(l,"rev=%.2f"%total,"maxima=%d"%m,"ratio=%.2f"%(m/total if total>0 else 0),
+          [(round(freqs[k],2),round(F[k])) for k in top])
+```
+
+[System: execution output]
+1001 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A rev=5.09 maxima=135 ratio=26.53 [(np.float64(10.97), 9526), (np.float64(21.94), 3495), (np.float64(11.15), 3107), (np.float64(22.12), 2422), (np.float64(1.46), 2051)]
+B rev=3.29 maxima=145 ratio=44.08 [(np.float64(11.01), 6133), (np.float64(9.85), 4358), (np.float64(11.87), 3459), (np.float64(10.14), 3321), (np.float64(2.9), 3011)]
+C rev=2.48 maxima=139 ratio=55.94 [(np.float64(19.9), 4568), (np.float64(19.14), 4077), (np.float64(21.05), 3673), (np.float64(1.15), 3045), (np.float64(0.77), 3037)]
+D rev=3.48 maxima=134 ratio=38.55 [(np.float64(15.98), 10999), (np.float64(31.97), 4766), (np.float64(47.95), 2566), (np.float64(17.98), 2510), (np.float64(17.13), 1766)]
+E rev=3.12 maxima=135 ratio=43.24 [(np.float64(16.14), 5938), (np.float64(14.94), 5176), (np.float64(15.84), 4374), (np.float64(17.03), 3602), (np.float64(1.2), 2801)]
+F rev=5.14 maxima=136 ratio=26.47 [(np.float64(11.0), 9651), (np.float64(11.96), 3549), (np.float64(21.99), 3339), (np.float64(10.03), 3164), (np.float64(21.03), 2437)]
+G rev=3.41 maxima=135 ratio=39.57 [(np.float64(11.05), 7545), (np.float64(9.9), 4542), (np.float64(20.96), 3363), (np.float64(10.82), 2593), (np.float64(11.98), 2519)]
+H rev=16.08 maxima=133 ratio=8.27 [(np.float64(3.98), 8157), (np.float64(4.04), 3814), (np.float64(8.02), 3309), (np.float64(0.44), 2536), (np.float64(0.56), 2470)]
+I rev=12.98 maxima=133 ratio=10.24 [(np.float64(4.01), 9077), (np.float64(8.02), 3936), (np.float64(4.99), 2486), (np.float64(12.03), 2157), (np.float64(2.04), 2096)]
+J rev=1.69 maxima=147 ratio=86.88 [(np.float64(0.81), 4530), (np.float64(17.93), 3657), (np.float64(0.41), 3210), (np.float64(19.97), 2989), (np.float64(17.11), 2899)]
+K rev=3.37 maxima=134 ratio=39.77 [(np.float64(16.0), 9400), (np.float64(31.99), 3615), (np.float64(47.99), 2246), (np.float64(15.11), 2112), (np.float64(17.18), 2091)]
+L rev=2.88 maxima=134 ratio=46.49 [(np.float64(20.07), 6146), (np.float64(20.99), 4945), (np.float64(19.14), 3128), (np.float64(41.06), 3110), (np.float64(18.83), 2731)]
+M rev=18.11 maxima=131 ratio=7.23 [(np.float64(3.98), 8079), (np.float64(4.03), 6087), (np.float64(8.01), 3948), (np.float64(3.92), 3142), (np.float64(3.86), 2446)]
+N rev=2.83 maxima=139 ratio=49.08 [(np.float64(19.87), 4700), (np.float64(18.86), 4611), (np.float64(19.2), 3857), (np.float64(21.22), 3408), (np.float64(39.07), 3348)]
+O rev=14.19 maxima=137 ratio=9.65 [(np.float64(3.99), 9593), (np.float64(7.97), 3286), (np.float64(4.06), 3227), (np.float64(8.04), 3167), (np.float64(5.03), 2156)]
+P rev=3.67 maxima=140 ratio=38.14 [(np.float64(14.89), 4991), (np.float64(15.9), 3483), (np.float64(15.14), 3440), (np.float64(16.91), 3226), (np.float64(1.01), 2976)]
+Q rev=3.06 maxima=133 ratio=43.44 [(np.float64(20.04), 9041), (np.float64(19.09), 3109), (np.float64(40.08), 3043), (np.float64(21.0), 2991), (np.float64(41.04), 2802)]
+R rev=5.03 maxima=134 ratio=26.62 [(np.float64(11.06), 9071), (np.float64(10.86), 3723), (np.float64(21.91), 3261), (np.float64(22.11), 2915), (np.float64(32.97), 2831)]
+S rev=18.86 maxima=141 ratio=7.48 [(np.float64(3.98), 6041), (np.float64(4.03), 4768), (np.float64(0.63), 4055), (np.float64(0.37), 3805), (np.float64(8.0), 3707)]
+T rev=2.65 maxima=140 ratio=52.85 [(np.float64(15.1), 4772), (np.float64(0.34), 3593), (np.float64(1.01), 3403), (np.float64(14.77), 3040), (np.float64(0.67), 3008)]
+
+
+[Assistant]
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

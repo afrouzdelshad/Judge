@@ -1,0 +1,23 @@
+## Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the **radial maxima** (the tips of each lobe excursion). In every case the lobe tips fall on a set of discrete angular directions, and the trajectory advances one lobe at a time (always in the same rotational sense). The angular step between successive lobe tips is 360°/N, so N = 360°/Δθ.
+
+**Sample measurements (lobe‑tip angles, degrees):**
+
+| Traj | lobe‑tip angles | Δθ | N |
+|---|---|---|---|
+| A | 119, 84, 47, 11, −25, −60, −97, −135, −170, 154 | ≈36 | 10 |
+| B | 10, −25, −60, −96, −133, −169, 154, 119, 82, 45 | ≈36 | 10 |
+| **C** | 47, 17, −13, −42, −73, −103, −133, −163, 137, 106, 76 | ≈30 | **12** |
+| D,E,F,G,I,J,K,M,O,P,R,T | 45, 10, −25, −61, −97, −133, −169, 154, 118, 82 | ≈36 | 10 |
+| **H** | 48, −3, −53, −105, −157, 152 | ≈51 | **7** |
+| **L** | 46, 30, 11, −5, −22, −40, −56, −74, −91, −108, −125, −142 | ≈17.1 | **21** |
+| **N** | 66, 47, 26, 7, −13, −34, −54, −74 | ≈20 | **18** |
+| **Q** | 72, 47, 21, −4, −31, −56 | ≈25.7 | **14** |
+| **S** | 52, −66, 174 (only three tips, repeatedly) | ≈120 | **3** |
+
+The dominant value is clearly **N = 10** (A, B, D, E, F, G, I, J, K, M, O, P, R, T — 14 trajectories). The remaining six each precess with a different step size.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

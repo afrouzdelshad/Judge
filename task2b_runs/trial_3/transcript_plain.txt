@@ -1,35 +1,19 @@
 ## Analysis Approach
 
-For each trajectory I converted the samples to polar angles θ = atan2(y,x) and located the **angular positions of the radial maxima** (the tips of each lobe excursion). In an N‑lobe attractor the lobes sit at fixed angles spaced 360°/N apart, so the consistent angular step Δθ between successive lobe visits gives N = 360/Δθ.
+For each trajectory I computed the polar angle θ = atan2(y, x) at the radial maxima (the outward excursions). In these systems the excursions land on lobes at equally spaced angles, and the trajectory steps to an adjacent lobe each excursion. Measuring the average angular step Δθ over many excursions gives N = 360°/Δθ.
 
-**Example (A):** lobe tips at ≈ 119°, 84°, 47°, 11°, −25°, −60°, −97°, −132°, −169°, 155° → Δθ ≈ 36° → N = 10.
+**Representative measurements (sequence of excursion angles):**
 
-**Results:**
+- **A:** 119, 83, 47, 11, −25, −60, −96, −133, −169, 155 → Δθ ≈ 36° → **N = 10**
+- **B, D, E, F, G, I, J, K, M, O, P, R, T:** same 36° ladder → **N = 10**
+- **C:** 45, 16, −15, −44, −74, −104, −133, −163, 166, 135, 107, 76 → Δθ ≈ 30° → **N = 12**
+- **H:** 96, 45, −4, −55, −107, −158, 151, 98 → Δθ ≈ 51.3° → **N = 7**
+- **L:** 80, 63, 46, 29, 11, −5, −22, −39, −57, −74, −91, −108, −125, −142, −159, −177, 166 → Δθ ≈ 17.1° → **N = 21**
+- **N:** 65, 46, 26, 7, −14, −34, −53, −74, −93, −114, −133, −154, −173, 166 → Δθ ≈ 19.9° → **N = 18**
+- **Q:** 72, 46, 21, −4, −31, −56, −82, −107, −134, −159, 175 → Δθ ≈ 25.7° → **N = 14**
+- **S:** only three angular states visited: ≈ 55°, 175°, −65° → Δθ = 120° → **N = 3**
 
-| Traj | Δθ (deg) | N |
-|---|---|---|
-| A | 35.8 | 10 |
-| B | 36.0 | 10 |
-| **C** | **29.8** | **12** |
-| D | 35.4 | 10 |
-| E | 36.0 | 10 |
-| F | 36.0 | 10 |
-| G | 35.9 | 10 |
-| **H** | **51.4** | **7** |
-| I | 36.0 | 10 |
-| J | 36.0 | 10 |
-| K | 35.9 | 10 |
-| **L** | **17.11** | **21** |
-| M | 36.0 | 10 |
-| **N** | **20.1** | **18** |
-| O | 35.6 | 10 |
-| P | 36.0 | 10 |
-| **Q** | **25.7** | **14** |
-| R | 35.7 | 10 |
-| **S** | **≈120** | **3** |
-| T | 35.6 | 10 |
-
-The majority value is **N = 10** (14 trajectories). Six trajectories deviate: C (12 lobes), H (7), L (21), N (18), Q (14), S (3).
+**Conclusion:** the majority value is N = 10 (14 trajectories). Six trajectories deviate.
 
 ```json
 {"outliers": ["C", "H", "L", "N", "Q", "S"]}

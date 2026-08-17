@@ -6,58 +6,48 @@ import csv, ast, numpy as np
 path=r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
 rows=list(csv.reader(open(path)))
 hdr=rows[0]; labels=hdr[1:]
-t=np.array([float(r[0]) for r in rows[1:]])
-data={}
-for i,l in enumerate(labels):
-    pts=np.array([ast.literal_eval(r[i+1]) for r in rows[1:]])
-    data[l]=pts
-print(len(t), labels)
+data={l:[] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+t=np.array(t)
+print(len(t), t[0], t[-1])
 for l in labels:
-    p=data[l]; x,y=p[:,0],p[:,1]
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
     cx,cy=x.mean(),y.mean()
-    x=x-cx;y=y-cy
-    th=np.unwrap(np.arctan2(y,x)); r=np.hypot(x,y)
-    total=th[-1]-th[0]
-    turns=abs(total)/(2*np.pi)
-    # count local maxima of r
-    peaks=np.sum((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))
-    # spectral: interpolate r vs theta
-    best=None
-    if turns>0.5:
-        s=np.sign(total)
-        thm=s*th
-        grid=np.linspace(thm[0],thm[-1],4096)
-        ri=np.interp(grid,thm,r)
-        ri=ri-ri.mean()
-        F=np.abs(np.fft.rfft(ri*np.hanning(len(ri))))
-        freqs=np.arange(len(F))/(grid[-1]-grid[0])*2*np.pi
-        k=np.argmax(F[1:])+1
-        best=freqs[k]
-    print(l, "turns=%.2f"%turns, "peaks=%d"%peaks, "peaks/turn=%.2f"%(peaks/turns if turns>0 else -1), "specN=%.2f"%(best if best else -1), "mean r=%.2f"%r.mean())
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    total=abs(th[-1]-th[0])/(2*np.pi)
+    # count radius local maxima
+    peaks=np.sum((r[1:-1]>r[:-2])&(r[1:-1]>=r[2:]))
+    # fourier of r vs theta
+    print(l, "rev=%.2f"%total, "peaks=",peaks, "ratio=%.2f"%(peaks/total if total>0 else 0), "rmean=%.2f rstd=%.2f"%(r.mean(),r.std()))
 ```
 
 [System: execution output]
-1001 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
-A turns=5.20 peaks=136 peaks/turn=26.14 specN=0.96 mean r=9.84
-B turns=4.51 peaks=138 peaks/turn=30.61 specN=0.89 mean r=9.81
-C turns=8.18 peaks=144 peaks/turn=17.60 specN=0.49 mean r=9.81
-D turns=4.90 peaks=136 peaks/turn=27.76 specN=10.00 mean r=10.07
-E turns=5.71 peaks=134 peaks/turn=23.47 specN=9.99 mean r=9.92
-F turns=5.79 peaks=137 peaks/turn=23.65 specN=1.04 mean r=9.78
-G turns=5.70 peaks=133 peaks/turn=23.34 specN=10.00 mean r=9.82
-H turns=8.74 peaks=136 peaks/turn=15.55 specN=6.98 mean r=9.86
-I turns=6.39 peaks=139 peaks/turn=21.77 specN=0.94 mean r=9.74
-J turns=6.07 peaks=134 peaks/turn=22.09 specN=0.99 mean r=9.76
-K turns=6.40 peaks=135 peaks/turn=21.09 specN=0.94 mean r=9.85
-L turns=0.30 peaks=146 peaks/turn=481.88 specN=-1.00 mean r=9.85
-M turns=6.08 peaks=132 peaks/turn=21.70 specN=10.03 mean r=9.80
-N turns=2.65 peaks=153 peaks/turn=57.67 specN=0.75 mean r=9.76
-O turns=3.66 peaks=143 peaks/turn=39.10 specN=1.09 mean r=10.09
-P turns=7.11 peaks=132 peaks/turn=18.57 specN=9.99 mean r=9.68
-Q turns=5.62 peaks=145 peaks/turn=25.78 specN=0.89 mean r=9.77
-R turns=5.98 peaks=134 peaks/turn=22.41 specN=10.03 mean r=9.80
-S turns=22.80 peaks=142 peaks/turn=6.23 specN=2.02 mean r=9.87
-T turns=4.99 peaks=141 peaks/turn=28.24 specN=1.00 mean r=10.01
+1001 0.0 100.0
+A rev=5.20 peaks= 136 ratio=26.14 rmean=9.84 rstd=6.80
+B rev=4.51 peaks= 138 ratio=30.61 rmean=9.81 rstd=6.80
+C rev=8.18 peaks= 144 ratio=17.60 rmean=9.81 rstd=6.49
+D rev=4.90 peaks= 136 ratio=27.76 rmean=10.07 rstd=6.54
+E rev=5.71 peaks= 134 ratio=23.47 rmean=9.92 rstd=6.81
+F rev=5.79 peaks= 137 ratio=23.65 rmean=9.78 rstd=6.81
+G rev=5.70 peaks= 133 ratio=23.34 rmean=9.82 rstd=6.88
+H rev=8.74 peaks= 136 ratio=15.55 rmean=9.86 rstd=6.83
+I rev=6.39 peaks= 139 ratio=21.77 rmean=9.74 rstd=6.77
+J rev=6.07 peaks= 134 ratio=22.09 rmean=9.76 rstd=6.92
+K rev=6.40 peaks= 135 ratio=21.09 rmean=9.85 rstd=6.80
+L rev=0.30 peaks= 146 ratio=481.88 rmean=9.85 rstd=6.50
+M rev=6.08 peaks= 132 ratio=21.70 rmean=9.80 rstd=6.92
+N rev=2.65 peaks= 153 ratio=57.67 rmean=9.76 rstd=6.14
+O rev=3.66 peaks= 143 ratio=39.10 rmean=10.09 rstd=6.18
+P rev=7.11 peaks= 132 ratio=18.57 rmean=9.68 rstd=7.06
+Q rev=5.62 peaks= 145 ratio=25.78 rmean=9.77 rstd=6.56
+R rev=5.98 peaks= 134 ratio=22.41 rmean=9.80 rstd=6.92
+S rev=22.80 peaks= 142 ratio=6.23 rmean=9.87 rstd=6.31
+T rev=4.99 peaks= 141 ratio=28.24 rmean=10.01 rstd=6.41
 
 
 [Assistant]
@@ -66,88 +56,73 @@ import csv, ast, numpy as np
 path=r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
 rows=list(csv.reader(open(path)))
 labels=rows[0][1:]
-t=np.array([float(r[0]) for r in rows[1:]])
-data={l:np.array([ast.literal_eval(r[i+1]) for r in rows[1:]]) for i,l in enumerate(labels)}
-print("t range",t[0],t[-1])
-for l in labels[:3]:
-    print(l, data[l][:5], data[l].min(0), data[l].max(0))
-
-def smooth(a,w):
-    k=np.ones(w)/w
-    return np.convolve(a,k,mode='same')
-
+data={l:[] for l in labels}
+for r in rows[1:]:
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
 for l in labels:
-    p=data[l]
-    x=smooth(p[:,0],11); y=smooth(p[:,1],11)
-    x=x[10:-10]; y=y[10:-10]
-    cx,cy=x.mean(),y.mean()
-    th=np.unwrap(np.arctan2(y-cy,x-cx)); r=np.hypot(x-cx,y-cy)
-    turns=(th[-1]-th[0])/(2*np.pi)
-    peaks=np.sum((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))
-    print(l,"turns=%.2f"%turns,"peaks=%d"%peaks,"ratio=%.2f"%(peaks/abs(turns)),"rmin=%.2f rmax=%.2f"%(r.min(),r.max()))
+    a=np.array(data[l]);x,y=a[:,0],a[:,1]
+    print(l,"xmean=%.2f ymean=%.2f rmin=%.2f rmax=%.2f"%(x.mean(),y.mean(),np.hypot(x,y).min(),np.hypot(x,y).max()))
+# angular distribution of radius maxima about origin
+for l in labels:
+    a=np.array(data[l]);x,y=a[:,0],a[:,1]
+    r=np.hypot(x,y); th=np.arctan2(y,x)
+    idx=np.where((r[1:-1]>r[:-2])&(r[1:-1]>=r[2:]))[0]+1
+    idx=idx[r[idx]>np.percentile(r,60)]
+    ang=th[idx]
+    res=[]
+    for N in range(1,13):
+        res.append((N,abs(np.mean(np.exp(1j*N*ang)))))
+    res.sort(key=lambda z:-z[1])
+    print(l,len(idx),[(n,round(v,2)) for n,v in res[:4]])
 ```
 
 [System: execution output]
-t range 0.0 0.0
-(1001, 2)
-
----
-
-Wait, output truncated? Let me re-print.
-
-A [[ 9.51369655 -2.60937352]
- [ 9.49890486 -2.63053729]
- [ 9.51369655 -2.60937352]
- [ 9.49890486 -2.63053729]
- [ 9.51369655 -2.60937352]] [-10.36734497 -1.13686838e-13] [10.3673 10.36]
-B ...
-truncated
-```
-
-[System: execution output]
-t range 0.0 100.0
-A [[-8.6514 24.3638]
- [-8.4956 18.14  ]
- [-4.2215 10.362 ]
- [-2.1463  5.2811]
- [-2.217   4.4412]] [-28.9337 -27.406 ] [27.8207 26.4696]
-B [[22.1528  0.5664]
- [14.973  -4.8614]
- [13.6196 -6.3978]
- [ 9.8281 -5.3518]
- [ 6.6848 -3.7559]] [-27.5717 -27.1994] [27.149  27.1849]
-C [[ 0.5911 22.5232]
- [ 1.2022  7.6371]
- [ 3.8432 18.5685]
- [ 7.4008 30.901 ]
- [ 5.4933 11.4975]] [-26.4125 -25.6916] [24.5738 30.901 ]
-A turns=-5.13 peaks=129 ratio=25.14 rmin=3.40 rmax=14.05
-B turns=-5.39 peaks=130 ratio=24.11 rmin=5.20 rmax=13.66
-C turns=-4.01 peaks=132 ratio=32.96 rmin=3.16 rmax=14.58
-D turns=-4.80 peaks=131 ratio=27.31 rmin=3.74 rmax=12.98
-E turns=-5.59 peaks=130 ratio=23.27 rmin=5.18 rmax=12.55
-F turns=-5.79 peaks=129 ratio=22.27 rmin=0.67 rmax=13.27
-G turns=-5.62 peaks=130 ratio=23.14 rmin=5.38 rmax=12.81
-H turns=-7.70 peaks=130 ratio=16.89 rmin=6.00 rmax=13.02
-I turns=-6.19 peaks=128 ratio=20.68 rmin=4.14 rmax=13.81
-J turns=-5.87 peaks=130 ratio=22.14 rmin=5.97 rmax=12.97
-K turns=-5.41 peaks=129 ratio=23.85 rmin=5.32 rmax=13.20
-L turns=-2.24 peaks=131 ratio=58.42 rmin=3.36 rmax=14.94
-M turns=-5.86 peaks=130 ratio=22.19 rmin=6.31 rmax=12.80
-N turns=-2.56 peaks=135 ratio=52.82 rmin=3.57 rmax=15.91
-O turns=-4.39 peaks=135 ratio=30.74 rmin=4.67 rmax=14.46
-P turns=-6.94 peaks=127 ratio=18.29 rmin=5.57 rmax=12.65
-Q turns=-3.49 peaks=129 ratio=36.92 rmin=3.77 rmax=14.85
-R turns=-5.90 peaks=129 ratio=21.88 rmin=5.28 rmax=13.13
-S turns=-16.22 peaks=113 ratio=6.97 rmin=2.35 rmax=13.93
-T turns=-4.81 peaks=132 ratio=27.43 rmin=5.20 rmax=13.92
+A xmean=-1.16 ymean=0.26 rmin=0.04 rmax=29.47
+B xmean=0.01 ymean=-1.53 rmin=0.26 rmax=28.07
+C xmean=0.72 ymean=2.56 rmin=0.11 rmax=31.77
+D xmean=0.60 ymean=-0.04 rmin=0.08 rmax=29.20
+E xmean=0.38 ymean=-0.18 rmin=0.14 rmax=28.33
+F xmean=0.83 ymean=-1.13 rmin=0.02 rmax=28.59
+G xmean=0.37 ymean=-0.37 rmin=0.14 rmax=28.43
+H xmean=0.66 ymean=0.70 rmin=0.16 rmax=28.82
+I xmean=-1.40 ymean=1.33 rmin=0.13 rmax=29.45
+J xmean=-0.14 ymean=0.85 rmin=0.21 rmax=28.67
+K xmean=0.57 ymean=-0.45 rmin=0.12 rmax=29.33
+L xmean=1.46 ymean=1.95 rmin=0.08 rmax=29.21
+M xmean=-0.45 ymean=-0.43 rmin=0.19 rmax=28.80
+N xmean=2.86 ymean=2.15 rmin=0.22 rmax=32.56
+O xmean=2.02 ymean=0.94 rmin=0.31 rmax=33.48
+P xmean=-0.76 ymean=-0.24 rmin=0.13 rmax=28.09
+Q xmean=1.90 ymean=1.56 rmin=0.11 rmax=27.98
+R xmean=0.88 ymean=0.32 rmin=0.17 rmax=29.28
+S xmean=1.07 ymean=-2.66 rmin=0.16 rmax=29.06
+T xmean=-0.54 ymean=1.79 rmin=0.16 rmax=27.51
+A 133 [(10, np.float64(0.99)), (4, np.float64(0.18)), (6, np.float64(0.17)), (11, np.float64(0.12))]
+B 133 [(10, np.float64(0.99)), (11, np.float64(0.16)), (1, np.float64(0.15)), (9, np.float64(0.15))]
+C 136 [(12, np.float64(0.99)), (1, np.float64(0.26)), (11, np.float64(0.25)), (3, np.float64(0.25))]
+D 136 [(10, np.float64(0.99)), (12, np.float64(0.2)), (2, np.float64(0.19)), (8, np.float64(0.19))]
+E 134 [(10, np.float64(0.99)), (2, np.float64(0.15)), (8, np.float64(0.14)), (12, np.float64(0.14))]
+F 133 [(10, np.float64(0.99)), (9, np.float64(0.14)), (1, np.float64(0.14)), (11, np.float64(0.14))]
+G 132 [(10, np.float64(0.99)), (3, np.float64(0.15)), (7, np.float64(0.15)), (5, np.float64(0.08))]
+H 134 [(7, np.float64(0.99)), (11, np.float64(0.19)), (4, np.float64(0.18)), (3, np.float64(0.17))]
+I 133 [(10, np.float64(0.99)), (11, np.float64(0.2)), (1, np.float64(0.2)), (9, np.float64(0.18))]
+J 132 [(10, np.float64(0.99)), (7, np.float64(0.11)), (3, np.float64(0.1)), (5, np.float64(0.09))]
+K 133 [(10, np.float64(0.99)), (12, np.float64(0.13)), (2, np.float64(0.12)), (8, np.float64(0.11))]
+L 136 [(1, np.float64(0.24)), (7, np.float64(0.22)), (10, np.float64(0.19)), (11, np.float64(0.18))]
+M 132 [(10, np.float64(0.99)), (7, np.float64(0.11)), (3, np.float64(0.1)), (8, np.float64(0.1))]
+N 139 [(3, np.float64(0.35)), (1, np.float64(0.35)), (4, np.float64(0.31)), (10, np.float64(0.29))]
+O 139 [(10, np.float64(0.99)), (5, np.float64(0.44)), (12, np.float64(0.29)), (2, np.float64(0.28))]
+P 131 [(10, np.float64(0.99)), (8, np.float64(0.15)), (2, np.float64(0.14)), (12, np.float64(0.13))]
+Q 135 [(1, np.float64(0.25)), (4, np.float64(0.14)), (10, np.float64(0.13)), (6, np.float64(0.11))]
+R 133 [(10, np.float64(0.99)), (5, np.float64(0.19)), (4, np.float64(0.15)), (6, np.float64(0.15))]
+S 138 [(3, np.float64(0.99)), (6, np.float64(0.96)), (9, np.float64(0.9)), (12, np.float64(0.83))]
+T 136 [(10, np.float64(0.99)), (12, np.float64(0.23)), (2, np.float64(0.23)), (8, np.float64(0.22))]
 
 
 [System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
 
 [Assistant]
-Based on the spectral analysis of r(θ), most trajectories show a dominant ~10-lobe modulation, while H (~7), S (~2), and C (anomalous, non-10) stand apart, and their net rotation rates also deviate strongly from the majority.
-
 ```json
-{"outliers": ["C", "H", "S"]}
+{"outliers": ["C", "H", "S", "L", "N", "Q"]}
 ```

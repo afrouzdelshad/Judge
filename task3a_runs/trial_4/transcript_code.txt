@@ -1,0 +1,105 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast
+import numpy as np
+
+path=r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(path)))
+hdr=rows[0]
+labels=hdr[1:]
+T=len(rows)-1
+t=np.array([float(r[0]) for r in rows[1:]])
+data={}
+for j,lab in enumerate(labels):
+    arr=np.array([ast.literal_eval(r[j+1]) for r in rows[1:]])
+    data[lab]=arr
+print(T, t[0], t[-1], labels)
+for lab in labels:
+    a=data[lab]
+    print(lab, a[:2].round(3).tolist(), a.mean(0).round(3), a.std(0).round(3), np.abs(a).max(0).round(2))
+```
+
+[System: execution output]
+1001 0.0 100.0 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A [[15.25, 15.397], [10.355, 9.222]] [0.655 0.063] [8.392 8.56 ] [27.22 27.6 ]
+B [[0.591, 22.523], [4.387, 29.174]] [0.301 2.143] [8.39  8.377] [28.58 29.17]
+C [[-11.919, -10.075], [-7.511, -4.716]] [-1.121  0.756] [9.242 7.522] [27.79 27.16]
+D [[15.25, 15.397], [10.234, 9.465]] [-0.512  0.208] [8.126 8.791] [26.54 28.22]
+E [[-11.919, -10.075], [-6.792, -3.925]] [-0.351 -1.217] [8.504 8.36 ] [25.35 29.63]
+F [[-20.718, -13.16], [-8.718, -3.227]] [-0.874 -0.907] [8.679 8.186] [26.29 25.36]
+G [[-11.919, -10.075], [-11.474, -6.939]] [-0.647  1.064] [8.235 8.626] [24.39 27.51]
+H [[-11.919, -10.075], [-5.867, -0.404]] [ 0.345 -0.584] [8.49  8.455] [21.28 21.76]
+I [[15.25, 15.397], [11.184, 8.027]] [ 0.676 -0.367] [8.458 8.489] [21.73 21.42]
+J [[0.591, 22.523], [1.644, 15.001]] [2.684 1.588] [7.837 8.641] [25.62 31.48]
+K [[0.591, 22.523], [0.244, 26.499]] [0.086 0.123] [8.485 8.545] [26.25 26.5 ]
+L [[15.25, 15.397], [10.199, 9.59]] [ 0.913 -0.644] [8.897 7.995] [26.54 27.5 ]
+M [[22.153, 0.566], [17.839, -11.384]] [ 0.018 -0.407] [8.506 8.481] [22.15 22.37]
+N [[22.153, 0.566], [20.452, -2.168]] [-0.801 -0.925] [8.171 8.706] [25.15 26.61]
+O [[-20.718, -13.16], [-10.183, 1.231]] [-0.192  1.499] [8.52  8.336] [20.91 20.87]
+P [[-20.718, -13.16], [-20.087, -9.466]] [1.002 1.684] [8.005 8.747] [26.15 29.78]
+Q [[-20.718, -13.16], [-15.918, -8.333]] [ 0.333 -0.602] [8.848 8.098] [26.86 26.34]
+R [[22.153, 0.566], [18.034, -4.475]] [0.127 0.765] [8.418 8.539] [26.07 26.08]
+S [[0.591, 22.523], [-0.568, 2.261]] [1.893 0.834] [8.281 8.505] [24.61 23.09]
+T [[22.153, 0.566], [8.387, -1.796]] [ 1.015 -1.725] [8.431 8.339] [27.06 27.13]
+
+
+[Assistant]
+```python
+import csv, ast
+import numpy as np
+path=r"C:\Users\xan37\Documents\GitHub\Judge\task3a_data.csv"
+rows=list(csv.reader(open(path)))
+labels=rows[0][1:]
+data={lab:np.array([ast.literal_eval(r[j+1]) for r in rows[1:]]) for j,lab in enumerate(labels)}
+
+ics={}
+for lab in labels:
+    key=tuple(np.round(data[lab][0],3))
+    ics.setdefault(key,[]).append(lab)
+print(ics)
+
+for lab in labels:
+    a=data[lab]
+    x,y=a[:,0],a[:,1]
+    r=np.hypot(x,y); th=np.arctan2(y,x)
+    # local maxima of r
+    idx=[i for i in range(1,len(r)-1) if r[i]>r[i-1] and r[i]>r[i+1] and r[i]>10]
+    ang=np.sort(np.degrees(th[idx])%360)
+    h,_=np.histogram(ang,bins=36,range=(0,360))
+    # unwrapped angle total winding
+    tw=np.abs(np.unwrap(th)[-1]-th[0])/(2*np.pi)
+    print(lab, len(idx), "wind=%.2f"%tw, "maxperwind=%.2f"%(len(idx)/tw), "".join('%d'%min(x,9) for x in h))
+```
+
+[System: execution output]
+{(np.float64(15.25), np.float64(15.397)): ['A', 'D', 'I', 'L'], (np.float64(0.591), np.float64(22.523)): ['B', 'J', 'K', 'S'], (np.float64(-11.919), np.float64(-10.075)): ['C', 'E', 'G', 'H'], (np.float64(-20.718), np.float64(-13.16)): ['F', 'O', 'P', 'Q'], (np.float64(22.153), np.float64(0.566)): ['M', 'N', 'R', 'T']}
+A 133 wind=5.09 maxperwind=26.14 090090091007009009004200900900700390
+B 141 wind=3.24 maxperwind=43.48 080090092007009009005500800900400130
+C 136 wind=2.33 maxperwind=58.41 419090209325040907929030202204080902
+D 133 wind=3.50 maxperwind=38.05 806050900905090502905090501908040601
+E 134 wind=3.11 maxperwind=43.12 107070900404060800609040500909090902
+F 133 wind=5.09 maxperwind=26.11 080090092005007009009700900900800490
+G 132 wind=5.39 maxperwind=24.50 060090092009008009007900900900700350
+H 133 wind=14.07 maxperwind=9.45 000097000000099000000097000000094000
+I 132 wind=13.99 maxperwind=9.44 000099000000099000000096000000093000
+J 137 wind=2.67 maxperwind=51.22 339090906303040204214060803318060409
+K 134 wind=3.37 maxperwind=39.79 709080902807030601909070601907070800
+L 132 wind=3.06 maxperwind=43.16 729090403216060408628030508417090507
+M 131 wind=18.11 maxperwind=7.23 000099000000096000000099000000099000
+N 133 wind=2.72 maxperwind=48.94 208050302129090603826050908929060605
+O 133 wind=14.20 maxperwind=9.37 000099000000097000000096000000099000
+P 133 wind=3.60 maxperwind=36.99 907070901709050700504060800708040402
+Q 131 wind=3.06 maxperwind=42.80 344090406244070406719080504319050907
+R 133 wind=5.01 maxperwind=26.56 090090091009009009003500900900600280
+S 135 wind=12.86 maxperwind=10.50 000099000000099000000098000000099000
+T 133 wind=3.63 maxperwind=36.62 706080501507050500709070900909090901
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

@@ -2,7 +2,7 @@ Begin your analysis. Remember the protocol above.
 
 [Assistant]
 ```python
-import csv, ast, math, os, sys
+import csv, ast, math, os, statistics
 import numpy as np
 
 path = r"C:\Users\xan37\Documents\GitHub\Judge\task1_data.csv"
@@ -11,325 +11,406 @@ with open(path, newline='') as f:
     reader = csv.reader(f)
     header = next(reader)
     labels = header[1:]
-    times = []
+    t = []
     data = {lab: [] for lab in labels}
     for row in reader:
-        times.append(float(row[0]))
+        t.append(float(row[0]))
         for lab, cell in zip(labels, row[1:]):
             data[lab].append(ast.literal_eval(cell))
+t = np.array(t)
+arr = {lab: np.array(vals, dtype=float) for lab, vals in data.items()}
 
-t = np.array(times)
-print("rows", len(t), "labels", labels, "time", (t[0], t[-1]))
+print("labels", labels)
+print("n_time", len(t), "time range", t[0], t[-1], "dt med", np.median(np.diff(t)))
 
-def circ_smooth(y, win):
-    if win <= 1:
-        return y.copy()
-    k = np.ones(win)/win
-    pad = win
-    yy = np.r_[y[-pad:], y, y[:pad]]
-    return np.convolve(yy, k, mode='same')[pad:-pad]
+# Basic features:
+def unwrap_angle(z):
+    return np.unwrap(np.angle(z))
 
-def count_peaks_circular(y, prominence_frac=0.20, min_sep=8):
-    n = len(y)
-    ymax, ymin = np.nanmax(y), np.nanmin(y)
-    prom = (ymax-ymin)*prominence_frac
-    cand = []
-    for i in range(n):
-        if y[i] > y[(i-1)%n] and y[i] >= y[(i+1)%n]:
-            # local min left/right until higher point or half circumference
-            lm = y[i]
-            j=(i-1)%n
-            steps=0
-            left_min=y[j]
-            while steps < n//2 and y[j] <= y[i]:
-                left_min = min(left_min, y[j])
-                j=(j-1)%n
-                steps += 1
-            j=(i+1)%n
-            steps=0
-            right_min=y[j]
-            while steps < n//2 and y[j] <= y[i]:
-                right_min = min(right_min, y[j])
-                j=(j+1)%n
-                steps += 1
-            p = y[i] - max(left_min, right_min)
-            if p >= prom:
-                cand.append((i, y[i], p))
-    # nonmax suppression by height
-    cand = sorted(cand, key=lambda x:x[1], reverse=True)
-    keep=[]
-    for c in cand:
-        if all(min((c[0]-k[0])%n, (k[0]-c[0])%n) >= min_sep for k in keep):
-            keep.append(c)
-    keep=sorted(keep)
-    return keep
-
-def radial_profile(xy, center, nbins=1440, stat='q90'):
-    z = xy - center
-    th = np.mod(np.arctan2(z[:,1], z[:,0]), 2*np.pi)
-    r = np.hypot(z[:,0], z[:,1])
-    bins = np.floor(th/(2*np.pi)*nbins).astype(int)
-    prof = np.full(nbins, np.nan)
-    counts = np.bincount(bins, minlength=nbins)
-    for b in range(nbins):
-        vals = r[bins==b]
-        if len(vals):
-            if stat == 'max': prof[b] = np.max(vals)
-            elif stat == 'mean': prof[b] = np.mean(vals)
-            else: prof[b] = np.quantile(vals, 0.90)
-    # fill empty circular by interpolation
-    if np.any(np.isnan(prof)):
-        idx = np.arange(nbins)
-        good = ~np.isnan(prof)
-        # periodic interp
-        good_idx = idx[good]
-        good_val = prof[good]
-        idx_ext = np.r_[good_idx-nbins, good_idx, good_idx+nbins]
-        val_ext = np.r_[good_val, good_val, good_val]
-        prof = np.interp(idx, idx_ext, val_ext)
-    return prof, counts
-
-def dominant_fft(profile, maxk=30):
-    y = profile - np.mean(profile)
-    amps = np.abs(np.fft.rfft(y))
-    amps[0]=0
-    # normalize by median/noise
-    ks = np.arange(len(amps))
-    top = sorted([(k, amps[k]) for k in range(1, min(maxk+1, len(amps)))], key=lambda x:x[1], reverse=True)[:8]
-    return top, amps
-
-def time_radial_peak_angles(xy, center):
-    z=xy-center
-    th=np.mod(np.arctan2(z[:,1], z[:,0]),2*np.pi)
-    r=np.hypot(z[:,0],z[:,1])
-    # smooth time series
-    win=max(3, len(r)//1000)
-    if win%2==0: win+=1
-    rs=np.convolve(r, np.ones(win)/win, mode='same')
-    loc=np.where((rs[1:-1]>rs[:-2]) & (rs[1:-1]>=rs[2:]))[0]+1
-    # keep prominent high maxima
-    if len(loc)==0: return np.array([])
-    q=np.quantile(rs,0.65)
-    loc=loc[rs[loc]>=q]
-    return th[loc]
-
-def angular_cluster_est(angs, maxN=30):
-    if len(angs)<5: return []
-    # histogram of maxima angles
-    nb=720
-    h,_=np.histogram(angs, bins=nb, range=(0,2*np.pi))
-    hs=circ_smooth(h.astype(float), 15)
-    peaks=count_peaks_circular(hs, prominence_frac=0.12, min_sep=10)
-    top_fft,_=dominant_fft(hs, maxN)
-    return len(peaks), [(round(p[0]*360/nb,1), round(p[1],1)) for p in peaks], top_fft[:5]
-
-results=[]
 for lab in labels:
-    xy=np.array(data[lab], dtype=float)
-    # try centers: origin, mean, median, midpoint of bounding box
-    centers = {
-        "origin": np.array([0.0,0.0]),
-        "mean": xy.mean(axis=0),
-        "median": np.median(xy,axis=0),
-        "bbox": (xy.min(axis=0)+xy.max(axis=0))/2
-    }
-    # choose center with strongest single harmonic profile contrast? Print all limited.
-    print("\nLABEL", lab)
-    print(" range x", (xy[:,0].min(), xy[:,0].max()), "y", (xy[:,1].min(), xy[:,1].max()),
-          "mean", xy.mean(axis=0), "bbox", centers["bbox"])
-    center_summ=[]
-    for cname, c in centers.items():
-        prof, counts=radial_profile(xy,c,nbins=1440, stat='q90')
-        ps=circ_smooth(prof, 21)
-        peaks=count_peaks_circular(ps, prominence_frac=0.12, min_sep=20)
-        top, amps=dominant_fft(ps, maxk=40)
-        # radial time peak angular clusters
-        angs=time_radial_peak_angles(xy,c)
-        cl=angular_cluster_est(angs, maxN=40)
-        # score: top harmonic index and peak count
-        center_summ.append((cname, len(peaks), top[:5], cl[0] if cl else None, cl[2] if cl else None))
-        print(" center", cname, np.round(c,3), "profile_peaks", len(peaks),
-              "peak_degs", [round(p[0]*360/1440,1) for p in peaks[:40]],
-              "fft_top", [(k, round(a/len(ps),3)) for k,a in top[:6]],
-              "time_peak_clusters", cl[0] if cl else None,
-              "cl_fft", [(k, round(a,1)) for k,a in (cl[2] if cl else [])])
-    # use bbox profile top harmonic/peaks provisional
-    prof,_=radial_profile(xy,centers["bbox"],nbins=1440, stat='q90')
-    ps=circ_smooth(prof,21)
-    peaks=count_peaks_circular(ps, prominence_frac=0.12, min_sep=20)
-    top,amps=dominant_fft(ps,maxk=40)
-    results.append((lab, len(peaks), top[0][0], top[:5]))
-
-print("\nPROVISIONAL (label, profile_peak_count, dominant_fft_k):")
-for r in sorted(results, key=lambda x:(x[1],x[2],x[0])):
-    print(r[0], r[1], r[2], [(k, round(a,2)) for k,a in r[3]])
+    xy = arr[lab]
+    x,y=xy[:,0],xy[:,1]
+    # center by mean/median
+    xc=x-np.mean(x); yc=y-np.mean(y)
+    z=xc+1j*yc
+    r=np.abs(z)
+    th=np.unwrap(np.angle(z))
+    rotations=(th[-1]-th[0])/(2*np.pi)
+    # radial peaks count over time (prominence crude)
+    rr=(r-np.mean(r))/np.std(r)
+    # count local maxima above thresholds
+    peaks=[]
+    for i in range(1,len(rr)-1):
+        if rr[i]>rr[i-1] and rr[i]>=rr[i+1] and rr[i]>0:
+            peaks.append(i)
+    # Fourier of r versus angle modulo, bin mean per angle
+    theta_mod = np.mod(np.angle(z), 2*np.pi)
+    nb=720
+    bins=np.linspace(0,2*np.pi,nb+1)
+    sums=np.zeros(nb); cnt=np.zeros(nb)
+    inds=np.minimum(np.searchsorted(bins, theta_mod, side='right')-1, nb-1)
+    for idx,rv in zip(inds,r):
+        sums[idx]+=rv; cnt[idx]+=1
+    # fill missing by interpolation
+    centers=(bins[:-1]+bins[1:])/2
+    vals=np.where(cnt>0,sums/np.maximum(cnt,1),np.nan)
+    good=np.isfinite(vals)
+    if good.sum()>10:
+        vals_interp=np.interp(centers, centers[good], vals[good], period=2*np.pi)
+        vals_interp-=np.mean(vals_interp)
+        fft=np.fft.rfft(vals_interp)
+        amps=np.abs(fft)
+        top=np.argsort(amps[1:60])[::-1][:8]+1
+    else:
+        top=[]
+    # Fourier of complex signal vs time top freqs
+    zc=z-np.mean(z)
+    fftz=np.fft.fft(zc)
+    freqs=np.fft.fftfreq(len(zc), d=np.median(np.diff(t)))
+    # positive and negative top excluding zero
+    idxs=np.argsort(np.abs(fftz))[::-1]
+    tops=[]
+    for idx in idxs:
+        if abs(freqs[idx])>1e-9:
+            tops.append((freqs[idx], abs(fftz[idx])))
+        if len(tops)>=6: break
+    print(lab, "rot", rotations, "r_cv", np.std(r)/np.mean(r), "peaks", len(peaks), 
+          "angle_fft_top", [(int(k), round(float(amps[k]/amps[top[0]]),3)) for k in top[:6]] if len(top) else None,
+          "time_freq_top", [(round(float(f),4), round(float(a/tops[0][1]),3)) for f,a in tops[:4]])
 ```
 
 [System: execution output]
-rows 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] time (np.float64(0.0), np.float64(100.0))
+labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+n_time 1001 time range 0.0 100.0 dt med 0.10000000000000142
+A rot -19.013336630073265 r_cv 0.6976159155001951 peaks 133 angle_fft_top [(3, 1.0), (6, 0.563), (9, 0.352), (12, 0.193), (17, 0.185), (7, 0.159)] time_freq_top [(-0.1598, 1.0), (-0.03, 0.789), (-0.3097, 0.726), (-0.2697, 0.645)]
+B rot -5.577269044692552 r_cv 0.7217422214503288 peaks 132 angle_fft_top [(11, 1.0), (12, 0.805), (13, 0.724), (23, 0.551), (14, 0.473), (25, 0.439)] time_freq_top [(-0.05, 1.0), (-0.0599, 0.511), (-1.3686, 0.494), (-0.04, 0.475)]
+C rot -2.889008811140877 r_cv 0.7119436605145862 peaks 132 angle_fft_top [(20, 1.0), (40, 0.437), (19, 0.369), (21, 0.32), (39, 0.276), (41, 0.223)] time_freq_top [(-0.03, 1.0), (-1.3487, 0.232), (-1.3387, 0.213), (-0.02, 0.16)]
+D rot -3.3942256777619124 r_cv 0.7159419146801033 peaks 132 angle_fft_top [(18, 1.0), (17, 0.8), (19, 0.758), (37, 0.492), (35, 0.482), (36, 0.308)] time_freq_top [(-0.03, 1.0), (-1.3586, 0.327), (1.2787, 0.212), (1.2987, 0.185)]
+E rot -6.819815316128408 r_cv 0.6902765058417497 peaks 133 angle_fft_top [(8, 1.0), (9, 0.662), (10, 0.591), (17, 0.483), (11, 0.393), (20, 0.362)] time_freq_top [(-0.0599, 1.0), (-0.0799, 0.639), (-0.0999, 0.494), (-0.0899, 0.438)]
+F rot -4.975831824948464 r_cv 0.7256887007572376 peaks 132 angle_fft_top [(13, 1.0), (26, 0.498), (39, 0.326), (52, 0.237), (12, 0.201), (14, 0.167)] time_freq_top [(-0.05, 1.0), (-0.04, 0.482), (-1.3686, 0.346), (-0.0599, 0.327)]
+G rot -4.461632223576523 r_cv 0.7192167257540352 peaks 132 angle_fft_top [(14, 1.0), (13, 0.626), (15, 0.542), (29, 0.423), (27, 0.392), (28, 0.323)] time_freq_top [(-0.04, 1.0), (-0.05, 0.702), (-0.03, 0.491), (-0.0599, 0.436)]
+H rot -3.5450842541268304 r_cv 0.729661581896427 peaks 131 angle_fft_top [(19, 1.0), (38, 0.513), (18, 0.42), (20, 0.341), (37, 0.286), (58, 0.274)] time_freq_top [(-0.03, 1.0), (-0.04, 0.622), (-1.3487, 0.499), (-0.02, 0.329)]
+I rot -3.4725707861807575 r_cv 0.698929398581847 peaks 133 angle_fft_top [(17, 1.0), (34, 0.444), (16, 0.412), (33, 0.289), (51, 0.289), (18, 0.251)] time_freq_top [(-0.03, 1.0), (-0.04, 0.901), (-0.05, 0.624), (-0.01, 0.473)]
+J rot -14.503658378760377 r_cv 0.6712581889176547 peaks 134 angle_fft_top [(4, 1.0), (8, 0.518), (12, 0.293), (16, 0.213), (3, 0.202), (2, 0.194)] time_freq_top [(-0.1898, 1.0), (-0.1399, 0.885), (-0.03, 0.769), (0.01, 0.609)]
+K rot -12.718089792532268 r_cv 0.695582500725502 peaks 133 angle_fft_top [(5, 1.0), (10, 0.432), (20, 0.326), (15, 0.324), (35, 0.183), (4, 0.17)] time_freq_top [(-0.1499, 1.0), (-0.0799, 0.776), (-1.4486, 0.732), (-0.0599, 0.726)]
+L rot -12.355460537147296 r_cv 0.7242154558962277 peaks 132 angle_fft_top [(6, 1.0), (12, 0.534), (18, 0.403), (24, 0.295), (7, 0.25), (5, 0.245)] time_freq_top [(-0.0999, 1.0), (-0.1099, 0.676), (-0.1598, 0.67), (-1.4286, 0.543)]
+M rot -8.244079391855525 r_cv 0.6996310018412568 peaks 133 angle_fft_top [(7, 1.0), (14, 0.568), (28, 0.253), (21, 0.25), (35, 0.238), (8, 0.216)] time_freq_top [(-0.0899, 1.0), (-0.0799, 0.968), (-0.0699, 0.939), (-1.4186, 0.597)]
+N rot -5.56760206910286 r_cv 0.701544300007813 peaks 133 angle_fft_top [(10, 1.0), (20, 0.569), (30, 0.393), (40, 0.312), (50, 0.283), (47, 0.189)] time_freq_top [(-0.05, 1.0), (-0.0599, 0.627), (-0.0699, 0.414), (-1.3886, 0.367)]
+O rot -35.974721411554874 r_cv 0.736338223388483 peaks 131 angle_fft_top [(2, 1.0), (4, 0.548), (6, 0.363), (12, 0.163), (3, 0.153), (10, 0.133)] time_freq_top [(-0.4995, 1.0), (-0.2897, 0.832), (0.4995, 0.738), (-0.4296, 0.725)]
+P rot -3.6999402817281584 r_cv 0.7115576885349018 peaks 132 angle_fft_top [(11, 1.0), (22, 0.504), (33, 0.326), (10, 0.254), (44, 0.161), (23, 0.155)] time_freq_top [(-0.0599, 1.0), (-0.05, 0.514), (-1.3786, 0.434), (-0.0699, 0.392)]
+Q rot -3.542978441991044 r_cv 0.7050497038635026 peaks 133 angle_fft_top [(16, 1.0), (15, 0.569), (17, 0.563), (31, 0.421), (33, 0.406), (32, 0.321)] time_freq_top [(-0.04, 1.0), (-0.02, 0.714), (-0.05, 0.687), (-0.03, 0.621)]
+R rot -5.825078674248537 r_cv 0.6935357305148055 peaks 133 angle_fft_top [(15, 1.0), (14, 0.478), (30, 0.437), (16, 0.335), (29, 0.315), (31, 0.288)] time_freq_top [(-0.04, 1.0), (-1.3586, 0.258), (1.2787, 0.231), (-0.01, 0.2)]
+S rot -7.127480744545971 r_cv 0.694271175909307 peaks 133 angle_fft_top [(8, 1.0), (16, 0.462), (9, 0.357), (24, 0.335), (7, 0.312), (17, 0.277)] time_freq_top [(-0.0799, 1.0), (-0.0599, 0.942), (-0.03, 0.507), (-1.4086, 0.485)]
+T rot -0.9337773967272408 r_cv 0.7186888668580689 peaks 132 angle_fft_top [(21, 1.0), (22, 0.605), (20, 0.569), (43, 0.477), (41, 0.349), (42, 0.272)] time_freq_top [(-0.03, 1.0), (-1.3487, 0.363), (1.2687, 0.228), (1.2887, 0.216)]
 
-LABEL A
- range x (np.float64(-28.5225), np.float64(17.2563)) y (np.float64(-27.2594), np.float64(21.7824)) mean [ 0.11283107 -0.15564126] bbox [-5.6331 -2.7385]
- center origin [0. 0.] profile_peaks 11 peak_degs [51.0, 94.0, 125.5, 142.2, 153.0, 162.0, 171.8, 222.8, 250.8, 290.2, 343.2] fft_top [(3, np.float64(2.543)), (6, np.float64(1.565)), (9, np.float64(0.939)), (12, np.float64(0.69)), (15, np.float64(0.532)), (21, np.float64(0.373))] time_peak_clusters 3 cl_fft [(3, np.float64(131.1)), (6, np.float64(125.7)), (9, np.float64(117.1)), (12, np.float64(105.9)), (15, np.float64(92.8))]
- center mean [ 0.113 -0.156] profile_peaks 11 peak_degs [14.0, 51.5, 92.2, 141.8, 162.5, 172.2, 215.2, 247.8, 261.5, 290.5, 351.8] fft_top [(3, np.float64(2.496)), (6, np.float64(1.494)), (9, np.float64(1.051)), (12, np.float64(0.616)), (15, np.float64(0.484)), (18, np.float64(0.362))] time_peak_clusters 3 cl_fft [(3, np.float64(131.1)), (6, np.float64(125.7)), (9, np.float64(117.0)), (12, np.float64(105.8)), (15, np.float64(92.7))]
- center median [1.276 0.972] profile_peaks 7 peak_degs [53.0, 114.8, 174.5, 243.8, 257.2, 288.0, 336.8] fft_top [(3, np.float64(2.709)), (6, np.float64(1.563)), (9, np.float64(0.812)), (5, np.float64(0.531)), (12, np.float64(0.491)), (13, np.float64(0.488))] time_peak_clusters 3 cl_fft [(3, np.float64(129.0)), (6, np.float64(117.6)), (9, np.float64(100.6)), (12, np.float64(80.3)), (15, np.float64(59.6))]
- center bbox [-5.633 -2.738] profile_peaks 3 peak_degs [47.0, 167.2, 309.0] fft_top [(3, np.float64(2.483)), (2, np.float64(1.778)), (5, np.float64(1.434)), (1, np.float64(0.77)), (8, np.float64(0.766)), (4, np.float64(0.647))] time_peak_clusters 3 cl_fft [(4, np.float64(87.6)), (7, np.float64(82.4)), (3, np.float64(77.1)), (8, np.float64(66.2)), (11, np.float64(63.9))]
 
-LABEL B
- range x (np.float64(-24.4331), np.float64(27.9632)) y (np.float64(-24.7882), np.float64(26.4132)) mean [ 1.68096543 -0.83314895] bbox [1.76505 0.8125 ]
- center origin [0. 0.] profile_peaks 12 peak_degs [14.8, 45.0, 76.0, 105.5, 134.8, 164.8, 195.2, 225.0, 255.0, 284.8, 315.0, 345.2] fft_top [(12, np.float64(2.788)), (24, np.float64(1.428)), (36, np.float64(0.606)), (14, np.float64(0.292)), (5, np.float64(0.291)), (7, np.float64(0.247))] time_peak_clusters 12 cl_fft [(12, np.float64(117.8)), (24, np.float64(81.1)), (36, np.float64(36.5)), (1, np.float64(25.3)), (11, np.float64(23.9))]
- center mean [ 1.681 -0.833] profile_peaks 12 peak_degs [20.2, 51.8, 81.5, 110.2, 137.2, 164.8, 191.5, 220.5, 250.2, 281.8, 316.0, 347.2] fft_top [(11, np.float64(1.661)), (12, np.float64(1.272)), (13, np.float64(1.206)), (14, np.float64(0.791)), (23, np.float64(0.77)), (25, np.float64(0.571))] time_peak_clusters 12 cl_fft [(12, np.float64(86.6)), (11, np.float64(71.7)), (23, np.float64(57.5)), (13, np.float64(37.5)), (22, np.float64(35.8))]
- center median [ 1.46  -1.289] profile_peaks 12 peak_degs [21.2, 51.8, 81.0, 108.8, 136.2, 162.2, 190.2, 220.0, 250.5, 283.2, 314.8, 348.2] fft_top [(11, np.float64(1.663)), (12, np.float64(1.262)), (13, np.float64(1.219)), (14, np.float64(0.711)), (22, np.float64(0.641)), (10, np.float64(0.609))] time_peak_clusters 12 cl_fft [(12, np.float64(85.9)), (11, np.float64(70.8)), (23, np.float64(54.3)), (22, np.float64(40.3)), (13, np.float64(37.0))]
- center bbox [1.765 0.812] profile_peaks 14 peak_degs [6.2, 15.5, 47.8, 81.5, 111.8, 140.0, 169.2, 196.8, 223.2, 251.5, 281.2, 300.2, 311.0, 344.2] fft_top [(11, np.float64(1.56)), (12, np.float64(1.443)), (13, np.float64(1.267)), (23, np.float64(0.826)), (14, np.float64(0.682)), (10, np.float64(0.644))] time_peak_clusters 12 cl_fft [(12, np.float64(82.2)), (11, np.float64(67.6)), (13, np.float64(54.3)), (25, np.float64(47.1)), (23, np.float64(46.4))]
+[Assistant]
+```python
+import csv, ast, math
+import numpy as np
 
-LABEL C
- range x (np.float64(-26.6663), np.float64(27.8849)) y (np.float64(-24.8589), np.float64(25.9914)) mean [ 0.15473257 -0.52649211] bbox [0.6093  0.56625]
- center origin [0. 0.] profile_peaks 20 peak_degs [8.0, 26.5, 44.2, 62.5, 80.0, 98.2, 116.0, 134.2, 152.2, 170.0, 188.5, 206.2, 224.0, 242.2, 260.0, 278.0, 296.5, 314.0, 332.0, 350.2] fft_top [(20, np.float64(2.45)), (40, np.float64(0.936)), (6, np.float64(0.317)), (12, np.float64(0.264)), (8, np.float64(0.254)), (7, np.float64(0.253))] time_peak_clusters 20 cl_fft [(20, np.float64(96.6)), (40, np.float64(24.4)), (6, np.float64(22.5)), (14, np.float64(20.3)), (2, np.float64(18.8))]
- center mean [ 0.155 -0.526] profile_peaks 20 peak_degs [10.2, 29.2, 46.2, 64.2, 81.8, 98.2, 115.8, 135.0, 151.2, 168.5, 187.5, 204.8, 224.2, 243.0, 261.8, 278.0, 296.5, 315.5, 333.8, 352.8] fft_top [(20, np.float64(2.317)), (19, np.float64(0.888)), (21, np.float64(0.682)), (40, np.float64(0.631)), (39, np.float64(0.44)), (22, np.float64(0.335))] time_peak_clusters 20 cl_fft [(20, np.float64(89.4)), (19, np.float64(31.6)), (21, np.float64(22.8)), (6, np.float64(21.4)), (14, np.float64(20.7))]
- center median [-0.104 -0.742] profile_peaks 20 peak_degs [12.5, 29.5, 46.5, 64.0, 80.5, 98.5, 114.8, 133.0, 150.5, 168.2, 186.2, 204.0, 224.2, 242.0, 260.0, 279.2, 298.0, 316.2, 335.0, 354.2] fft_top [(20, np.float64(1.948)), (19, np.float64(1.252)), (21, np.float64(1.052)), (39, np.float64(0.527)), (18, np.float64(0.385)), (22, np.float64(0.37))] time_peak_clusters 20 cl_fft [(20, np.float64(82.8)), (19, np.float64(40.8)), (21, np.float64(33.9)), (14, np.float64(21.1)), (6, np.float64(20.6))]
- center bbox [0.609 0.566] profile_peaks 20 peak_degs [7.2, 26.5, 44.2, 64.0, 82.5, 100.5, 121.2, 138.5, 155.0, 173.8, 190.2, 207.0, 224.0, 241.2, 258.2, 276.8, 294.2, 312.2, 330.8, 349.0] fft_top [(20, np.float64(1.89)), (19, np.float64(1.386)), (21, np.float64(1.176)), (39, np.float64(0.533)), (22, np.float64(0.489)), (2, np.float64(0.453))] time_peak_clusters 20 cl_fft [(20, np.float64(82.6)), (21, np.float64(40.0)), (19, np.float64(30.6)), (6, np.float64(23.7)), (11, np.float64(18.9))]
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task1_data.csv"
+with open(path, newline='') as f:
+    reader = csv.reader(f)
+    header = next(reader)
+    labels = header[1:]
+    t=[]
+    arr={lab:[] for lab in labels}
+    for row in reader:
+        t.append(float(row[0]))
+        for lab,cell in zip(labels,row[1:]):
+            arr[lab].append(ast.literal_eval(cell))
+t=np.array(t)
+arr={lab:np.array(v,float) for lab,v in arr.items()}
 
-LABEL D
- range x (np.float64(-25.0817), np.float64(28.1567)) y (np.float64(-25.2161), np.float64(26.58)) mean [ 0.85358841 -0.37358631] bbox [1.5375  0.68195]
- center origin [0. 0.] profile_peaks 18 peak_degs [4.2, 24.0, 44.5, 64.2, 84.2, 104.0, 124.2, 144.0, 164.2, 184.0, 204.2, 225.5, 244.2, 264.2, 284.0, 304.0, 324.2, 344.2] fft_top [(18, np.float64(2.502)), (36, np.float64(1.092)), (21, np.float64(0.369)), (8, np.float64(0.237)), (19, np.float64(0.2)), (11, np.float64(0.198))] time_peak_clusters 18 cl_fft [(18, np.float64(102.7)), (36, np.float64(38.4)), (3, np.float64(20.8)), (15, np.float64(16.4)), (6, np.float64(15.9))]
- center mean [ 0.854 -0.374] profile_peaks 18 peak_degs [7.0, 27.5, 49.0, 69.2, 88.0, 108.0, 126.8, 145.2, 164.2, 183.2, 203.5, 222.5, 243.0, 263.0, 283.0, 303.2, 323.8, 344.5] fft_top [(18, np.float64(1.768)), (17, np.float64(1.338)), (19, np.float64(1.22)), (35, np.float64(0.6)), (37, np.float64(0.597)), (2, np.float64(0.428))] time_peak_clusters 18 cl_fft [(18, np.float64(87.9)), (17, np.float64(45.3)), (19, np.float64(26.8)), (35, np.float64(26.7)), (3, np.float64(20.5))]
- center median [ 0.651 -0.451] profile_peaks 18 peak_degs [7.5, 27.2, 48.2, 68.0, 86.8, 106.0, 126.0, 144.5, 164.2, 183.0, 202.2, 223.5, 243.0, 263.0, 282.5, 303.5, 324.2, 345.5] fft_top [(18, np.float64(2.032)), (17, np.float64(1.121)), (19, np.float64(1.102)), (36, np.float64(0.58)), (35, np.float64(0.576)), (37, np.float64(0.545))] time_peak_clusters 18 cl_fft [(18, np.float64(91.3)), (17, np.float64(40.8)), (35, np.float64(24.7)), (19, np.float64(24.0)), (36, np.float64(23.0))]
- center bbox [1.537 0.682] profile_peaks 18 peak_degs [5.8, 24.2, 48.2, 69.2, 90.2, 110.5, 129.5, 150.5, 168.0, 186.5, 204.0, 222.5, 242.2, 263.5, 279.8, 299.8, 322.2, 341.8] fft_top [(17, np.float64(1.621)), (19, np.float64(1.199)), (16, np.float64(0.873)), (18, np.float64(0.787)), (20, np.float64(0.772)), (15, np.float64(0.612))] time_peak_clusters 18 cl_fft [(18, np.float64(57.2)), (17, np.float64(55.6)), (19, np.float64(55.0)), (16, np.float64(32.6)), (34, np.float64(22.4))]
+def angle_fft_scores(xy, center, nb=1440, kmax=30):
+    z=(xy[:,0]-center[0])+1j*(xy[:,1]-center[1])
+    r=np.abs(z)
+    th=np.mod(np.angle(z),2*np.pi)
+    bins=np.linspace(0,2*np.pi,nb+1)
+    centers=(bins[:-1]+bins[1:])/2
+    inds=np.minimum(np.searchsorted(bins, th, side='right')-1, nb-1)
+    sums=np.zeros(nb); cnt=np.zeros(nb)
+    for i,rv in zip(inds,r):
+        sums[i]+=rv; cnt[i]+=1
+    vals=np.full(nb,np.nan)
+    good=cnt>0
+    vals[good]=sums[good]/cnt[good]
+    if good.sum()<10:
+        return None
+    vals=np.interp(centers, centers[good], vals[good], period=2*np.pi)
+    vals-=vals.mean()
+    amps=np.abs(np.fft.rfft(vals))
+    return amps[:kmax+1]
 
-LABEL E
- range x (np.float64(-24.3741), np.float64(27.039)) y (np.float64(-29.3909), np.float64(25.5519)) mean [-0.03993846 -2.56515724] bbox [ 1.33245 -1.9195 ]
- center origin [0. 0.] profile_peaks 10 peak_degs [6.5, 45.8, 85.2, 124.5, 166.0, 205.0, 246.2, 286.0, 325.8, 341.8] fft_top [(9, np.float64(2.847)), (18, np.float64(1.54)), (27, np.float64(0.712)), (36, np.float64(0.4)), (6, np.float64(0.369)), (4, np.float64(0.327))] time_peak_clusters 9 cl_fft [(9, np.float64(124.5)), (18, np.float64(101.1)), (27, np.float64(68.9)), (36, np.float64(35.2)), (1, np.float64(34.6))]
- center mean [-0.04  -2.565] profile_peaks 10 peak_degs [12.8, 52.5, 87.0, 121.5, 159.8, 199.5, 246.0, 276.0, 287.5, 333.2] fft_top [(8, np.float64(1.747)), (9, np.float64(1.174)), (10, np.float64(1.145)), (17, np.float64(0.733)), (11, np.float64(0.73)), (20, np.float64(0.593))] time_peak_clusters 9 cl_fft [(9, np.float64(87.2)), (8, np.float64(79.9)), (17, np.float64(65.2)), (16, np.float64(53.1)), (19, np.float64(53.0))]
- center median [-0.607 -1.725] profile_peaks 11 peak_degs [11.5, 50.0, 77.2, 84.8, 121.8, 161.0, 202.8, 245.8, 267.5, 288.8, 332.2] fft_top [(9, np.float64(1.789)), (8, np.float64(1.466)), (10, np.float64(1.207)), (17, np.float64(0.895)), (19, np.float64(0.677)), (11, np.float64(0.426))] time_peak_clusters 9 cl_fft [(9, np.float64(108.3)), (17, np.float64(74.1)), (8, np.float64(67.8)), (18, np.float64(54.1)), (26, np.float64(49.2))]
- center bbox [ 1.332 -1.919] profile_peaks 10 peak_degs [12.0, 51.5, 90.5, 125.2, 161.2, 180.8, 200.2, 241.2, 286.8, 328.8] fft_top [(8, np.float64(1.774)), (9, np.float64(1.536)), (10, np.float64(1.142)), (17, np.float64(0.785)), (7, np.float64(0.769)), (19, np.float64(0.655))] time_peak_clusters 9 cl_fft [(9, np.float64(87.1)), (8, np.float64(78.2)), (19, np.float64(60.6)), (17, np.float64(60.3)), (16, np.float64(56.1))]
+def tip_angles_scores(xy, center, kmax=30, q=0.75):
+    z=(xy[:,0]-center[0])+1j*(xy[:,1]-center[1])
+    r=np.abs(z)
+    # local maxima
+    idx=[]
+    for i in range(1,len(r)-1):
+        if r[i] >= r[i-1] and r[i] > r[i+1]:
+            idx.append(i)
+    idx=np.array(idx)
+    if len(idx)==0: 
+        return None, 0
+    # keep strongest maxima
+    idx=idx[r[idx] >= np.quantile(r[idx], q)]
+    phi=np.angle(z[idx])
+    scores=[]
+    for k in range(kmax+1):
+        if k==0: scores.append(0.0)
+        else: scores.append(abs(np.mean(np.exp(1j*k*phi))))
+    return np.array(scores), len(idx)
 
-LABEL F
- range x (np.float64(-26.4423), np.float64(27.9969)) y (np.float64(-26.2558), np.float64(27.7435)) mean [ 0.45158092 -0.17721688] bbox [0.7773  0.74385]
- center origin [0. 0.] profile_peaks 13 peak_degs [17.2, 44.5, 72.5, 100.2, 127.8, 156.2, 183.2, 211.2, 238.5, 266.2, 293.8, 321.5, 349.2] fft_top [(13, np.float64(2.616)), (26, np.float64(1.385)), (39, np.float64(0.469)), (9, np.float64(0.206)), (8, np.float64(0.201)), (17, np.float64(0.187))] time_peak_clusters 13 cl_fft [(13, np.float64(115.6)), (26, np.float64(74.3)), (39, np.float64(26.6)), (4, np.float64(13.7)), (9, np.float64(12.4))]
- center mean [ 0.452 -0.177] profile_peaks 13 peak_degs [18.2, 47.0, 74.0, 103.2, 129.2, 156.2, 185.8, 211.2, 237.5, 265.5, 293.0, 321.0, 350.2] fft_top [(13, np.float64(2.519)), (26, np.float64(1.041)), (12, np.float64(0.54)), (14, np.float64(0.474)), (39, np.float64(0.433)), (25, np.float64(0.425))] time_peak_clusters 13 cl_fft [(13, np.float64(112.9)), (26, np.float64(67.3)), (25, np.float64(26.4)), (12, np.float64(22.9)), (39, np.float64(21.1))]
- center median [ 0.321 -0.345] profile_peaks 13 peak_degs [19.0, 46.2, 73.8, 102.5, 128.0, 156.0, 182.0, 210.8, 238.2, 268.2, 294.5, 321.8, 350.2] fft_top [(13, np.float64(2.561)), (26, np.float64(1.073)), (12, np.float64(0.575)), (14, np.float64(0.527)), (39, np.float64(0.492)), (25, np.float64(0.48))] time_peak_clusters 13 cl_fft [(13, np.float64(112.8)), (26, np.float64(67.2)), (25, np.float64(25.8)), (12, np.float64(22.2)), (39, np.float64(21.1))]
- center bbox [0.777 0.744] profile_peaks 13 peak_degs [16.2, 44.8, 74.8, 105.0, 132.5, 159.8, 186.2, 211.8, 237.8, 265.0, 291.5, 320.0, 349.0] fft_top [(13, np.float64(2.164)), (14, np.float64(1.254)), (12, np.float64(1.235)), (25, np.float64(0.741)), (26, np.float64(0.718)), (27, np.float64(0.545))] time_peak_clusters 13 cl_fft [(13, np.float64(104.2)), (26, np.float64(47.4)), (25, np.float64(38.0)), (27, np.float64(35.3)), (12, np.float64(35.0))]
+def high_radius_scores(xy, center, kmax=30, q=0.90):
+    z=(xy[:,0]-center[0])+1j*(xy[:,1]-center[1])
+    r=np.abs(z)
+    phi=np.angle(z[r>=np.quantile(r,q)])
+    return np.array([0.0]+[abs(np.mean(np.exp(1j*k*phi))) for k in range(1,kmax+1)])
 
-LABEL G
- range x (np.float64(-24.1922), np.float64(28.2209)) y (np.float64(-26.3483), np.float64(26.5784)) mean [0.64123946 0.78786184] bbox [2.01435 0.11505]
- center origin [0. 0.] profile_peaks 14 peak_degs [18.2, 44.8, 70.5, 96.0, 122.0, 147.8, 174.2, 198.5, 224.5, 250.0, 275.8, 301.5, 327.8, 353.5] fft_top [(14, np.float64(2.472)), (28, np.float64(1.265)), (7, np.float64(0.29)), (6, np.float64(0.255)), (18, np.float64(0.246)), (20, np.float64(0.231))] time_peak_clusters 14 cl_fft [(14, np.float64(113.5)), (28, np.float64(67.7)), (5, np.float64(16.5)), (4, np.float64(14.8)), (9, np.float64(14.3))]
- center mean [0.641 0.788] profile_peaks 15 peak_degs [20.2, 44.2, 71.8, 99.0, 126.2, 151.0, 177.0, 200.8, 225.0, 250.0, 274.5, 289.8, 299.2, 325.2, 352.0] fft_top [(14, np.float64(2.161)), (13, np.float64(1.283)), (15, np.float64(1.057)), (29, np.float64(0.667)), (27, np.float64(0.663)), (28, np.float64(0.599))] time_peak_clusters 14 cl_fft [(14, np.float64(102.4)), (28, np.float64(43.5)), (13, np.float64(42.7)), (27, np.float64(39.1)), (29, np.float64(26.3))]
- center median [0.826 0.325] profile_peaks 14 peak_degs [18.2, 46.2, 73.2, 99.2, 125.2, 151.5, 175.0, 199.0, 226.2, 248.8, 273.8, 301.0, 325.5, 352.0] fft_top [(14, np.float64(2.331)), (15, np.float64(1.123)), (13, np.float64(1.023)), (29, np.float64(0.735)), (28, np.float64(0.672)), (27, np.float64(0.484))] time_peak_clusters 14 cl_fft [(14, np.float64(104.8)), (28, np.float64(48.1)), (13, np.float64(38.7)), (27, np.float64(37.6)), (29, np.float64(26.5))]
- center bbox [2.014 0.115] profile_peaks 14 peak_degs [21.5, 50.0, 76.8, 100.5, 127.8, 151.0, 174.8, 197.0, 221.5, 245.8, 271.0, 298.5, 324.2, 354.5] fft_top [(13, np.float64(1.544)), (15, np.float64(1.388)), (16, np.float64(0.871)), (14, np.float64(0.87)), (12, np.float64(0.764)), (27, np.float64(0.51))] time_peak_clusters 14 cl_fft [(14, np.float64(69.5)), (13, np.float64(62.7)), (15, np.float64(57.9)), (27, np.float64(34.5)), (26, np.float64(32.1))]
+for lab in labels:
+    xy=arr[lab]
+    centers = {
+        "origin": np.array([0.0,0.0]),
+        "mean": xy.mean(axis=0),
+        "median": np.median(xy,axis=0)
+    }
+    print("\n", lab, "mean", centers["mean"], "median", centers["median"])
+    for cname,c in centers.items():
+        amps=angle_fft_scores(xy,c)
+        top=np.argsort(amps[1:26])[::-1][:8]+1
+        print(" fft", cname, [(int(k), round(float(amps[k]/amps[top[0]]),3)) for k in top[:6]])
+    # circular scores for local outer maxima, origin+mean
+    for cname,c in [("origin",centers["origin"]),("mean",centers["mean"])]:
+        sc,n=tip_angles_scores(xy,c,kmax=30,q=0.6)
+        top=np.argsort(sc[1:26])[::-1][:8]+1
+        print(" tips", cname, "n", n, [(int(k), round(float(sc[k]),3)) for k in top[:6]])
+        hs=high_radius_scores(xy,c,kmax=30,q=0.9)
+        top2=np.argsort(hs[1:26])[::-1][:8]+1
+        print(" high", cname, [(int(k), round(float(hs[k]),3)) for k in top2[:6]])
 
-LABEL H
- range x (np.float64(-26.0098), np.float64(28.0296)) y (np.float64(-27.3221), np.float64(25.726)) mean [ 0.44421938 -0.50368122] bbox [ 1.0099  -0.79805]
- center origin [0. 0.] profile_peaks 19 peak_degs [6.2, 25.2, 44.0, 63.0, 82.0, 101.2, 120.2, 139.0, 158.0, 176.8, 195.8, 214.8, 233.8, 252.8, 271.5, 290.5, 309.5, 328.5, 347.2] fft_top [(19, np.float64(2.457)), (38, np.float64(0.949)), (12, np.float64(0.338)), (8, np.float64(0.227)), (16, np.float64(0.217)), (10, np.float64(0.176))] time_peak_clusters 19 cl_fft [(19, np.float64(99.9)), (38, np.float64(31.5)), (7, np.float64(15.1)), (12, np.float64(14.8)), (4, np.float64(11.2))]
- center mean [ 0.444 -0.504] profile_peaks 19 peak_degs [10.0, 28.0, 47.2, 65.0, 84.8, 102.5, 120.5, 139.2, 159.8, 176.0, 194.0, 215.8, 233.0, 251.5, 272.5, 290.5, 309.5, 329.5, 349.2] fft_top [(19, np.float64(2.292)), (18, np.float64(0.877)), (20, np.float64(0.834)), (38, np.float64(0.768)), (37, np.float64(0.405)), (39, np.float64(0.349))] time_peak_clusters 19 cl_fft [(19, np.float64(92.7)), (18, np.float64(31.8)), (38, np.float64(22.9)), (20, np.float64(19.9)), (37, np.float64(17.5))]
- center median [ 0.513 -0.312] profile_peaks 19 peak_degs [7.8, 27.2, 48.0, 66.0, 84.5, 102.5, 121.5, 139.2, 158.2, 175.8, 196.5, 213.0, 232.0, 250.8, 270.2, 290.0, 310.5, 328.2, 348.2] fft_top [(19, np.float64(2.218)), (20, np.float64(0.917)), (18, np.float64(0.905)), (38, np.float64(0.566)), (37, np.float64(0.428)), (39, np.float64(0.394))] time_peak_clusters 19 cl_fft [(19, np.float64(94.5)), (18, np.float64(28.7)), (38, np.float64(25.0)), (20, np.float64(16.8)), (37, np.float64(16.3))]
- center bbox [ 1.01  -0.798] profile_peaks 19 peak_degs [10.2, 30.0, 49.8, 69.2, 86.8, 105.0, 122.2, 139.0, 156.5, 174.8, 193.0, 211.2, 230.2, 250.5, 268.8, 291.2, 312.5, 329.0, 350.2] fft_top [(18, np.float64(1.656)), (19, np.float64(1.111)), (20, np.float64(1.074)), (21, np.float64(0.837)), (17, np.float64(0.682)), (4, np.float64(0.408))] time_peak_clusters 19 cl_fft [(19, np.float64(72.4)), (18, np.float64(50.7)), (20, np.float64(40.9)), (37, np.float64(19.9)), (17, np.float64(17.8))]
+# Try assign distinct 2..21 by dominant fft with origin/mean?
+print("\nSummary dominant k by methods")
+for lab in labels:
+    xy=arr[lab]
+    doms=[]
+    for c in [np.array([0.,0.]), xy.mean(axis=0), np.median(xy,axis=0)]:
+        amps=angle_fft_scores(xy,c)
+        doms.append(int(np.argmax(amps[1:26])+1))
+    sc,n=tip_angles_scores(xy,xy.mean(axis=0),kmax=30,q=0.6)
+    doms.append(int(np.argmax(sc[1:26])+1))
+    hs=high_radius_scores(xy,xy.mean(axis=0),kmax=30,q=0.9)
+    doms.append(int(np.argmax(hs[1:26])+1))
+    print(lab, doms)
+```
 
-LABEL I
- range x (np.float64(-26.2602), np.float64(28.2564)) y (np.float64(-27.5939), np.float64(27.6715)) mean [0.42911179 0.45822817] bbox [0.9981 0.0388]
- center origin [0. 0.] profile_peaks 17 peak_degs [2.0, 23.2, 44.2, 65.8, 87.0, 109.0, 129.5, 150.0, 171.2, 192.5, 214.2, 234.2, 255.8, 277.5, 298.5, 319.8, 340.8] fft_top [(17, np.float64(2.458)), (34, np.float64(1.048)), (5, np.float64(0.162)), (1, np.float64(0.158)), (8, np.float64(0.152)), (21, np.float64(0.146))] time_peak_clusters 17 cl_fft [(17, np.float64(106.3)), (34, np.float64(45.8)), (2, np.float64(15.7)), (15, np.float64(14.5)), (4, np.float64(12.4))]
- center mean [0.429 0.458] profile_peaks 17 peak_degs [1.5, 25.0, 44.2, 66.5, 88.5, 110.8, 132.0, 153.0, 173.2, 193.8, 215.2, 234.5, 255.0, 277.0, 297.8, 317.8, 341.0] fft_top [(17, np.float64(2.394)), (16, np.float64(1.042)), (34, np.float64(0.751)), (18, np.float64(0.591)), (33, np.float64(0.529)), (19, np.float64(0.383))] time_peak_clusters 17 cl_fft [(17, np.float64(99.0)), (16, np.float64(34.1)), (34, np.float64(33.8)), (33, np.float64(25.7)), (18, np.float64(23.0))]
- center median [0.423 0.315] profile_peaks 17 peak_degs [3.8, 25.2, 44.5, 66.8, 88.5, 110.5, 131.5, 153.0, 173.5, 193.2, 213.8, 234.8, 257.5, 276.0, 298.0, 318.5, 341.0] fft_top [(17, np.float64(2.516)), (34, np.float64(0.806)), (16, np.float64(0.758)), (18, np.float64(0.531)), (33, np.float64(0.36)), (35, np.float64(0.304))] time_peak_clusters 17 cl_fft [(17, np.float64(101.0)), (34, np.float64(37.1)), (16, np.float64(30.7)), (33, np.float64(23.9)), (18, np.float64(19.0))]
- center bbox [0.998 0.039] profile_peaks 17 peak_degs [2.8, 26.5, 48.2, 70.2, 91.8, 111.0, 132.5, 152.8, 171.8, 192.2, 212.8, 233.8, 254.0, 275.2, 296.0, 320.8, 340.5] fft_top [(17, np.float64(1.834)), (16, np.float64(1.328)), (18, np.float64(1.079)), (33, np.float64(0.553)), (19, np.float64(0.527)), (35, np.float64(0.505))] time_peak_clusters 17 cl_fft [(17, np.float64(87.6)), (16, np.float64(46.6)), (18, np.float64(39.8)), (33, np.float64(30.5)), (35, np.float64(24.4))]
+[System: execution output]
 
-LABEL J
- range x (np.float64(-23.2423), np.float64(20.4482)) y (np.float64(-21.8426), np.float64(21.6966)) mean [1.58147413 0.39731289] bbox [-1.39705 -0.073  ]
- center origin [0. 0.] profile_peaks 11 peak_degs [49.0, 90.8, 131.2, 139.8, 171.8, 189.2, 229.2, 266.8, 279.5, 318.8, 356.0] fft_top [(4, np.float64(2.597)), (8, np.float64(1.613)), (12, np.float64(0.754)), (16, np.float64(0.649)), (20, np.float64(0.544)), (28, np.float64(0.332))] time_peak_clusters 4 cl_fft [(4, np.float64(131.3)), (8, np.float64(123.6)), (12, np.float64(111.5)), (16, np.float64(96.3)), (20, np.float64(79.1))]
- center mean [1.581 0.397] profile_peaks 6 peak_degs [51.8, 141.8, 206.5, 228.0, 319.0, 353.0] fft_top [(4, np.float64(2.766)), (8, np.float64(1.433)), (12, np.float64(0.806)), (7, np.float64(0.572)), (3, np.float64(0.57)), (5, np.float64(0.529))] time_peak_clusters 4 cl_fft [(4, np.float64(127.1)), (8, np.float64(108.2)), (12, np.float64(81.6)), (11, np.float64(63.1)), (15, np.float64(62.1))]
- center median [2.143 0.57 ] profile_peaks 9 peak_degs [18.8, 52.8, 127.8, 142.8, 207.5, 226.8, 277.8, 318.0, 348.2] fft_top [(4, np.float64(2.867)), (8, np.float64(1.299)), (2, np.float64(0.784)), (3, np.float64(0.768)), (6, np.float64(0.689)), (12, np.float64(0.513))] time_peak_clusters 4 cl_fft [(4, np.float64(123.6)), (8, np.float64(95.9)), (11, np.float64(69.0)), (7, np.float64(63.6)), (15, np.float64(61.6))]
- center bbox [-1.397 -0.073] profile_peaks 8 peak_degs [46.8, 78.2, 99.8, 113.2, 139.2, 233.2, 322.2, 357.2] fft_top [(4, np.float64(2.793)), (8, np.float64(1.431)), (12, np.float64(0.869)), (5, np.float64(0.595)), (16, np.float64(0.519)), (3, np.float64(0.501))] time_peak_clusters 4 cl_fft [(4, np.float64(128.7)), (8, np.float64(113.7)), (12, np.float64(91.7)), (16, np.float64(66.5)), (13, np.float64(60.5))]
+ A mean [ 0.11283107 -0.15564126] median [1.2764 0.9715]
+ fft origin [(3, 1.0), (6, 0.605), (9, 0.301), (12, 0.256), (15, 0.188), (24, 0.141)]
+ fft mean [(3, 1.0), (6, 0.573), (9, 0.358), (12, 0.191), (17, 0.187), (7, 0.172)]
+ fft median [(3, 1.0), (6, 0.558), (9, 0.295), (5, 0.225), (15, 0.208), (12, 0.207)]
+ tips origin n 53 [(3, 0.992), (6, 0.967), (9, 0.927), (12, 0.874), (15, 0.811), (18, 0.741)]
+ high origin [(3, 0.979), (6, 0.918), (9, 0.827), (12, 0.72), (15, 0.612), (18, 0.518)]
+ tips mean n 53 [(3, 0.991), (6, 0.964), (9, 0.921), (12, 0.864), (15, 0.797), (18, 0.722)]
+ high mean [(3, 0.979), (6, 0.919), (9, 0.83), (12, 0.724), (15, 0.615), (18, 0.519)]
 
-LABEL K
- range x (np.float64(-29.093), np.float64(25.1092)) y (np.float64(-28.2306), np.float64(25.6769)) mean [-0.26764396  0.47109031] bbox [-1.9919  -1.27685]
- center origin [0. 0.] profile_peaks 8 peak_degs [47.5, 76.0, 91.0, 112.5, 121.2, 192.0, 263.5, 335.2] fft_top [(5, np.float64(2.538)), (10, np.float64(1.402)), (15, np.float64(0.859)), (20, np.float64(0.575)), (25, np.float64(0.52)), (35, np.float64(0.296))] time_peak_clusters 5 cl_fft [(5, np.float64(129.6)), (10, np.float64(120.0)), (15, np.float64(105.1)), (20, np.float64(86.7)), (25, np.float64(66.7))]
- center mean [-0.268  0.471] profile_peaks 10 peak_degs [18.2, 47.8, 66.2, 89.5, 113.2, 121.2, 193.2, 264.2, 335.0, 349.0] fft_top [(5, np.float64(2.614)), (10, np.float64(1.263)), (15, np.float64(0.898)), (20, np.float64(0.779)), (25, np.float64(0.446)), (6, np.float64(0.407))] time_peak_clusters 5 cl_fft [(5, np.float64(128.9)), (10, np.float64(117.1)), (15, np.float64(99.5)), (20, np.float64(78.5)), (25, np.float64(57.1))]
- center median [-0.623 -0.357] profile_peaks 9 peak_degs [47.0, 71.2, 84.2, 119.2, 155.2, 192.0, 215.8, 265.8, 337.0] fft_top [(5, np.float64(2.662)), (10, np.float64(1.397)), (15, np.float64(0.888)), (20, np.float64(0.685)), (30, np.float64(0.417)), (6, np.float64(0.377))] time_peak_clusters 5 cl_fft [(5, np.float64(128.5)), (10, np.float64(115.9)), (15, np.float64(97.1)), (20, np.float64(75.1)), (25, np.float64(53.0))]
- center bbox [-1.992 -1.277] profile_peaks 5 peak_degs [46.2, 115.0, 191.0, 268.5, 341.8] fft_top [(5, np.float64(2.418)), (4, np.float64(1.312)), (6, np.float64(1.083)), (10, np.float64(0.767)), (11, np.float64(0.731)), (9, np.float64(0.638))] time_peak_clusters 5 cl_fft [(5, np.float64(117.3)), (10, np.float64(82.4)), (16, np.float64(62.3)), (11, np.float64(62.0)), (14, np.float64(51.7))]
+ B mean [ 1.68096543 -0.83314895] median [ 1.4603 -1.2886]
+ fft origin [(12, 1.0), (24, 0.588), (9, 0.138), (14, 0.131), (5, 0.13), (15, 0.127)]
+ fft mean [(11, 1.0), (12, 0.761), (13, 0.723), (23, 0.552), (14, 0.46), (25, 0.426)]
+ fft median [(11, 1.0), (13, 0.774), (12, 0.761), (22, 0.477), (14, 0.439), (25, 0.409)]
+ tips origin n 53 [(12, 0.991), (24, 0.966), (25, 0.094), (13, 0.093), (1, 0.092), (11, 0.091)]
+ high origin [(12, 0.984), (24, 0.939), (20, 0.113), (8, 0.098), (2, 0.095), (10, 0.094)]
+ tips mean n 56 [(12, 0.772), (25, 0.641), (13, 0.621), (23, 0.511), (14, 0.264), (1, 0.247)]
+ high mean [(12, 0.746), (25, 0.63), (13, 0.581), (23, 0.531), (11, 0.336), (24, 0.188)]
 
-LABEL L
- range x (np.float64(-28.5706), np.float64(27.4582)) y (np.float64(-26.8373), np.float64(27.4459)) mean [0.29544525 0.38662937] bbox [-0.5562  0.3043]
- center origin [0. 0.] profile_peaks 8 peak_degs [46.5, 92.0, 107.0, 159.8, 166.8, 227.2, 287.8, 348.0] fft_top [(6, np.float64(2.864)), (12, np.float64(1.433)), (18, np.float64(1.013)), (24, np.float64(0.607)), (30, np.float64(0.551)), (36, np.float64(0.313))] time_peak_clusters 6 cl_fft [(6, np.float64(127.7)), (12, np.float64(115.4)), (18, np.float64(96.8)), (24, np.float64(74.5)), (30, np.float64(51.3))]
- center mean [0.295 0.387] profile_peaks 8 peak_degs [46.8, 108.0, 169.0, 227.2, 274.8, 286.2, 332.0, 347.5] fft_top [(6, np.float64(2.769)), (12, np.float64(1.503)), (18, np.float64(1.084)), (24, np.float64(0.707)), (5, np.float64(0.503)), (7, np.float64(0.459))] time_peak_clusters 6 cl_fft [(6, np.float64(127.0)), (12, np.float64(113.0)), (18, np.float64(92.4)), (24, np.float64(68.5)), (30, np.float64(44.9))]
- center median [0.548 0.597] profile_peaks 9 peak_degs [46.8, 110.5, 157.5, 168.8, 227.0, 285.0, 303.0, 330.8, 346.5] fft_top [(6, np.float64(2.643)), (12, np.float64(1.237)), (18, np.float64(0.968)), (7, np.float64(0.689)), (24, np.float64(0.586)), (5, np.float64(0.548))] time_peak_clusters 6 cl_fft [(6, np.float64(125.8)), (12, np.float64(108.5)), (18, np.float64(84.2)), (24, np.float64(57.7)), (17, np.float64(36.8))]
- center bbox [-0.556  0.304] profile_peaks 7 peak_degs [45.5, 107.0, 167.0, 228.5, 288.0, 334.0, 347.5] fft_top [(6, np.float64(2.83)), (12, np.float64(1.26)), (18, np.float64(0.795)), (5, np.float64(0.648)), (17, np.float64(0.576)), (24, np.float64(0.526))] time_peak_clusters 6 cl_fft [(6, np.float64(126.6)), (12, np.float64(111.4)), (18, np.float64(89.4)), (24, np.float64(64.7)), (30, np.float64(41.1))]
+ C mean [ 0.15473257 -0.52649211] median [-0.1037 -0.7425]
+ fft origin [(20, 1.0), (8, 0.139), (6, 0.127), (11, 0.125), (14, 0.122), (12, 0.114)]
+ fft mean [(20, 1.0), (19, 0.363), (21, 0.321), (22, 0.168), (14, 0.143), (17, 0.117)]
+ fft median [(20, 1.0), (19, 0.669), (21, 0.538), (22, 0.227), (18, 0.199), (16, 0.155)]
+ tips origin n 53 [(20, 0.991), (22, 0.145), (2, 0.128), (18, 0.109), (19, 0.07), (11, 0.065)]
+ high origin [(20, 0.986), (16, 0.096), (14, 0.094), (4, 0.093), (18, 0.093), (6, 0.092)]
+ tips mean n 53 [(20, 0.936), (21, 0.292), (19, 0.19), (15, 0.115), (2, 0.103), (5, 0.087)]
+ high mean [(20, 0.925), (21, 0.269), (19, 0.228), (2, 0.087), (14, 0.08), (8, 0.08)]
 
-LABEL M
- range x (np.float64(-25.763), np.float64(27.9842)) y (np.float64(-26.4271), np.float64(24.992)) mean [-0.71795534 -0.23793177] bbox [ 1.1106  -0.71755]
- center origin [0. 0.] profile_peaks 9 peak_degs [34.8, 46.0, 97.8, 149.2, 200.0, 222.0, 252.5, 303.5, 355.2] fft_top [(7, np.float64(2.619)), (14, np.float64(1.618)), (21, np.float64(0.854)), (35, np.float64(0.47)), (28, np.float64(0.469)), (22, np.float64(0.251))] time_peak_clusters 7 cl_fft [(7, np.float64(127.5)), (14, np.float64(112.0)), (21, np.float64(89.1)), (28, np.float64(62.6)), (35, np.float64(36.5))]
- center mean [-0.718 -0.238] profile_peaks 9 peak_degs [47.0, 91.2, 97.8, 147.8, 173.2, 201.2, 254.2, 305.5, 356.8] fft_top [(7, np.float64(2.6)), (14, np.float64(1.463)), (21, np.float64(0.636)), (8, np.float64(0.521)), (28, np.float64(0.471)), (13, np.float64(0.44))] time_peak_clusters 7 cl_fft [(7, np.float64(125.7)), (14, np.float64(105.7)), (21, np.float64(78.1)), (28, np.float64(49.3)), (20, np.float64(31.7))]
- center median [-0.961 -0.67 ] profile_peaks 11 peak_degs [34.8, 46.8, 78.2, 96.5, 116.5, 147.0, 180.0, 201.2, 254.5, 308.2, 357.5] fft_top [(7, np.float64(2.39)), (14, np.float64(1.145)), (8, np.float64(0.772)), (6, np.float64(0.771)), (13, np.float64(0.608)), (22, np.float64(0.525))] time_peak_clusters 7 cl_fft [(7, np.float64(122.7)), (14, np.float64(95.9)), (21, np.float64(61.9)), (20, np.float64(43.4)), (13, np.float64(42.6))]
- center bbox [ 1.111 -0.718] profile_peaks 11 peak_degs [49.8, 100.8, 130.2, 149.5, 171.2, 198.8, 236.0, 251.8, 289.2, 303.5, 357.8] fft_top [(7, np.float64(2.622)), (14, np.float64(1.194)), (6, np.float64(0.928)), (8, np.float64(0.833)), (13, np.float64(0.606)), (21, np.float64(0.559))] time_peak_clusters 7 cl_fft [(7, np.float64(121.5)), (14, np.float64(91.7)), (21, np.float64(55.3)), (15, np.float64(47.4)), (22, np.float64(45.4))]
+ D mean [ 0.85358841 -0.37358631] median [ 0.6513 -0.4513]
+ fft origin [(18, 1.0), (21, 0.186), (15, 0.158), (14, 0.096), (12, 0.096), (24, 0.093)]
+ fft mean [(18, 1.0), (17, 0.809), (19, 0.761), (2, 0.292), (16, 0.2), (20, 0.197)]
+ fft median [(18, 1.0), (17, 0.549), (19, 0.543), (2, 0.216), (20, 0.164), (16, 0.15)]
+ tips origin n 53 [(18, 0.99), (23, 0.145), (14, 0.12), (22, 0.118), (4, 0.118), (17, 0.109)]
+ high origin [(18, 0.985), (14, 0.081), (4, 0.072), (15, 0.069), (17, 0.064), (22, 0.063)]
+ tips mean n 53 [(18, 0.874), (19, 0.392), (17, 0.245), (20, 0.159), (14, 0.137), (3, 0.107)]
+ high mean [(18, 0.846), (19, 0.383), (17, 0.322), (20, 0.11), (3, 0.082), (15, 0.071)]
 
-LABEL N
- range x (np.float64(-26.3252), np.float64(25.7079)) y (np.float64(-27.6913), np.float64(26.2101)) mean [-0.01856503  0.01555554] bbox [-0.30865 -0.7406 ]
- center origin [0. 0.] profile_peaks 13 peak_degs [10.0, 45.2, 81.8, 117.8, 126.5, 153.2, 189.2, 225.5, 262.2, 281.2, 298.5, 327.5, 335.2] fft_top [(10, np.float64(2.401)), (20, np.float64(1.297)), (30, np.float64(0.743)), (40, np.float64(0.437)), (4, np.float64(0.253)), (33, np.float64(0.188))] time_peak_clusters 10 cl_fft [(10, np.float64(122.8)), (20, np.float64(95.3)), (30, np.float64(58.6)), (2, np.float64(30.5)), (12, np.float64(28.7))]
- center mean [-0.019  0.016] profile_peaks 12 peak_degs [9.0, 45.8, 81.8, 117.8, 153.2, 189.2, 225.5, 262.2, 281.5, 298.0, 327.2, 335.0] fft_top [(10, np.float64(2.402)), (20, np.float64(1.277)), (30, np.float64(0.752)), (40, np.float64(0.421)), (4, np.float64(0.248)), (2, np.float64(0.211))] time_peak_clusters 10 cl_fft [(10, np.float64(122.7)), (20, np.float64(95.1)), (30, np.float64(58.3)), (2, np.float64(30.4)), (12, np.float64(28.3))]
- center median [-0.26   0.071] profile_peaks 11 peak_degs [9.5, 46.0, 80.8, 117.8, 153.0, 189.5, 226.0, 263.0, 298.0, 314.2, 334.0] fft_top [(10, np.float64(2.761)), (20, np.float64(1.381)), (30, np.float64(0.617)), (40, np.float64(0.327)), (15, np.float64(0.265)), (23, np.float64(0.254))] time_peak_clusters 10 cl_fft [(10, np.float64(121.9)), (20, np.float64(92.4)), (30, np.float64(54.5)), (2, np.float64(30.6)), (12, np.float64(28.2))]
- center bbox [-0.309 -0.741] profile_peaks 10 peak_degs [12.2, 46.5, 81.2, 116.5, 153.0, 188.0, 224.5, 262.8, 300.0, 336.0] fft_top [(10, np.float64(2.502)), (20, np.float64(1.051)), (11, np.float64(0.828)), (9, np.float64(0.638)), (19, np.float64(0.474)), (30, np.float64(0.469))] time_peak_clusters 10 cl_fft [(10, np.float64(117.7)), (20, np.float64(79.8)), (30, np.float64(38.1)), (19, np.float64(36.4)), (21, np.float64(34.3))]
+ E mean [-0.03993846 -2.56515724] median [-0.6074 -1.7246]
+ fft origin [(9, 1.0), (18, 0.566), (6, 0.174), (4, 0.143), (8, 0.112), (12, 0.111)]
+ fft mean [(8, 1.0), (9, 0.643), (10, 0.603), (17, 0.445), (11, 0.411), (20, 0.374)]
+ fft median [(9, 1.0), (8, 0.828), (10, 0.735), (17, 0.513), (19, 0.44), (25, 0.26)]
+ tips origin n 53 [(9, 0.99), (18, 0.962), (24, 0.179), (15, 0.152), (6, 0.121), (25, 0.105)]
+ high origin [(9, 0.985), (18, 0.941), (25, 0.15), (16, 0.146), (7, 0.136), (2, 0.122)]
+ tips mean n 57 [(9, 0.786), (19, 0.629), (10, 0.59), (17, 0.505), (20, 0.498), (18, 0.291)]
+ high mean [(9, 0.718), (19, 0.633), (10, 0.629), (17, 0.5), (20, 0.449), (25, 0.334)]
 
-LABEL O
- range x (np.float64(-17.3943), np.float64(17.1956)) y (np.float64(-23.3827), np.float64(23.4594)) mean [-0.85917792 -0.85126533] bbox [-0.09935  0.03835]
- center origin [0. 0.] profile_peaks 8 peak_degs [33.0, 43.2, 50.8, 128.5, 220.2, 236.2, 279.8, 355.0] fft_top [(2, np.float64(2.849)), (4, np.float64(1.622)), (6, np.float64(0.967)), (10, np.float64(0.64)), (8, np.float64(0.586)), (12, np.float64(0.537))] time_peak_clusters 2 cl_fft [(2, np.float64(129.7)), (4, np.float64(125.8)), (6, np.float64(119.5)), (8, np.float64(111.2)), (10, np.float64(101.3))]
- center mean [-0.859 -0.851] profile_peaks 8 peak_degs [29.2, 43.2, 57.2, 121.0, 235.2, 312.5, 327.2, 356.2] fft_top [(2, np.float64(2.798)), (4, np.float64(1.58)), (6, np.float64(1.041)), (8, np.float64(0.561)), (12, np.float64(0.482)), (10, np.float64(0.437))] time_peak_clusters 2 cl_fft [(2, np.float64(129.7)), (4, np.float64(125.7)), (6, np.float64(119.4)), (8, np.float64(111.0)), (10, np.float64(101.0))]
- center median [-1.16  -0.896] profile_peaks 10 peak_degs [13.0, 34.5, 42.8, 56.8, 116.8, 157.0, 219.2, 235.8, 300.0, 325.2] fft_top [(2, np.float64(2.728)), (4, np.float64(1.576)), (6, np.float64(0.848)), (12, np.float64(0.583)), (8, np.float64(0.529)), (14, np.float64(0.439))] time_peak_clusters 2 cl_fft [(2, np.float64(129.7)), (4, np.float64(125.8)), (6, np.float64(119.6)), (8, np.float64(111.4)), (10, np.float64(101.6))]
- center bbox [-0.099  0.038] profile_peaks 9 peak_degs [13.0, 28.0, 35.8, 43.0, 54.2, 149.8, 222.0, 236.5, 354.0] fft_top [(2, np.float64(2.645)), (4, np.float64(1.528)), (6, np.float64(1.033)), (8, np.float64(0.694)), (10, np.float64(0.555)), (16, np.float64(0.372))] time_peak_clusters 2 cl_fft [(2, np.float64(129.7)), (4, np.float64(125.8)), (6, np.float64(119.7)), (8, np.float64(111.5)), (10, np.float64(101.7))]
+ F mean [ 0.45158092 -0.17721688] median [ 0.3214 -0.345 ]
+ fft origin [(13, 1.0), (9, 0.131), (8, 0.109), (1, 0.093), (17, 0.092), (15, 0.086)]
+ fft mean [(13, 1.0), (12, 0.247), (14, 0.195), (25, 0.186), (18, 0.151), (24, 0.129)]
+ fft median [(13, 1.0), (14, 0.234), (12, 0.204), (25, 0.178), (10, 0.167), (15, 0.148)]
+ tips origin n 53 [(13, 0.993), (17, 0.116), (23, 0.103), (10, 0.094), (4, 0.093), (20, 0.089)]
+ high origin [(13, 0.985), (22, 0.124), (9, 0.116), (4, 0.102), (17, 0.085), (10, 0.079)]
+ tips mean n 53 [(13, 0.976), (14, 0.211), (25, 0.171), (24, 0.106), (1, 0.095), (18, 0.091)]
+ high mean [(13, 0.965), (25, 0.222), (14, 0.182), (9, 0.11), (22, 0.108), (12, 0.105)]
 
-LABEL P
- range x (np.float64(-24.925), np.float64(26.8644)) y (np.float64(-24.2788), np.float64(26.6316)) mean [ 0.59895824 -0.09238212] bbox [0.9697 1.1764]
- center origin [0. 0.] profile_peaks 11 peak_degs [13.2, 45.2, 78.2, 110.8, 143.8, 176.2, 208.8, 241.2, 274.5, 307.0, 338.0] fft_top [(11, np.float64(2.675)), (22, np.float64(1.403)), (33, np.float64(0.634)), (3, np.float64(0.31)), (8, np.float64(0.285)), (4, np.float64(0.281))] time_peak_clusters 11 cl_fft [(11, np.float64(120.0)), (22, np.float64(88.1)), (33, np.float64(47.4)), (7, np.float64(21.4)), (18, np.float64(19.5))]
- center mean [ 0.599 -0.092] profile_peaks 11 peak_degs [13.5, 46.2, 79.8, 112.5, 144.5, 176.8, 208.2, 241.2, 273.8, 306.2, 340.0] fft_top [(11, np.float64(2.694)), (22, np.float64(1.191)), (10, np.float64(0.699)), (33, np.float64(0.571)), (23, np.float64(0.411)), (12, np.float64(0.355))] time_peak_clusters 11 cl_fft [(11, np.float64(117.0)), (22, np.float64(79.5)), (33, np.float64(37.3)), (21, np.float64(29.5)), (10, np.float64(24.2))]
- center median [0.811 0.379] profile_peaks 12 peak_degs [12.0, 46.2, 81.8, 114.0, 146.2, 178.0, 208.5, 241.0, 272.0, 304.5, 325.8, 338.5] fft_top [(11, np.float64(2.424)), (22, np.float64(1.053)), (12, np.float64(1.012)), (10, np.float64(0.912)), (21, np.float64(0.694)), (23, np.float64(0.565))] time_peak_clusters 11 cl_fft [(11, np.float64(112.5)), (22, np.float64(67.1)), (21, np.float64(44.1)), (23, np.float64(37.8)), (10, np.float64(34.5))]
- center bbox [0.97  1.176] profile_peaks 12 peak_degs [12.0, 44.8, 81.8, 115.5, 148.2, 180.8, 211.2, 241.8, 271.2, 303.0, 321.5, 336.5] fft_top [(11, np.float64(1.818)), (10, np.float64(1.396)), (12, np.float64(1.225)), (21, np.float64(0.863)), (23, np.float64(0.773)), (13, np.float64(0.625))] time_peak_clusters 11 cl_fft [(11, np.float64(98.5)), (21, np.float64(60.3)), (10, np.float64(52.0)), (23, np.float64(49.4)), (12, np.float64(48.3))]
+ G mean [0.64123946 0.78786184] median [0.8263 0.325 ]
+ fft origin [(14, 1.0), (7, 0.123), (18, 0.116), (15, 0.111), (6, 0.104), (9, 0.095)]
+ fft mean [(14, 1.0), (13, 0.63), (15, 0.543), (23, 0.195), (16, 0.175), (2, 0.149)]
+ fft median [(14, 1.0), (15, 0.487), (13, 0.482), (24, 0.187), (16, 0.186), (12, 0.182)]
+ tips origin n 53 [(14, 0.993), (12, 0.132), (2, 0.122), (16, 0.117), (21, 0.097), (7, 0.095)]
+ high origin [(14, 0.985), (24, 0.078), (10, 0.077), (4, 0.076), (18, 0.074), (7, 0.068)]
+ tips mean n 54 [(14, 0.925), (15, 0.335), (16, 0.157), (13, 0.143), (12, 0.133), (2, 0.116)]
+ high mean [(14, 0.89), (15, 0.391), (13, 0.205), (1, 0.108), (24, 0.085), (16, 0.082)]
 
-LABEL Q
- range x (np.float64(-29.0987), np.float64(28.3151)) y (np.float64(-28.715), np.float64(25.4868)) mean [-0.30439031 -0.81079041] bbox [-0.3918 -1.6141]
- center origin [0. 0.] profile_peaks 16 peak_degs [21.8, 44.2, 67.2, 90.0, 112.2, 134.5, 156.8, 179.5, 201.8, 224.5, 247.0, 269.5, 292.0, 315.0, 337.0, 359.5] fft_top [(16, np.float64(2.601)), (32, np.float64(1.107)), (8, np.float64(0.36)), (6, np.float64(0.278)), (5, np.float64(0.252)), (19, np.float64(0.237))] time_peak_clusters 16 cl_fft [(16, np.float64(109.1)), (32, np.float64(53.2)), (3, np.float64(22.1)), (8, np.float64(21.9)), (13, np.float64(19.1))]
- center mean [-0.304 -0.811] profile_peaks 16 peak_degs [3.2, 25.8, 46.5, 65.5, 88.2, 110.5, 133.8, 154.0, 177.0, 201.2, 224.5, 247.2, 271.0, 295.0, 318.5, 340.5] fft_top [(16, np.float64(2.102)), (15, np.float64(1.231)), (17, np.float64(1.192)), (31, np.float64(0.652)), (33, np.float64(0.616)), (32, np.float64(0.501))] time_peak_clusters 16 cl_fft [(16, np.float64(96.9)), (15, np.float64(44.1)), (31, np.float64(35.3)), (32, np.float64(31.7)), (17, np.float64(26.2))]
- center median [-0.328 -0.754] profile_peaks 16 peak_degs [1.5, 24.8, 45.8, 66.8, 88.5, 110.5, 132.5, 155.0, 177.2, 200.8, 224.8, 247.5, 271.0, 295.0, 317.5, 340.5] fft_top [(16, np.float64(2.206)), (15, np.float64(1.185)), (17, np.float64(1.179)), (31, np.float64(0.626)), (32, np.float64(0.612)), (33, np.float64(0.557))] time_peak_clusters 16 cl_fft [(16, np.float64(98.6)), (15, np.float64(42.2)), (31, np.float64(34.7)), (32, np.float64(34.2)), (17, np.float64(24.1))]
- center bbox [-0.392 -1.614] profile_peaks 18 peak_degs [5.8, 27.5, 48.0, 68.0, 88.2, 110.2, 118.2, 130.8, 153.8, 167.0, 176.0, 198.0, 222.2, 248.5, 271.5, 296.2, 319.5, 343.2] fft_top [(15, np.float64(1.525)), (17, np.float64(1.323)), (16, np.float64(0.941)), (14, np.float64(0.793)), (18, np.float64(0.63)), (31, np.float64(0.612))] time_peak_clusters 16 cl_fft [(16, np.float64(69.1)), (15, np.float64(63.5)), (17, np.float64(48.8)), (30, np.float64(31.2)), (31, np.float64(29.5))]
+ H mean [ 0.44421938 -0.50368122] median [ 0.5126 -0.312 ]
+ fft origin [(19, 1.0), (12, 0.184), (16, 0.119), (15, 0.089), (9, 0.082), (3, 0.079)]
+ fft mean [(19, 1.0), (18, 0.419), (20, 0.371), (21, 0.146), (17, 0.135), (13, 0.128)]
+ fft median [(19, 1.0), (20, 0.442), (18, 0.425), (21, 0.144), (15, 0.133), (25, 0.119)]
+ tips origin n 53 [(19, 0.993), (20, 0.158), (1, 0.147), (15, 0.132), (18, 0.131), (4, 0.122)]
+ high origin [(19, 0.989), (21, 0.061), (20, 0.061), (12, 0.059), (7, 0.057), (2, 0.052)]
+ tips mean n 53 [(19, 0.936), (20, 0.25), (18, 0.225), (12, 0.133), (7, 0.129), (25, 0.114)]
+ high mean [(19, 0.925), (20, 0.269), (18, 0.216), (21, 0.115), (13, 0.086), (12, 0.072)]
 
-LABEL R
- range x (np.float64(-29.2878), np.float64(28.3128)) y (np.float64(-24.079), np.float64(26.4165)) mean [-0.74835864  0.20665045] bbox [-0.4875   1.16875]
- center origin [0. 0.] profile_peaks 15 peak_degs [20.5, 44.8, 68.5, 93.2, 116.5, 140.5, 164.8, 188.5, 212.8, 236.5, 261.0, 284.5, 308.8, 332.8, 356.8] fft_top [(15, np.float64(2.787)), (30, np.float64(1.231)), (9, np.float64(0.42)), (6, np.float64(0.295)), (5, np.float64(0.292)), (10, np.float64(0.282))] time_peak_clusters 15 cl_fft [(15, np.float64(111.7)), (30, np.float64(60.5)), (6, np.float64(25.1)), (9, np.float64(24.7)), (5, np.float64(19.1))]
- center mean [-0.748  0.207] profile_peaks 15 peak_degs [19.0, 42.8, 67.5, 90.8, 115.5, 141.5, 164.8, 190.2, 214.8, 239.5, 263.8, 287.0, 310.8, 333.0, 356.2] fft_top [(15, np.float64(2.38)), (14, np.float64(1.191)), (30, np.float64(0.829)), (16, np.float64(0.818)), (29, np.float64(0.633)), (31, np.float64(0.55))] time_peak_clusters 15 cl_fft [(15, np.float64(102.4)), (30, np.float64(41.8)), (14, np.float64(37.6)), (29, np.float64(33.4)), (9, np.float64(24.7))]
- center median [-0.394 -0.08 ] profile_peaks 15 peak_degs [21.0, 45.8, 68.8, 92.8, 116.2, 140.5, 165.5, 189.2, 213.2, 238.0, 262.8, 286.2, 311.0, 334.0, 357.0] fft_top [(15, np.float64(2.784)), (30, np.float64(1.017)), (14, np.float64(0.449)), (16, np.float64(0.409)), (29, np.float64(0.372)), (8, np.float64(0.3))] time_peak_clusters 15 cl_fft [(15, np.float64(108.7)), (30, np.float64(54.1)), (14, np.float64(26.1)), (9, np.float64(25.2)), (29, np.float64(24.6))]
- center bbox [-0.488  1.169] profile_peaks 15 peak_degs [19.0, 41.8, 68.0, 94.5, 117.0, 143.8, 168.8, 194.0, 217.2, 240.8, 263.5, 285.0, 308.5, 331.2, 354.2] fft_top [(15, np.float64(1.867)), (14, np.float64(1.524)), (16, np.float64(1.166)), (29, np.float64(0.687)), (31, np.float64(0.654)), (17, np.float64(0.59))] time_peak_clusters 15 cl_fft [(15, np.float64(91.4)), (14, np.float64(44.8)), (16, np.float64(40.8)), (29, np.float64(34.8)), (31, np.float64(32.2))]
+ I mean [0.42911179 0.45822817] median [0.4232 0.3148]
+ fft origin [(17, 1.0), (21, 0.088), (1, 0.081), (15, 0.072), (4, 0.069), (12, 0.066)]
+ fft mean [(17, 1.0), (16, 0.415), (18, 0.255), (19, 0.186), (25, 0.178), (23, 0.139)]
+ fft median [(17, 1.0), (16, 0.292), (18, 0.188), (20, 0.141), (19, 0.116), (21, 0.103)]
+ tips origin n 53 [(17, 0.993), (18, 0.135), (1, 0.126), (16, 0.116), (19, 0.09), (22, 0.081)]
+ high origin [(17, 0.98), (12, 0.101), (10, 0.092), (5, 0.09), (3, 0.086), (7, 0.083)]
+ tips mean n 54 [(17, 0.942), (18, 0.329), (22, 0.14), (16, 0.123), (5, 0.112), (1, 0.11)]
+ high mean [(17, 0.924), (18, 0.304), (16, 0.18), (20, 0.103), (3, 0.095), (1, 0.089)]
 
-LABEL S
- range x (np.float64(-28.7247), np.float64(26.2054)) y (np.float64(-28.6393), np.float64(25.2023)) mean [-0.48692827 -1.0428024 ] bbox [-1.25965 -1.7185 ]
- center origin [0. 0.] profile_peaks 10 peak_degs [2.2, 13.8, 26.0, 46.2, 91.2, 136.2, 181.0, 225.8, 271.5, 316.8] fft_top [(8, np.float64(2.573)), (16, np.float64(1.277)), (24, np.float64(1.049)), (32, np.float64(0.562)), (40, np.float64(0.412)), (5, np.float64(0.338))] time_peak_clusters 8 cl_fft [(8, np.float64(125.9)), (16, np.float64(106.3)), (24, np.float64(78.3)), (32, np.float64(47.8)), (5, np.float64(25.6))]
- center mean [-0.487 -1.043] profile_peaks 12 peak_degs [4.8, 47.0, 77.5, 89.8, 135.0, 170.8, 181.0, 225.8, 254.5, 272.5, 301.8, 319.8] fft_top [(8, np.float64(2.498)), (16, np.float64(1.141)), (7, np.float64(0.8)), (9, np.float64(0.796)), (24, np.float64(0.657)), (17, np.float64(0.6))] time_peak_clusters 8 cl_fft [(8, np.float64(120.5)), (16, np.float64(88.5)), (24, np.float64(50.5)), (15, np.float64(50.3)), (23, np.float64(48.2))]
- center median [-0.25  -0.444] profile_peaks 13 peak_degs [3.8, 31.0, 46.8, 76.0, 90.8, 135.0, 167.0, 182.5, 225.8, 253.2, 272.0, 299.8, 318.0] fft_top [(8, np.float64(2.488)), (16, np.float64(1.417)), (24, np.float64(0.821)), (21, np.float64(0.406)), (9, np.float64(0.402)), (32, np.float64(0.36))] time_peak_clusters 8 cl_fft [(8, np.float64(125.0)), (16, np.float64(103.1)), (24, np.float64(73.1)), (32, np.float64(42.2)), (15, np.float64(30.0))]
- center bbox [-1.26  -1.718] profile_peaks 8 peak_degs [6.8, 46.8, 88.0, 132.8, 177.2, 226.5, 275.8, 322.0] fft_top [(8, np.float64(1.874)), (9, np.float64(1.437)), (7, np.float64(1.407)), (15, np.float64(0.936)), (17, np.float64(0.882)), (25, np.float64(0.496))] time_peak_clusters 8 cl_fft [(8, np.float64(107.2)), (15, np.float64(66.2)), (7, np.float64(53.3)), (16, np.float64(51.1)), (17, np.float64(46.2))]
+ J mean [1.58147413 0.39731289] median [2.1427 0.5703]
+ fft origin [(4, 1.0), (8, 0.62), (12, 0.222), (16, 0.207), (20, 0.199), (19, 0.183)]
+ fft mean [(4, 1.0), (8, 0.521), (12, 0.296), (16, 0.231), (3, 0.206), (2, 0.205)]
+ fft median [(4, 1.0), (8, 0.466), (2, 0.342), (6, 0.287), (3, 0.257), (12, 0.18)]
+ tips origin n 54 [(4, 0.99), (8, 0.96), (12, 0.911), (16, 0.846), (20, 0.769), (24, 0.682)]
+ high origin [(4, 0.981), (8, 0.927), (12, 0.844), (16, 0.744), (20, 0.637), (24, 0.534)]
+ tips mean n 55 [(4, 0.97), (8, 0.884), (12, 0.753), (16, 0.593), (17, 0.537), (13, 0.528)]
+ high mean [(4, 0.957), (8, 0.836), (12, 0.662), (13, 0.476), (16, 0.466), (17, 0.461)]
 
-LABEL T
- range x (np.float64(-26.9823), np.float64(27.7292)) y (np.float64(-26.1445), np.float64(26.1786)) mean [-0.72664156  0.37126713] bbox [0.37345 0.01705]
- center origin [0. 0.] profile_peaks 21 peak_degs [9.5, 26.8, 45.2, 61.5, 78.2, 95.8, 112.8, 130.2, 147.0, 164.0, 181.2, 198.5, 215.5, 232.5, 250.2, 266.8, 284.0, 301.5, 318.2, 335.2, 353.2] fft_top [(21, np.float64(2.61)), (18, np.float64(0.32)), (6, np.float64(0.284)), (8, np.float64(0.28)), (11, np.float64(0.269)), (15, np.float64(0.24))] time_peak_clusters 21 cl_fft [(21, np.float64(93.4)), (8, np.float64(20.0)), (9, np.float64(19.2)), (13, np.float64(18.6)), (12, np.float64(18.5))]
- center mean [-0.727  0.371] profile_peaks 21 peak_degs [11.5, 25.0, 42.2, 61.0, 77.5, 94.8, 111.5, 132.0, 143.5, 165.5, 183.5, 201.2, 220.0, 237.0, 254.0, 272.0, 286.8, 304.0, 319.0, 335.5, 351.5] fft_top [(21, np.float64(2.0)), (22, np.float64(1.168)), (20, np.float64(1.134)), (15, np.float64(0.409)), (6, np.float64(0.397)), (23, np.float64(0.379))] time_peak_clusters 21 cl_fft [(21, np.float64(79.2)), (20, np.float64(40.6)), (22, np.float64(26.9)), (8, np.float64(23.3)), (12, np.float64(19.3))]
- center median [-0.671 -0.213] profile_peaks 21 peak_degs [10.0, 27.0, 43.0, 59.8, 76.8, 94.8, 110.8, 128.2, 145.5, 163.5, 183.5, 198.2, 216.8, 234.5, 252.0, 270.8, 287.5, 305.0, 321.5, 337.0, 353.8] fft_top [(21, np.float64(2.017)), (22, np.float64(1.15)), (20, np.float64(1.141)), (19, np.float64(0.549)), (23, np.float64(0.423)), (16, np.float64(0.286))] time_peak_clusters 21 cl_fft [(21, np.float64(81.9)), (20, np.float64(35.5)), (22, np.float64(27.4)), (8, np.float64(22.3)), (9, np.float64(19.6))]
- center bbox [0.373 0.017] profile_peaks 21 peak_degs [10.0, 27.5, 45.2, 63.2, 79.8, 96.8, 115.5, 132.0, 148.0, 164.5, 181.0, 199.0, 217.5, 233.5, 248.5, 267.0, 283.8, 302.5, 320.8, 334.8, 352.5] fft_top [(21, np.float64(2.577)), (20, np.float64(0.606)), (22, np.float64(0.401)), (8, np.float64(0.367)), (17, np.float64(0.349)), (23, np.float64(0.314))] time_peak_clusters 21 cl_fft [(21, np.float64(91.0)), (22, np.float64(21.9)), (13, np.float64(20.5)), (9, np.float64(19.4)), (8, np.float64(18.8))]
+ K mean [-0.26764396  0.47109031] median [-0.6226 -0.3566]
+ fft origin [(5, 1.0), (10, 0.557), (15, 0.302), (25, 0.248), (20, 0.204), (14, 0.084)]
+ fft mean [(5, 1.0), (10, 0.423), (20, 0.335), (15, 0.321), (25, 0.186), (4, 0.18)]
+ fft median [(5, 1.0), (10, 0.504), (15, 0.332), (20, 0.285), (6, 0.186), (4, 0.186)]
+ tips origin n 53 [(5, 0.991), (10, 0.964), (15, 0.921), (20, 0.863), (25, 0.794), (22, 0.105)]
+ high origin [(5, 0.986), (10, 0.945), (15, 0.88), (20, 0.796), (25, 0.699), (13, 0.077)]
+ tips mean n 54 [(5, 0.987), (10, 0.95), (15, 0.89), (20, 0.812), (25, 0.72), (21, 0.303)]
+ high mean [(5, 0.982), (10, 0.929), (15, 0.848), (20, 0.746), (25, 0.634), (21, 0.237)]
 
-PROVISIONAL (label, profile_peak_count, dominant_fft_k):
-A 3 3 [(3, np.float64(3576.0)), (2, np.float64(2560.0)), (5, np.float64(2065.21)), (1, np.float64(1109.47)), (8, np.float64(1103.24))]
-K 5 5 [(5, np.float64(3482.19)), (4, np.float64(1889.81)), (6, np.float64(1559.48)), (10, np.float64(1105.06)), (11, np.float64(1052.4))]
-L 7 6 [(6, np.float64(4074.98)), (12, np.float64(1814.49)), (18, np.float64(1144.83)), (5, np.float64(932.43)), (17, np.float64(828.99))]
-J 8 4 [(4, np.float64(4021.32)), (8, np.float64(2060.85)), (12, np.float64(1251.07)), (5, np.float64(856.86)), (16, np.float64(747.18))]
-S 8 8 [(8, np.float64(2698.53)), (9, np.float64(2068.56)), (7, np.float64(2026.12)), (15, np.float64(1348.15)), (17, np.float64(1269.47))]
-O 9 2 [(2, np.float64(3809.48)), (4, np.float64(2200.83)), (6, np.float64(1487.83)), (8, np.float64(999.04)), (10, np.float64(799.0))]
-E 10 8 [(8, np.float64(2554.38)), (9, np.float64(2211.79)), (10, np.float64(1644.8)), (17, np.float64(1129.79)), (7, np.float64(1107.29))]
-N 10 10 [(10, np.float64(3602.26)), (20, np.float64(1514.09)), (11, np.float64(1192.64)), (9, np.float64(919.03)), (19, np.float64(682.02))]
-M 11 7 [(7, np.float64(3775.77)), (14, np.float64(1718.95)), (6, np.float64(1336.36)), (8, np.float64(1199.39)), (13, np.float64(873.1))]
-P 12 11 [(11, np.float64(2617.46)), (10, np.float64(2009.95)), (12, np.float64(1763.72)), (21, np.float64(1242.6)), (23, np.float64(1112.57))]
-F 13 13 [(13, np.float64(3116.53)), (14, np.float64(1805.89)), (12, np.float64(1778.29)), (25, np.float64(1067.43)), (26, np.float64(1034.14))]
-B 14 11 [(11, np.float64(2247.0)), (12, np.float64(2078.61)), (13, np.float64(1823.77)), (23, np.float64(1190.13)), (14, np.float64(982.57))]
-G 14 13 [(13, np.float64(2223.73)), (15, np.float64(1998.43)), (16, np.float64(1254.38)), (14, np.float64(1253.38)), (12, np.float64(1100.22))]
-R 15 15 [(15, np.float64(2688.82)), (14, np.float64(2193.99)), (16, np.float64(1679.04)), (29, np.float64(988.59)), (31, np.float64(941.15))]
-I 17 17 [(17, np.float64(2640.6)), (16, np.float64(1912.96)), (18, np.float64(1553.91)), (33, np.float64(796.14)), (19, np.float64(758.93))]
-Q 18 15 [(15, np.float64(2195.59)), (17, np.float64(1904.73)), (16, np.float64(1355.74)), (14, np.float64(1142.53)), (18, np.float64(907.05))]
-D 18 17 [(17, np.float64(2333.54)), (19, np.float64(1727.18)), (16, np.float64(1257.27)), (18, np.float64(1133.5)), (20, np.float64(1112.4))]
-H 19 18 [(18, np.float64(2384.65)), (19, np.float64(1600.41)), (20, np.float64(1545.89)), (21, np.float64(1205.2)), (17, np.float64(982.61))]
-C 20 20 [(20, np.float64(2721.91)), (19, np.float64(1995.84)), (21, np.float64(1693.26)), (39, np.float64(767.19)), (22, np.float64(704.73))]
-T 21 21 [(21, np.float64(3711.49)), (20, np.float64(872.78)), (22, np.float64(577.43)), (8, np.float64(527.93)), (17, np.float64(502.62))]
+ L mean [0.29544525 0.38662937] median [0.5479 0.5971]
+ fft origin [(6, 1.0), (12, 0.51), (18, 0.37), (24, 0.221), (8, 0.123), (2, 0.099)]
+ fft mean [(6, 1.0), (12, 0.534), (18, 0.403), (24, 0.293), (5, 0.246), (7, 0.241)]
+ fft median [(6, 1.0), (12, 0.457), (18, 0.386), (7, 0.293), (5, 0.266), (24, 0.245)]
+ tips origin n 53 [(6, 0.992), (12, 0.97), (18, 0.933), (24, 0.884), (22, 0.126), (16, 0.118)]
+ high origin [(6, 0.987), (12, 0.949), (18, 0.888), (24, 0.81), (22, 0.074), (16, 0.068)]
+ tips mean n 53 [(6, 0.987), (12, 0.949), (18, 0.888), (24, 0.809), (25, 0.318), (19, 0.283)]
+ high mean [(6, 0.982), (12, 0.929), (18, 0.845), (24, 0.74), (25, 0.253), (19, 0.238)]
 
+ M mean [-0.71795534 -0.23793177] median [-0.9608 -0.6697]
+ fft origin [(7, 1.0), (14, 0.63), (21, 0.338), (22, 0.129), (9, 0.106), (23, 0.092)]
+ fft mean [(7, 1.0), (14, 0.579), (21, 0.265), (8, 0.205), (6, 0.193), (13, 0.178)]
+ fft median [(7, 1.0), (14, 0.526), (6, 0.36), (8, 0.334), (13, 0.299), (21, 0.26)]
+ tips origin n 53 [(7, 0.992), (14, 0.968), (21, 0.929), (19, 0.133), (12, 0.12), (25, 0.113)]
+ high origin [(7, 0.985), (14, 0.943), (21, 0.879), (11, 0.068), (18, 0.066), (4, 0.064)]
+ tips mean n 54 [(7, 0.983), (14, 0.933), (21, 0.854), (22, 0.391), (15, 0.323), (8, 0.238)]
+ high mean [(7, 0.971), (14, 0.889), (21, 0.766), (22, 0.386), (15, 0.327), (8, 0.237)]
+
+ N mean [-0.01856503  0.01555554] median [-0.2595  0.0711]
+ fft origin [(10, 1.0), (20, 0.578), (12, 0.118), (8, 0.112), (4, 0.092), (7, 0.078)]
+ fft mean [(10, 1.0), (20, 0.583), (8, 0.121), (12, 0.112), (25, 0.095), (4, 0.094)]
+ fft median [(10, 1.0), (20, 0.511), (21, 0.139), (8, 0.135), (23, 0.126), (15, 0.12)]
+ tips origin n 53 [(10, 0.992), (20, 0.97), (23, 0.101), (13, 0.091), (22, 0.085), (12, 0.082)]
+ high origin [(10, 0.983), (20, 0.934), (13, 0.079), (3, 0.076), (23, 0.075), (22, 0.072)]
+ tips mean n 53 [(10, 0.992), (20, 0.969), (23, 0.1), (13, 0.09), (22, 0.086), (12, 0.082)]
+ high mean [(10, 0.983), (20, 0.934), (13, 0.079), (3, 0.076), (23, 0.074), (22, 0.073)]
+
+ O mean [-0.85917792 -0.85126533] median [-1.1596 -0.8959]
+ fft origin [(2, 1.0), (4, 0.547), (6, 0.342), (10, 0.203), (18, 0.187), (8, 0.185)]
+ fft mean [(2, 1.0), (4, 0.55), (6, 0.352), (12, 0.159), (3, 0.15), (8, 0.137)]
+ fft median [(2, 1.0), (4, 0.563), (6, 0.281), (3, 0.193), (12, 0.192), (8, 0.152)]
+ tips origin n 53 [(2, 0.99), (4, 0.962), (6, 0.917), (8, 0.858), (10, 0.792), (12, 0.721)]
+ high origin [(2, 0.983), (4, 0.934), (6, 0.858), (8, 0.761), (10, 0.655), (12, 0.55)]
+ tips mean n 53 [(2, 0.986), (4, 0.946), (6, 0.881), (8, 0.799), (10, 0.705), (12, 0.609)]
+ high mean [(2, 0.98), (4, 0.921), (6, 0.832), (8, 0.721), (10, 0.604), (12, 0.497)]
+
+ P mean [ 0.59895824 -0.09238212] median [0.8107 0.3791]
+ fft origin [(11, 1.0), (22, 0.588), (8, 0.154), (6, 0.129), (3, 0.115), (4, 0.106)]
+ fft mean [(11, 1.0), (22, 0.5), (10, 0.264), (23, 0.161), (12, 0.132), (21, 0.119)]
+ fft median [(11, 1.0), (22, 0.475), (10, 0.404), (12, 0.393), (21, 0.349), (23, 0.249)]
+ tips origin n 53 [(11, 0.991), (22, 0.964), (15, 0.114), (25, 0.09), (21, 0.089), (14, 0.089)]
+ high origin [(11, 0.986), (22, 0.946), (18, 0.096), (21, 0.095), (10, 0.086), (7, 0.08)]
+ tips mean n 53 [(11, 0.967), (22, 0.871), (23, 0.354), (12, 0.225), (21, 0.221), (10, 0.105)]
+ high mean [(11, 0.958), (22, 0.84), (21, 0.284), (23, 0.282), (12, 0.169), (10, 0.145)]
+
+ Q mean [-0.30439031 -0.81079041] median [-0.3283 -0.7537]
+ fft origin [(16, 1.0), (8, 0.177), (13, 0.146), (19, 0.145), (6, 0.097), (7, 0.09)]
+ fft mean [(16, 1.0), (17, 0.646), (15, 0.596), (20, 0.164), (18, 0.152), (13, 0.151)]
+ fft median [(16, 1.0), (15, 0.564), (17, 0.549), (20, 0.146), (2, 0.124), (9, 0.12)]
+ tips origin n 53 [(16, 0.99), (17, 0.143), (1, 0.139), (15, 0.135), (19, 0.102), (3, 0.098)]
+ high origin [(16, 0.985), (17, 0.111), (1, 0.111), (15, 0.104), (19, 0.103), (3, 0.097)]
+ tips mean n 54 [(16, 0.913), (17, 0.33), (15, 0.207), (24, 0.081), (1, 0.078), (8, 0.075)]
+ high mean [(16, 0.91), (17, 0.38), (15, 0.192), (1, 0.17), (18, 0.092), (19, 0.079)]
+
+ R mean [-0.74835864  0.20665045] median [-0.3939 -0.0799]
+ fft origin [(15, 1.0), (9, 0.219), (13, 0.138), (10, 0.135), (5, 0.125), (17, 0.108)]
+ fft mean [(15, 1.0), (14, 0.511), (16, 0.331), (9, 0.163), (17, 0.162), (6, 0.152)]
+ fft median [(15, 1.0), (8, 0.155), (16, 0.152), (13, 0.152), (21, 0.143), (14, 0.143)]
+ tips origin n 53 [(15, 0.989), (25, 0.112), (10, 0.106), (5, 0.096), (20, 0.084), (23, 0.068)]
+ high origin [(15, 0.981), (21, 0.079), (6, 0.078), (9, 0.068), (25, 0.059), (17, 0.058)]
+ tips mean n 54 [(15, 0.934), (16, 0.32), (17, 0.143), (23, 0.137), (8, 0.127), (13, 0.122)]
+ high mean [(15, 0.917), (16, 0.338), (14, 0.166), (1, 0.098), (17, 0.079), (6, 0.067)]
+
+ S mean [-0.48692827 -1.0428024 ] median [-0.2504 -0.444 ]
+ fft origin [(8, 1.0), (16, 0.498), (24, 0.472), (5, 0.191), (11, 0.153), (1, 0.117)]
+ fft mean [(8, 1.0), (16, 0.469), (9, 0.33), (24, 0.32), (7, 0.305), (17, 0.268)]
+ fft median [(8, 1.0), (16, 0.589), (24, 0.393), (21, 0.251), (9, 0.216), (13, 0.132)]
+ tips origin n 53 [(8, 0.99), (16, 0.961), (24, 0.914), (19, 0.139), (11, 0.125), (3, 0.106)]
+ high origin [(8, 0.981), (16, 0.925), (24, 0.837), (18, 0.1), (10, 0.094), (21, 0.088)]
+ tips mean n 55 [(8, 0.954), (16, 0.823), (24, 0.629), (25, 0.556), (17, 0.481), (9, 0.349)]
+ high mean [(8, 0.946), (16, 0.797), (24, 0.591), (25, 0.47), (17, 0.44), (9, 0.338)]
+
+ T mean [-0.72664156  0.37126713] median [-0.6708 -0.213 ]
+ fft origin [(21, 1.0), (18, 0.133), (15, 0.132), (11, 0.13), (8, 0.123), (6, 0.12)]
+ fft mean [(21, 1.0), (20, 0.596), (22, 0.592), (15, 0.244), (6, 0.235), (8, 0.204)]
+ fft median [(21, 1.0), (22, 0.621), (20, 0.546), (19, 0.304), (23, 0.22), (16, 0.148)]
+ tips origin n 53 [(21, 0.99), (25, 0.12), (4, 0.098), (23, 0.08), (6, 0.079), (12, 0.076)]
+ high origin [(21, 0.987), (15, 0.085), (18, 0.078), (3, 0.077), (6, 0.076), (24, 0.076)]
+ tips mean n 54 [(21, 0.864), (22, 0.407), (20, 0.272), (6, 0.116), (12, 0.111), (9, 0.089)]
+ high mean [(21, 0.843), (22, 0.458), (20, 0.278), (1, 0.116), (16, 0.085), (18, 0.076)]
+
+Summary dominant k by methods
+A [3, 3, 3, 3, 3]
+B [12, 11, 11, 12, 12]
+C [20, 20, 20, 20, 20]
+D [18, 18, 18, 18, 18]
+E [9, 8, 9, 9, 9]
+F [13, 13, 13, 13, 13]
+G [14, 14, 14, 14, 14]
+H [19, 19, 19, 19, 19]
+I [17, 17, 17, 17, 17]
+J [4, 4, 4, 4, 4]
+K [5, 5, 5, 5, 5]
+L [6, 6, 6, 6, 6]
+M [7, 7, 7, 7, 7]
+N [10, 10, 10, 10, 10]
+O [2, 2, 2, 2, 2]
+P [11, 11, 11, 11, 11]
+Q [16, 16, 16, 16, 16]
+R [15, 15, 15, 15, 15]
+S [8, 8, 8, 8, 8]
+T [21, 21, 21, 21, 21]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
 
 [Assistant]
 ```json
