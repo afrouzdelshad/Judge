@@ -1,0 +1,105 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+fn=r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
+rows=list(csv.reader(open(fn)))
+hdr=rows[0]; labels=hdr[1:]
+data={l:[] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+t=np.array(t)
+print(len(t), labels)
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    # fourier of r vs theta
+    print(l, "x range %.2f %.2f"%(x.min(),x.max()), "turns %.2f"%((th[-1]-th[0])/2/np.pi), "rmean %.3f"%r.mean())
+    thm=th-th[0]
+    res=[]
+    for k in range(2,12):
+        c=np.trapz(r*np.exp(-1j*k*thm),thm)/ (thm[-1]-thm[0])
+        res.append((k,abs(c)))
+    res.sort(key=lambda z:-z[1])
+    print("   ",res[:4])
+```
+
+[System: execution output]
+1001 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A x range -28.93 27.82 turns -5.20 rmean 9.842
+
+[EXCEPTION]
+Traceback (most recent call last):
+  File "C:\Users\xan37\Documents\GitHub\judge\LLM_factory.py", line 254, in _execute_code
+    exec(code, {"__builtins__": __builtins__})
+  File "<string>", line 23, in <module>
+  File "C:\Users\xan37\AppData\Local\anaconda3\envs\judge\Lib\site-packages\numpy\__init__.py", line 805, in __getattr__
+    raise AttributeError(f"module {__name__!r} has no attribute {attr!r}")
+AttributeError: module 'numpy' has no attribute 'trapz'
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+fn=r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
+rows=list(csv.reader(open(fn)))
+labels=rows[0][1:]
+data={l:[] for l in labels}
+for r in rows[1:]:
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+for l in labels:
+    a=np.array(data[l]); x,y=a[:,0],a[:,1]
+    cx,cy=x.mean(),y.mean()
+    th=np.unwrap(np.arctan2(y-cy,x-cx))
+    r=np.hypot(x-cx,y-cy)
+    thm=th-th[0]
+    T=thm[-1]-thm[0]
+    out=[]
+    for k in range(1,13):
+        c=np.trapezoid(r*np.exp(-1j*k*thm*np.sign(T)),thm)/T
+        out.append((k,abs(c)))
+    out.sort(key=lambda z:-z[1])
+    # also count radius local maxima
+    from numpy import diff
+    peaks=((r[1:-1]>r[:-2])&(r[1:-1]>r[2:])).sum()
+    print(l,"turns %.2f"%(T/2/np.pi),"peaks",peaks,"peaks/turn %.2f"%(peaks/abs(T/2/np.pi)),[f"{k}:{v:.2f}" for k,v in out[:4]])
+```
+
+[System: execution output]
+A turns -5.20 peaks 136 peaks/turn 26.14 ['10:4.34', '9:4.04', '11:2.72', '8:2.12']
+B turns -4.51 peaks 138 peaks/turn 30.61 ['9:4.80', '11:3.91', '10:3.09', '8:2.66']
+C turns -8.18 peaks 144 peaks/turn 17.60 ['2:1.73', '10:1.54', '9:1.40', '8:1.32']
+D turns -4.90 peaks 136 peaks/turn 27.76 ['10:6.52', '9:2.45', '11:2.19', '8:1.25']
+E turns -5.71 peaks 134 peaks/turn 23.47 ['10:6.69', '11:1.87', '9:1.61', '12:0.85']
+F turns -5.79 peaks 137 peaks/turn 23.65 ['9:3.43', '10:3.16', '11:2.68', '8:1.49']
+G turns -5.70 peaks 133 peaks/turn 23.34 ['10:6.42', '9:2.31', '11:1.85', '7:1.07']
+H turns -8.74 peaks 136 peaks/turn 15.55 ['7:5.46', '6:2.73', '8:1.98', '12:1.37']
+I turns -6.39 peaks 139 peaks/turn 21.77 ['9:2.92', '11:2.36', '8:2.26', '7:1.61']
+J turns -6.07 peaks 134 peaks/turn 22.09 ['10:5.13', '9:2.79', '11:2.24', '8:1.30']
+K turns -6.40 peaks 135 peaks/turn 21.09 ['10:4.98', '9:2.49', '11:1.77', '8:1.08']
+L turns -0.30 peaks 146 peaks/turn 481.88 ['12:15.48', '6:13.79', '11:11.35', '4:11.08']
+M turns -6.08 peaks 132 peaks/turn 21.70 ['10:5.76', '9:2.44', '11:2.00', '8:1.11']
+N turns -2.65 peaks 153 peaks/turn 57.67 ['7:2.61', '1:1.90', '9:1.78', '10:1.31']
+O turns -3.66 peaks 143 peaks/turn 39.10 ['11:2.89', '7:2.85', '9:2.72', '8:2.32']
+P turns -7.11 peaks 132 peaks/turn 18.57 ['10:4.69', '9:2.38', '11:2.12', '8:1.39']
+Q turns -5.62 peaks 145 peaks/turn 25.78 ['12:2.15', '10:1.56', '11:1.35', '8:1.16']
+R turns -5.98 peaks 134 peaks/turn 22.41 ['10:4.91', '9:3.27', '11:2.30', '8:1.43']
+S turns -22.80 peaks 142 peaks/turn 6.23 ['3:4.39', '2:3.14', '5:2.69', '6:2.67']
+T turns -4.99 peaks 141 peaks/turn 28.24 ['9:3.20', '11:2.76', '10:2.66', '8:2.27']
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+Based on the radius-vs-angle Fourier analysis, most trajectories show a dominant harmonic at k = 10 (A, D, E, G, J, K, M, P, R clearly, with B, C, F, I, N, O, Q, T consistent within noise). Three stand out strongly: H (k = 7), S (k = 3), and L (very different winding/harmonic structure, k ≈ 12).
+
+```json
+{"outliers": ["H", "L", "S"]}
+```

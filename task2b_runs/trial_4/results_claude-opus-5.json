@@ -1,0 +1,26 @@
+{
+  "model": "claude-opus-5",
+  "true_outliers": [
+    "C",
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain": [
+    "C",
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain_f1": 1.0,
+  "code": [
+    "H",
+    "L",
+    "S"
+  ],
+  "code_f1": 0.6666666666666666
+}

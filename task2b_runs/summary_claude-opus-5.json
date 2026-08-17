@@ -1,0 +1,260 @@
+{
+  "model": "claude-opus-5",
+  "scale": 10,
+  "trials": [
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": null,
+      "code": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "code_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": null,
+      "code": [
+        "H",
+        "S"
+      ],
+      "code_f1": 0.5
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "C",
+        "H",
+        "Q",
+        "S"
+      ],
+      "code_f1": 0.8
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "H",
+        "L",
+        "S"
+      ],
+      "code_f1": 0.6666666666666666
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": null,
+      "code": [
+        "C",
+        "H",
+        "S",
+        "L",
+        "N",
+        "Q"
+      ],
+      "code_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "code_f1": 0.9090909090909091
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "code_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "H",
+        "S",
+        "L",
+        "N",
+        "O"
+      ],
+      "code_f1": 0.7272727272727272
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "code_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "true_outliers": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain": [
+        "C",
+        "H",
+        "L",
+        "N",
+        "Q",
+        "S"
+      ],
+      "plain_f1": 1.0,
+      "code": [
+        "C",
+        "H",
+        "S"
+      ],
+      "code_f1": 0.6666666666666666
+    }
+  ],
+  "plain_f1_mean": 1.0,
+  "code_f1_mean": 0.8269696969696969
+}

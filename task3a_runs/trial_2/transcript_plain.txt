@@ -1,0 +1,23 @@
+## Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) versus time. The motion consists of long "dwells" at nearly constant angle (one lobe), followed by a jump to the next lobe. Measuring the angular spacing Δθ between successive lobe plateaus gives N = 360°/Δθ.
+
+Examples:
+
+- **A**: plateaus at 45°, 15°, −18.5°, −50.7°, −83.2°, −115.7°, −149° → Δθ ≈ 32.7° → N ≈ 11
+- **H**: plateaus at 140°, 50°, −40°, −130° → Δθ ≈ 90° → N ≈ 4
+- **D**: plateaus at 46.6°, 24.4°, 1.9°, −20.5°, −43.1° → Δθ ≈ 22.4° → N ≈ 16
+- **C/Q**: plateaus spaced ≈ 18° (e.g. Q: 64.7°, 46°, 28.4°, 10.6°) → N ≈ 20
+
+A useful cross‑check: the t=0 states show only **five distinct initial conditions**, each shared by exactly four trajectories — so each N‑group must contain exactly one trajectory from each IC family {A,D,I,L}, {B,J,K,S}, {C,E,G,H}, {F,O,P,Q}, {M,N,R,T}. The measured groupings satisfy this perfectly:
+
+| N | members | ICs covered |
+|---|---------|-------------|
+| ~4 | H, I, M, O, S | all 5 distinct |
+| ~11 | A, B, F, G, R | all 5 distinct |
+| ~16 | D, E, K, P, T | all 5 distinct |
+| ~20 | C, J, L, N, Q | all 5 distinct |
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

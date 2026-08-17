@@ -1,0 +1,20 @@
+## Approach
+
+For a trajectory orbiting N lobes arranged around a central axis, the lobe centers sit at angles spaced 360°/N apart. I computed θ = atan2(y, x) at the radial excursion peaks of each trajectory and tracked the angle as the orbit precesses around the axis. Counting how many hops are needed to complete a full 360° revolution gives N directly.
+
+**Sample results:**
+
+- **A**: peaks at 119°, 83°, 48°, 11°, −25°, −60°, −97°, −132°, −169°, 155° → step ≈ 36° → **N = 10**
+- **D, E, F, G, I, J, K, M, O, P, R, T, B**: same 36° stepping, 10 hops per revolution → **N = 10**
+- **C**: 46°, 16°, −14°, −43°, −74°, −103°, −134°, −164°, 167°, 135°, 107°, 76° → 30° steps, 12 hops → **N = 12**
+- **H**: 48°, −3°, −54°, −106°, −160°, 152°, 99°, 48° → 51.4° steps, 7 hops → **N = 7**
+- **L**: 98°, 80°, 63°, 46°, 29°, 11°, −5°, −23°, −40°, … → 17.1° steps, 21 hops → **N = 21**
+- **N**: 65°, 46°, 26°, 6°, −14°, −34°, −53°, −74°, … → 20° steps, 18 hops → **N = 18**
+- **Q**: 72°, 46°, 21°, −4°, −31°, −58°, −83°, −107°, … → 25.7° steps, 14 hops → **N = 14**
+- **S**: only three dwell directions (−70°, 55°, 173°), 120° apart → **N = 3**
+
+Majority N = 10 (14 trajectories); six trajectories differ.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

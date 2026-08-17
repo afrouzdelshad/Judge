@@ -1,0 +1,25 @@
+## Approach
+
+For each trajectory I looked at the angle θ = atan2(y, x) at each large‑radius excursion ("lobe tip"). In every trajectory the tips fall on a discrete set of equally‑spaced directions, advancing one lobe per excursion, so the angular step Δθ gives N = 360°/Δθ.
+
+**Examples:**
+
+- **A:** tips at ≈ 154°, 118°, 83°, 47°, 11°, −25°, −61°, −96°, −133°, −169° → Δ = 36° → **N = 10**
+- **C:** tips at ≈ 76°, 46°, 17°, −13°, −42°, −73°, −103°, −133°, −164°, 166°, 136°, 106° → Δ = 30° → **N = 12**
+- **H:** tips at ≈ 152°, 98°, 49°, −3°, −55°, −107°, −159° → Δ ≈ 51.4° → **N = 7**
+- **L:** 21 tightly spaced tip directions, Δ ≈ 17.1° → **N = 21**
+- **N:** Δ ≈ 20° (65°, 46°, 26°, 7°, −14°, −35° …) → **N = 18**
+- **Q:** Δ ≈ 25.7° (72°, 46°, 21°, −4°, −31°, −57° …) → **N = 14**
+- **S:** only three broad lobes at ≈ 50°, −70°, 173° → Δ = 120° → **N = 3**
+
+**Results**
+
+| N = 10 | others |
+|---|---|
+| A, B, D, E, F, G, I, J, K, M, O, P, R, T | C (12), H (7), L (21), N (18), Q (14), S (3) |
+
+Majority N = 10, with six deviating trajectories.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

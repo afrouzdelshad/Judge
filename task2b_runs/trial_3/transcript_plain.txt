@@ -1,0 +1,36 @@
+## Analysis Approach
+
+For each trajectory I converted the samples to polar angles θ = atan2(y,x) and located the **angular positions of the radial maxima** (the tips of each lobe excursion). In an N‑lobe attractor the lobes sit at fixed angles spaced 360°/N apart, so the consistent angular step Δθ between successive lobe visits gives N = 360/Δθ.
+
+**Example (A):** lobe tips at ≈ 119°, 84°, 47°, 11°, −25°, −60°, −97°, −132°, −169°, 155° → Δθ ≈ 36° → N = 10.
+
+**Results:**
+
+| Traj | Δθ (deg) | N |
+|---|---|---|
+| A | 35.8 | 10 |
+| B | 36.0 | 10 |
+| **C** | **29.8** | **12** |
+| D | 35.4 | 10 |
+| E | 36.0 | 10 |
+| F | 36.0 | 10 |
+| G | 35.9 | 10 |
+| **H** | **51.4** | **7** |
+| I | 36.0 | 10 |
+| J | 36.0 | 10 |
+| K | 35.9 | 10 |
+| **L** | **17.11** | **21** |
+| M | 36.0 | 10 |
+| **N** | **20.1** | **18** |
+| O | 35.6 | 10 |
+| P | 36.0 | 10 |
+| **Q** | **25.7** | **14** |
+| R | 35.7 | 10 |
+| **S** | **≈120** | **3** |
+| T | 35.6 | 10 |
+
+The majority value is **N = 10** (14 trajectories). Six trajectories deviate: C (12 lobes), H (7), L (21), N (18), Q (14), S (3).
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

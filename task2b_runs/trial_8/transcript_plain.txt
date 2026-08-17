@@ -1,0 +1,27 @@
+## Approach
+
+For each trajectory I converted (x,y) to polar coordinates. The motion consists of a fast radial "excursion" (spiral out to r≈20 and back toward the axis) along a **fixed direction**, after which the direction jumps by a constant angular increment Δθ. The excursion directions therefore form a discrete set of equally spaced angles, and
+
+**N = 360° / Δθ** (verified by counting the excursion directions over one complete revolution).
+
+Sample results (lobe directions in degrees, large‑radius points only):
+
+| Traj | successive lobe directions | Δθ | N |
+|---|---|---|---|
+| A | 48, 12, −25, −60, −96, −133, −169, 155, 119, 84 | 36 | 10 |
+| B | −26, −60, −96, −135, −169, 154, 118, 82, 47, 11 | 36 | 10 |
+| **C** | 48, 17, −13, −42, −74, −103, −133, −162, 167, 136, 107, 77 | 30 | **12** |
+| D,E,F,G | 36° steps, 10 directions/turn | 36 | 10 |
+| **H** | 44, −2, −53, −105, −158, 152, 99 | 51.4 | **7** |
+| I,J,K,M | 36° steps | 36 | 10 |
+| **L** | −5, −22, −39, −56, −74, −91, −108, −126 … (21 dirs.) | 17.1 | **21** |
+| **N** | 65, 47, 26, 7, −14, −34, −53, −74 … (18 dirs.) | 20 | **18** |
+| O,P,R,T | 36° steps | 36 | 10 |
+| **Q** | 72, 47, 21, −4, −31, −56, −83, −107 … (14 dirs.) | 25.7 | **14** |
+| **S** | 174, 54, −66, 174 … | 120 | **3** |
+
+Fourteen trajectories (A, B, D, E, F, G, I, J, K, M, O, P, R, T) clearly show Δθ ≈ 36° → N = 10, which is the majority. Six trajectories deviate.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

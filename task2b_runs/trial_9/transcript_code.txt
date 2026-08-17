@@ -1,0 +1,119 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
+rows = list(csv.reader(open(path)))
+hdr = rows[0]
+labels = hdr[1:]
+data = {l: [] for l in labels}
+t = []
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l, c in zip(labels, r[1:]):
+        data[l].append(ast.literal_eval(c))
+t = np.array(t)
+for l in labels:
+    data[l] = np.array(data[l])
+
+print(len(t), labels)
+for l in labels:
+    xy = data[l]
+    x, y = xy[:,0], xy[:,1]
+    print(l, "x range", x.min().round(2), x.max().round(2), "y", y.min().round(2), y.max().round(2),
+          "mean r", np.hypot(x,y).mean().round(2))
+```
+
+[System: execution output]
+1001 ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A x range -28.93 27.82 y -27.41 26.47 mean r 9.89
+B x range -27.57 27.15 y -27.2 27.18 mean r 9.88
+C x range -26.41 24.57 y -25.69 30.9 mean r 10.07
+D x range -24.6 26.35 y -29.03 27.93 mean r 10.07
+E x range -26.32 27.89 y -25.05 25.18 mean r 9.92
+F x range -24.87 27.75 y -24.5 28.38 mean r 9.83
+G x range -25.81 27.94 y -27.78 24.61 mean r 9.82
+H x range -24.97 27.28 y -27.74 26.77 mean r 9.89
+I x range -26.75 26.45 y -26.07 24.95 mean r 9.87
+J x range -25.58 24.42 y -25.44 26.15 mean r 9.78
+K x range -26.66 27.15 y -25.0 26.54 mean r 9.87
+L x range -25.08 26.01 y -26.53 28.41 mean r 10.06
+M x range -28.28 24.82 y -25.26 26.41 mean r 9.81
+N x range -25.05 27.6 y -25.66 32.48 mean r 10.26
+O x range -27.16 26.88 y -25.43 33.26 mean r 10.28
+P x range -24.05 24.81 y -24.8 25.88 mean r 9.7
+Q x range -27.18 26.96 y -24.49 26.92 mean r 9.97
+R x range -28.37 26.54 y -28.38 25.89 mean r 9.83
+S x range -25.77 19.88 y -25.42 22.52 mean r 10.24
+T x range -25.21 25.0 y -26.91 26.87 mean r 10.12
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = r"C:\Users\xan37\Documents\GitHub\Judge\task2b_data.csv"
+rows = list(csv.reader(open(path)))
+labels = rows[0][1:]
+data = {l: [] for l in labels}
+t=[]
+for r in rows[1:]:
+    t.append(float(r[0]))
+    for l,c in zip(labels,r[1:]):
+        data[l].append(ast.literal_eval(c))
+t=np.array(t)
+for l in labels: data[l]=np.array(data[l])
+
+for l in labels:
+    x,y = data[l][:,0], data[l][:,1]
+    r = np.hypot(x,y)
+    th = np.unwrap(np.arctan2(y,x))
+    total = abs(th[-1]-th[0])/(2*np.pi)
+    # count local maxima of r
+    peaks = np.sum((r[1:-1]>r[:-2])&(r[1:-1]>r[2:]))
+    # spectral: interpolate r as function of theta
+    thn = th if th[-1]>th[0] else -th
+    # resample
+    N=4096
+    g = np.linspace(thn[0], thn[-1], N)
+    ri = np.interp(g, thn, r)
+    ri = ri - ri.mean()
+    F = np.abs(np.fft.rfft(ri*np.hanning(N)))
+    freqs = np.fft.rfftfreq(N, d=(g[1]-g[0]))*2*np.pi  # cycles per radian *2pi = per revolution
+    k = freqs[np.argmax(F)]
+    top = np.argsort(F)[::-1][:5]
+    print(l, "revs %.2f"%total, "peaks", peaks, "peaks/rev %.2f"%(peaks/total), "domk %.2f"%k,
+          [round(freqs[i],2) for i in top])
+```
+
+[System: execution output]
+A revs 5.18 peaks 133 peaks/rev 25.67 domk 10.03 [np.float64(10.03), np.float64(9.84), np.float64(20.07), np.float64(19.87), np.float64(10.23)]
+B revs 5.48 peaks 133 peaks/rev 24.26 domk 10.03 [np.float64(10.03), np.float64(9.85), np.float64(20.06), np.float64(19.88), np.float64(10.21)]
+C revs 4.13 peaks 136 peaks/rev 32.96 domk 12.11 [np.float64(12.11), np.float64(11.87), np.float64(23.99), np.float64(36.1), np.float64(24.23)]
+D revs 4.90 peaks 136 peaks/rev 27.73 domk 9.99 [np.float64(9.99), np.float64(10.19), np.float64(9.79), np.float64(19.98), np.float64(29.97)]
+E revs 5.72 peaks 134 peaks/rev 23.42 domk 9.96 [np.float64(9.96), np.float64(10.13), np.float64(19.92), np.float64(20.09), np.float64(30.06)]
+F revs 5.86 peaks 133 peaks/rev 22.68 domk 10.06 [np.float64(10.06), np.float64(9.89), np.float64(19.95), np.float64(20.12), np.float64(30.0)]
+G revs 5.69 peaks 132 peaks/rev 23.19 domk 10.01 [np.float64(10.01), np.float64(9.84), np.float64(20.02), np.float64(10.19), np.float64(30.04)]
+H revs 7.88 peaks 134 peaks/rev 17.01 domk 6.98 [np.float64(6.98), np.float64(7.11), np.float64(13.96), np.float64(14.08), np.float64(6.85)]
+I revs 6.36 peaks 133 peaks/rev 20.92 domk 10.07 [np.float64(10.07), np.float64(9.91), np.float64(19.97), np.float64(30.04), np.float64(20.13)]
+J revs 5.92 peaks 132 peaks/rev 22.31 domk 9.97 [np.float64(9.97), np.float64(10.14), np.float64(19.94), np.float64(20.1), np.float64(9.8)]
+K revs 5.39 peaks 133 peaks/rev 24.67 domk 10.02 [np.float64(10.02), np.float64(9.83), np.float64(20.03), np.float64(10.2), np.float64(19.85)]
+L revs 2.27 peaks 136 peaks/rev 59.99 domk 21.17 [np.float64(21.17), np.float64(20.73), np.float64(41.9), np.float64(42.34), np.float64(63.07)]
+M revs 6.08 peaks 132 peaks/rev 21.71 domk 10.03 [np.float64(10.03), np.float64(9.86), np.float64(20.06), np.float64(19.89), np.float64(10.19)]
+N revs 2.63 peaks 139 peaks/rev 52.90 domk 17.88 [np.float64(17.88), np.float64(18.26), np.float64(36.15), np.float64(35.77), np.float64(54.03)]
+O revs 4.61 peaks 139 peaks/rev 30.14 domk 9.97 [np.float64(9.97), np.float64(10.19), np.float64(19.94), np.float64(20.16), np.float64(9.76)]
+P revs 7.07 peaks 131 peaks/rev 18.54 domk 10.05 [np.float64(10.05), np.float64(9.9), np.float64(19.95), np.float64(20.09), np.float64(29.99)]
+Q revs 3.59 peaks 135 peaks/rev 37.61 domk 13.93 [np.float64(13.93), np.float64(14.2), np.float64(28.13), np.float64(27.85), np.float64(13.65)]
+R revs 5.98 peaks 133 peaks/rev 22.22 domk 10.02 [np.float64(10.02), np.float64(9.86), np.float64(20.05), np.float64(19.88), np.float64(10.19)]
+S revs 16.77 peaks 138 peaks/rev 8.23 domk 2.98 [np.float64(2.98), np.float64(3.04), np.float64(6.02), np.float64(5.96), np.float64(9.0)]
+T revs 5.00 peaks 136 peaks/rev 27.20 domk 10.00 [np.float64(10.0), np.float64(10.2), np.float64(9.8), np.float64(20.0), np.float64(29.99)]
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

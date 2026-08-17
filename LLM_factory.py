@@ -20,7 +20,7 @@ with open("config.json", "r", encoding="utf-8") as f:
     MODEL_PROVIDERS = {name: info["provider"] for name, info in json.load(f)["llms"].items()}
 
 
-ANTHROPIC_MAX_TOKENS = 64000
+ANTHROPIC_MAX_TOKENS = 128000
 _CACHE_CONTROL = {"type": "ephemeral", "ttl": "1h"}
 _BATCH_POLL_SECONDS = 20
 _CACHE_PROPAGATION_SECONDS = 2
@@ -109,6 +109,8 @@ def chat_with(model_name, system_prompt, user_prompt, use_cache=True):
         ) as stream:
             message = stream.get_final_message()
         _log_cache(model_name, "single", message.usage)
+        if message.stop_reason == "max_tokens":
+            print(f"[warn] {model_name} single truncated at max_tokens", file=sys.stderr)
         return "".join(block.text for block in message.content if block.type == "text")
 
     if provider == "gemini":
@@ -203,7 +205,7 @@ def _threaded_repeats(model_name, system_prompt, user_prompt, n, max_workers):
 
 
 def chat_with_batch(model_name, system_prompt, user_prompt, n=10, max_workers=5,
-                    poll_seconds=_BATCH_POLL_SECONDS):
+                    poll_seconds=_BATCH_POLL_SECONDS, use_batch=False):
     """Run the SAME prompt n times and return a list of n replies (None = failed).
 
     Repeats are independent samples: cache reuse is a function of the prompt
@@ -213,8 +215,12 @@ def chat_with_batch(model_name, system_prompt, user_prompt, n=10, max_workers=5,
     same variable. Any per-repeat variation (timestamps, "trial i", shuffled
     order) makes every request a cache miss and costs full price.
 
-    Anthropic goes through the Message Batches API (50% off, stacks with the
-    cache discount); other providers fall back to concurrent sync calls.
+    Defaults to concurrent real-time calls (same path every other provider
+    always uses) -- they still hit the prompt cache, just without an extra
+    discount. Pass use_batch=True to route Anthropic through the Message
+    Batches API instead (50% off, stacks with the cache discount), at the
+    cost of queueing with no latency SLA.
+
     Either way call 1 runs synchronously first to write the cache -- fired in
     parallel the repeats would all miss before the first write lands.
 
@@ -233,7 +239,7 @@ def chat_with_batch(model_name, system_prompt, user_prompt, n=10, max_workers=5,
     time.sleep(_CACHE_PROPAGATION_SECONDS)
 
     provider = resolve_provider(model_name)
-    if provider == "anthropic":
+    if provider == "anthropic" and use_batch:
         rest = _anthropic_batch(model_name, system_prompt, user_prompt, n - 1, poll_seconds)
     else:
         rest = _threaded_repeats(model_name, system_prompt, user_prompt, n - 1, max_workers)

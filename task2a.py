@@ -66,7 +66,7 @@ def extract_outlier(text):
     return None
 
 
-def run_plain_batch(model, labels, times, columns, n, use_batch=True):
+def run_plain_batch(model, labels, times, columns, n, use_batch=False):
     """Same 'plain' prompt run n times via chat_with_batch (cache [+ batch] discount)."""
     system_prompt = TASK2_PLAIN_PROMPT.format(n=len(labels), n_minus_1=len(labels) - 1)
     user_prompt = format_table(times, columns)
@@ -95,8 +95,8 @@ def parse_args(argv=None):
     p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
     p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
-    p.add_argument("--no-batch", action="store_true", dest="no_batch",
-                    help="skip the Anthropic Message Batches API for plain mode; fire concurrent realtime calls instead (loses the batch discount, but no queueing delay)")
+    p.add_argument("--batch", action="store_true",
+                    help="use the Anthropic Message Batches API for plain mode instead of concurrent realtime calls (50%% cheaper, but queues with no latency SLA)")
     return p.parse_args(argv)
 
 
@@ -117,7 +117,7 @@ def main(argv=None):
     plain_outliers, plain_transcripts = [None] * scale, [None] * scale
     if args.mode in ("plain", "both"):
         plain_outliers, plain_transcripts = run_plain_batch(
-            args.model, labels, times, columns, scale, use_batch=not args.no_batch
+            args.model, labels, times, columns, scale, use_batch=args.batch
         )
 
     trials = []
