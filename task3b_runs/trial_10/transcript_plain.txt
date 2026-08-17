@@ -1,0 +1,21 @@
+## Analysis Approach
+
+For each trajectory I converted (x,y) to polar angle θ = atan2(y,x) and tracked the **angular positions of the radial excursions**. Every trajectory turns out to make repeated out‑and‑back radial spikes along a set of *discrete, evenly spaced rays* (the lobes), stepping monotonically from one ray to the next. The angular step Δθ between successive lobes then gives N = 360°/Δθ.
+
+Representative measurements:
+
+| Traj | successive lobe angles (°) | Δθ | N |
+|---|---|---|---|
+| H, S | ≈ +50, −129 | 180 | 2 |
+| M, O | 168, 108, 48, −12, −72, −132 | 60 | 6 |
+| A,B,F,G,I,K,R | 137, 92, 46, 2, −44, −88, −133, −177 | 45 | 8 |
+| E, P, T | 178, 145, 113, 80, 47, 14, −19, −51, −85, −117, −149 | 32.7 | 11 |
+| D | 72, 46, 20, −5, −31, −56, −82, −108, −134, −159, 175, 149, 123, 98 | 25.7 | 14 |
+| J | −44, −68, −88, −111, −134, −157, −179, 158, 136, 114, 92, 68, 47, 24, 1, −22 | 22.5 | 16 |
+| C, L, N, Q | 84, 65, 46, 27, 8, −11, −30, −49, −67, −87, −105, −124, −143, −163, 178, 159, 141, 122, 103 | 18.9 | 19 |
+
+Each cycle's angles sum to exactly 360°, confirming the integer lobe counts. Group sizes turn out uneven (7, 4, 3, 2, 2, 1, 1), so Y is reported as a typical/average size.
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

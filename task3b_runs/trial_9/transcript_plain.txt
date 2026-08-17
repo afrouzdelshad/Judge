@@ -1,0 +1,23 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y,x) at every local radius maximum (the "excursions" into a lobe). The lobes sit at fixed angular positions spaced 360°/N apart, and each trajectory marches monotonically around the ring, so counting the angular steps needed to complete one full 360° revolution gives N directly.
+
+**Representative measurements (angular step per lobe → N):**
+
+| Traj | typical lobe angles | Δθ | N |
+|---|---|---|---|
+| H, S | ≈ +52°, −128° only | 180° | 2 |
+| M, O | 168, 108, 47, −13, −72, −132 | 60° | 6 |
+| A,B,F,G,I,K,R | 0, ±45, ±90, ±135, 180 | 45° | 8 |
+| E, P, T | 79, 46, 15, −19, −52, −86, −117, −149, −183… | 32.7° | 11 |
+| D | 97, 72, 46, 20, −4, −31, −56, −83… | 25.7° | 14 |
+| J | 68, 45, 23, 1, −22, −44, −66, −89… | 22.4° | 16 |
+| C, L, N, Q | 64, 46, 27, 8, −11, −30, −49, −67… | 18.9° | 19 |
+
+**Consistency check:** the raw data contains only 7 distinct initial conditions, repeated across trajectories. Within every inferred group each member starts from a *different* initial condition (e.g. the N=8 group uses all 7 distinct starts exactly once; the N=19 group uses 4 distinct starts), which independently corroborates the clustering.
+
+Group sizes come out uneven (7, 4, 3, 2, 2, 1, 1), so Y is best reported as the typical/average size ≈ 3.
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```
