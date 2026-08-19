@@ -1,0 +1,74 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast
+import numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+        for j, lab in enumerate(labels)}
+
+print("npoints", len(t), "labels", labels, "t range", (t[0], t[-1]))
+for lab in labels:
+    z = data[lab]
+    x, y = z[:,0], z[:,1]
+    # Center by mean and inspect polar behavior
+    xc, yc = x-x.mean(), y-y.mean()
+    th = np.unwrap(np.arctan2(yc, xc))
+    r = np.hypot(xc, yc)
+    turns = (th[-1]-th[0])/(2*np.pi)
+    
+    # Dominant temporal frequencies of x+iy and radius
+    q = (xc + 1j*yc) - np.mean(xc + 1j*yc)
+    fq = np.abs(np.fft.fft(q))[1:len(q)//2]
+    fr = np.abs(np.fft.rfft(r-r.mean()))[1:]
+    iq = np.argmax(fq)+1
+    ir = np.argmax(fr)+1
+    
+    # Fit Fourier harmonics of radius versus angle; report strongest 1..12
+    scores = []
+    for k in range(1, 13):
+        A = np.column_stack([np.ones(len(r)), np.cos(k*th), np.sin(k*th)])
+        pred = A @ np.linalg.lstsq(A, r, rcond=None)[0]
+        scores.append(1 - np.var(r-pred)/np.var(r))
+    top = np.argsort(scores)[::-1][:4] + 1
+    print(lab, "turns", round(turns,2), "fft_xy", iq, "fft_r", ir,
+          "ratio", round(ir/iq,2), "polar tops",
+          [(int(k), round(scores[k-1],3)) for k in top],
+          "ranges", tuple(np.round(np.ptp(z,axis=0),2)))
+```
+
+[System: execution output]
+npoints 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] t range (np.float64(0.0), np.float64(100.0))
+A turns -6.41 fft_xy 3 fft_r 132 ratio 44.0 polar tops [(5, np.float64(0.276)), (10, np.float64(0.062)), (9, np.float64(0.062)), (11, np.float64(0.056))] ranges (np.float64(50.74), np.float64(49.47))
+B turns -9.25 fft_xy 1 fft_r 133 ratio 133.0 polar tops [(5, np.float64(0.316)), (10, np.float64(0.159)), (11, np.float64(0.034)), (9, np.float64(0.028))] ranges (np.float64(49.87), np.float64(51.19))
+C turns -11.53 fft_xy 114 fft_r 131 ratio 1.15 polar tops [(5, np.float64(0.249)), (10, np.float64(0.167)), (7, np.float64(0.008)), (12, np.float64(0.007))] ranges (np.float64(50.8), np.float64(53.44))
+D turns -16.07 fft_xy 112 fft_r 132 ratio 1.18 polar tops [(5, np.float64(0.241)), (10, np.float64(0.198)), (6, np.float64(0.005)), (12, np.float64(0.005))] ranges (np.float64(51.64), np.float64(48.5))
+E turns -9.4 fft_xy 4 fft_r 132 ratio 33.0 polar tops [(5, np.float64(0.242)), (10, np.float64(0.21)), (4, np.float64(0.006)), (11, np.float64(0.003))] ranges (np.float64(55.15), np.float64(50.38))
+F turns -7.75 fft_xy 1 fft_r 133 ratio 133.0 polar tops [(5, np.float64(0.27)), (10, np.float64(0.195)), (11, np.float64(0.013)), (9, np.float64(0.011))] ranges (np.float64(49.23), np.float64(51.32))
+G turns -9.8 fft_xy 1 fft_r 133 ratio 133.0 polar tops [(5, np.float64(0.267)), (10, np.float64(0.2)), (11, np.float64(0.012)), (2, np.float64(0.01))] ranges (np.float64(55.36), np.float64(46.63))
+H turns -12.28 fft_xy 3 fft_r 130 ratio 43.33 polar tops [(5, np.float64(0.221)), (10, np.float64(0.175)), (11, np.float64(0.005)), (8, np.float64(0.003))] ranges (np.float64(50.58), np.float64(50.05))
+I turns -11.0 fft_xy 2 fft_r 133 ratio 66.5 polar tops [(5, np.float64(0.23)), (10, np.float64(0.18)), (11, np.float64(0.004)), (4, np.float64(0.003))] ranges (np.float64(51.86), np.float64(47.06))
+J turns -12.15 fft_xy 120 fft_r 132 ratio 1.1 polar tops [(5, np.float64(0.245)), (10, np.float64(0.186)), (12, np.float64(0.012)), (8, np.float64(0.011))] ranges (np.float64(51.1), np.float64(50.78))
+K turns -9.56 fft_xy 122 fft_r 134 ratio 1.1 polar tops [(5, np.float64(0.238)), (10, np.float64(0.182)), (4, np.float64(0.005)), (12, np.float64(0.004))] ranges (np.float64(49.96), np.float64(51.85))
+L turns -6.36 fft_xy 125 fft_r 132 ratio 1.06 polar tops [(10, np.float64(0.279)), (9, np.float64(0.012)), (8, np.float64(0.01)), (11, np.float64(0.009))] ranges (np.float64(50.61), np.float64(52.35))
+M turns -12.06 fft_xy 115 fft_r 133 ratio 1.16 polar tops [(5, np.float64(0.299)), (10, np.float64(0.187)), (9, np.float64(0.027)), (11, np.float64(0.013))] ranges (np.float64(52.27), np.float64(50.79))
+N turns -10.95 fft_xy 2 fft_r 132 ratio 66.0 polar tops [(5, np.float64(0.303)), (10, np.float64(0.165)), (9, np.float64(0.024)), (11, np.float64(0.021))] ranges (np.float64(50.04), np.float64(49.9))
+O turns -14.11 fft_xy 2 fft_r 131 ratio 65.5 polar tops [(5, np.float64(0.28)), (10, np.float64(0.194)), (9, np.float64(0.033)), (11, np.float64(0.013))] ranges (np.float64(52.35), np.float64(48.52))
+P turns -13.2 fft_xy 1 fft_r 131 ratio 131.0 polar tops [(5, np.float64(0.213)), (10, np.float64(0.169)), (8, np.float64(0.013)), (12, np.float64(0.011))] ranges (np.float64(50.93), np.float64(49.04))
+Q turns -11.43 fft_xy 4 fft_r 133 ratio 33.25 polar tops [(5, np.float64(0.268)), (10, np.float64(0.181)), (11, np.float64(0.025)), (2, np.float64(0.008))] ranges (np.float64(54.37), np.float64(51.74))
+R turns -14.98 fft_xy 3 fft_r 132 ratio 44.0 polar tops [(5, np.float64(0.235)), (10, np.float64(0.193)), (8, np.float64(0.006)), (4, np.float64(0.005))] ranges (np.float64(50.64), np.float64(52.37))
+S turns -17.53 fft_xy 114 fft_r 131 ratio 1.15 polar tops [(5, np.float64(0.294)), (10, np.float64(0.199)), (9, np.float64(0.035)), (11, np.float64(0.018))] ranges (np.float64(50.04), np.float64(48.86))
+T turns -7.73 fft_xy 1 fft_r 132 ratio 132.0 polar tops [(5, np.float64(0.282)), (10, np.float64(0.185)), (11, np.float64(0.02)), (9, np.float64(0.017))] ranges (np.float64(50.81), np.float64(51.2))
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```

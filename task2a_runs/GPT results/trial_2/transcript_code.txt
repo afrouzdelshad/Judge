@@ -1,0 +1,72 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {}
+for j, lab in enumerate(labels, 1):
+    data[lab] = np.array([ast.literal_eval(r[j]) for r in rows[1:]], float)
+
+print("npoints", len(t), "labels", labels)
+for lab in labels:
+    z = data[lab][:,0] + 1j*data[lab][:,1]
+    # Estimate center as mean and analyze radial modulation versus unwrapped angle.
+    c = np.mean(z)
+    zz = z-c
+    th = np.unwrap(np.angle(zz))
+    r = np.abs(zz)
+    turns = abs((th[-1]-th[0])/(2*np.pi))
+    # Spectrum of radius after interpolation to uniform angle (handles variable speed).
+    if th[-1] < th[0]:
+        th, r = -th, r
+    order = np.argsort(th)
+    ths, rs = th[order], r[order]
+    ug = np.linspace(ths[0], ths[-1], len(ths))
+    rg = np.interp(ug, ths, rs)
+    rg -= np.polyval(np.polyfit(ug, rg, min(3, len(rg)-1)), ug)
+    spec = np.abs(np.fft.rfft(rg))
+    freq = np.fft.rfftfreq(len(rg), d=(ug[1]-ug[0])/(2*np.pi)) # cycles per 2pi angle
+    inds = np.argsort(spec[1:])[::-1][:8]+1
+    peaks = [(round(float(freq[i]),3), round(float(spec[i]/(spec[inds[0]]+1e-12)),3)) for i in inds]
+    # Count extrema/significant radial peaks directly
+    dr = np.diff(r)
+    maxima = np.sum((dr[:-1]>0)&(dr[1:]<=0))
+    print(lab, "center", np.round([c.real,c.imag],3), "turns", round(turns,3),
+          "rmean/std", round(r.mean(),3), round(r.std(),3), "maxima", maxima, "peaks", peaks[:5])
+```
+
+[System: execution output]
+npoints 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+A center [ 0.421 -2.811] turns 6.407 rmean/std 9.726 6.484 maxima 141 peaks [(4.997, 1.0), (6.057, 0.389), (4.089, 0.368), (5.906, 0.3), (3.937, 0.295)]
+B center [ 1.97  -0.223] turns 9.251 rmean/std 9.768 6.677 maxima 138 peaks [(4.965, 1.0), (10.039, 0.454), (5.073, 0.433), (3.022, 0.341), (5.181, 0.289)]
+C center [0.394 0.662] turns 11.53 rmean/std 9.769 6.959 maxima 133 peaks [(4.988, 1.0), (9.976, 0.35), (5.074, 0.197), (14.964, 0.192), (6.02, 0.182)]
+D center [ 0.504 -0.459] turns 16.065 rmean/std 9.715 7.08 maxima 132 peaks [(4.975, 1.0), (5.037, 0.591), (10.012, 0.533), (14.986, 0.343), (4.912, 0.316)]
+E center [0.435 0.594] turns 9.4 rmean/std 10.042 6.567 maxima 135 peaks [(4.96, 1.0), (5.065, 0.602), (10.025, 0.541), (4.01, 0.3), (5.171, 0.271)]
+F center [0.572 1.037] turns 7.751 rmean/std 9.774 6.891 maxima 133 peaks [(4.977, 1.0), (5.092, 0.387), (9.954, 0.385), (10.069, 0.319), (15.046, 0.232)]
+G center [-0.145 -1.045] turns 9.801 rmean/std 9.921 6.651 maxima 137 peaks [(4.969, 1.0), (9.939, 0.368), (10.04, 0.354), (15.01, 0.327), (5.071, 0.326)]
+H center [-0.548  0.339] turns 12.283 rmean/std 9.822 6.877 maxima 132 peaks [(5.041, 1.0), (4.96, 0.996), (10.001, 0.612), (6.017, 0.374), (5.122, 0.333)]
+I center [0.503 0.126] turns 11.004 rmean/std 9.849 6.872 maxima 134 peaks [(4.992, 1.0), (9.984, 0.411), (11.035, 0.186), (14.977, 0.186), (6.043, 0.18)]
+J center [ 0.711 -0.053] turns 12.148 rmean/std 9.81 6.91 maxima 133 peaks [(5.026, 1.0), (5.107, 0.427), (4.945, 0.407), (9.97, 0.342), (14.996, 0.322)]
+K center [-0.29  -0.472] turns 9.558 rmean/std 9.851 6.826 maxima 133 peaks [(4.983, 1.0), (9.965, 0.35), (4.879, 0.227), (10.069, 0.224), (6.021, 0.224)]
+L center [-1.096  0.114] turns 6.365 rmean/std 9.769 6.957 maxima 134 peaks [(9.999, 1.0), (19.998, 0.436), (9.062, 0.3), (20.936, 0.186), (6.406, 0.18)]
+M center [-1.268  0.401] turns 12.059 rmean/std 9.754 6.865 maxima 136 peaks [(5.034, 1.0), (4.952, 0.787), (9.986, 0.608), (4.786, 0.402), (15.02, 0.37)]
+N center [0.528 1.356] turns 10.95 rmean/std 9.804 6.815 maxima 135 peaks [(5.016, 1.0), (10.033, 0.291), (6.002, 0.215), (4.927, 0.198), (8.958, 0.19)]
+O center [ 0.964 -1.159] turns 14.107 rmean/std 9.738 6.888 maxima 135 peaks [(5.028, 1.0), (4.957, 0.599), (9.985, 0.504), (0.637, 0.403), (0.567, 0.339)]
+P center [0.19  0.485] turns 13.2 rmean/std 9.852 6.864 maxima 134 peaks [(4.987, 1.0), (9.975, 0.297), (5.97, 0.225), (4.912, 0.186), (4.005, 0.186)]
+Q center [0.883 1.005] turns 11.429 rmean/std 9.839 6.727 maxima 136 peaks [(5.007, 1.0), (10.015, 0.459), (3.989, 0.322), (1.867, 0.274), (8.996, 0.245)]
+R center [-0.093  0.608] turns 14.984 rmean/std 9.749 7.02 maxima 132 peaks [(4.971, 1.0), (5.037, 0.88), (10.008, 0.635), (5.103, 0.51), (5.965, 0.378)]
+S center [ 1.018 -1.114] turns 17.526 rmean/std 9.729 6.98 maxima 137 peaks [(4.976, 1.0), (5.032, 0.771), (10.008, 0.684), (0.559, 0.566), (1.006, 0.521)]
+T center [-0.886  0.937] turns 7.732 rmean/std 9.809 6.789 maxima 134 peaks [(4.976, 1.0), (9.953, 0.336), (5.104, 0.305), (5.997, 0.3), (15.057, 0.265)]
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```

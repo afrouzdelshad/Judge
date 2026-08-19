@@ -1,0 +1,78 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+        for j, lab in enumerate(labels)}
+
+print("nrows", len(t), "labels", labels, "dt", np.median(np.diff(t)))
+
+# For each trajectory, center robustly, transform to polar coordinates, and estimate
+# radial cycles per angular revolution (the likely lobe count) in several ways.
+for lab in labels:
+    z = data[lab][:,0] + 1j*data[lab][:,1]
+    # candidate centers: mean and midpoint of coordinate extrema
+    centers = [
+        np.mean(z),
+        (np.min(z.real)+np.max(z.real))/2 + 1j*(np.min(z.imag)+np.max(z.imag))/2,
+        np.median(z.real)+1j*np.median(z.imag)
+    ]
+    outs = []
+    for c in centers:
+        w = z-c
+        th = np.unwrap(np.angle(w))
+        r = np.abs(w)
+        # linear relation theta versus sample; total turns and radial FFT peak
+        direction = np.sign(np.polyfit(np.arange(len(th)), th, 1)[0])
+        u = direction*th
+        turns = (u[-1]-u[0])/(2*np.pi)
+        # regress radial variation against harmonics of angle, score N=1..15
+        scores=[]
+        for n in range(1,16):
+            X=np.column_stack([np.ones(len(r)), np.cos(n*u), np.sin(n*u),
+                               np.cos(2*n*u), np.sin(2*n*u)])
+            pred=X@np.linalg.lstsq(X,r,rcond=None)[0]
+            scores.append(1-np.var(r-pred)/np.var(r))
+        # number of local radial maxima, after mild smoothing
+        k=max(3, (len(r)//500)|1)
+        rs=np.convolve(r,np.ones(k)/k,mode='same')
+        peaks=np.sum((rs[1:-1]>rs[:-2])&(rs[1:-1]>=rs[2:]))
+        outs.append((turns, int(np.argmax(scores)+1), max(scores), peaks, peaks/max(abs(turns),1e-9)))
+    print(lab, ["turns=%.2f bestN=%d R2=%.3f peaks=%d ratio=%.2f"%o for o in outs])
+```
+
+[System: execution output]
+nrows 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] dt 0.10000000000000142
+A ['turns=6.41 bestN=5 R2=0.301 peaks=137 ratio=21.38', 'turns=13.39 bestN=5 R2=0.345 peaks=137 ratio=10.23', 'turns=18.41 bestN=5 R2=0.253 peaks=137 ratio=7.44']
+B ['turns=9.25 bestN=5 R2=0.359 peaks=135 ratio=14.59', 'turns=10.37 bestN=5 R2=0.336 peaks=134 ratio=12.92', 'turns=11.29 bestN=5 R2=0.307 peaks=134 ratio=11.87']
+C ['turns=11.53 bestN=5 R2=0.305 peaks=133 ratio=11.54', 'turns=11.60 bestN=5 R2=0.354 peaks=133 ratio=11.47', 'turns=11.56 bestN=5 R2=0.274 peaks=133 ratio=11.50']
+D ['turns=16.07 bestN=5 R2=0.316 peaks=132 ratio=8.22', 'turns=15.05 bestN=5 R2=0.361 peaks=132 ratio=8.77', 'turns=15.06 bestN=5 R2=0.395 peaks=132 ratio=8.76']
+E ['turns=9.40 bestN=5 R2=0.299 peaks=137 ratio=14.57', 'turns=14.35 bestN=5 R2=0.292 peaks=139 ratio=9.69', 'turns=9.38 bestN=5 R2=0.282 peaks=137 ratio=14.60']
+F ['turns=7.75 bestN=5 R2=0.340 peaks=133 ratio=17.16', 'turns=8.79 bestN=5 R2=0.330 peaks=134 ratio=15.24', 'turns=11.77 bestN=5 R2=0.241 peaks=133 ratio=11.30']
+G ['turns=9.80 bestN=5 R2=0.327 peaks=137 ratio=13.98', 'turns=9.81 bestN=5 R2=0.328 peaks=137 ratio=13.96', 'turns=8.82 bestN=5 R2=0.309 peaks=136 ratio=15.42']
+H ['turns=12.28 bestN=5 R2=0.276 peaks=134 ratio=10.91', 'turns=14.27 bestN=5 R2=0.391 peaks=135 ratio=9.46', 'turns=10.28 bestN=5 R2=0.326 peaks=134 ratio=13.03']
+I ['turns=11.00 bestN=5 R2=0.282 peaks=134 ratio=12.18', 'turns=7.00 bestN=5 R2=0.289 peaks=136 ratio=19.42', 'turns=11.00 bestN=5 R2=0.356 peaks=134 ratio=12.18']
+J ['turns=12.15 bestN=5 R2=0.305 peaks=134 ratio=11.03', 'turns=12.11 bestN=5 R2=0.401 peaks=134 ratio=11.06', 'turns=12.13 bestN=5 R2=0.299 peaks=134 ratio=11.05']
+K ['turns=9.56 bestN=5 R2=0.295 peaks=134 ratio=14.02', 'turns=15.49 bestN=5 R2=0.391 peaks=136 ratio=8.78', 'turns=11.53 bestN=5 R2=0.359 peaks=134 ratio=11.62']
+L ['turns=6.36 bestN=10 R2=0.326 peaks=133 ratio=20.90', 'turns=5.32 bestN=10 R2=0.336 peaks=133 ratio=25.02', 'turns=6.34 bestN=10 R2=0.364 peaks=133 ratio=20.97']
+M ['turns=12.06 bestN=5 R2=0.361 peaks=135 ratio=11.19', 'turns=10.03 bestN=5 R2=0.291 peaks=136 ratio=13.56', 'turns=11.05 bestN=5 R2=0.326 peaks=134 ratio=12.13']
+N ['turns=10.95 bestN=5 R2=0.351 peaks=134 ratio=12.24', 'turns=9.95 bestN=5 R2=0.319 peaks=136 ratio=13.66', 'turns=14.95 bestN=5 R2=0.330 peaks=134 ratio=8.96']
+O ['turns=14.11 bestN=5 R2=0.341 peaks=133 ratio=9.43', 'turns=11.15 bestN=5 R2=0.342 peaks=133 ratio=11.93', 'turns=15.18 bestN=5 R2=0.343 peaks=133 ratio=8.76']
+P ['turns=13.20 bestN=5 R2=0.277 peaks=135 ratio=10.23', 'turns=7.09 bestN=5 R2=0.251 peaks=140 ratio=19.74', 'turns=11.15 bestN=5 R2=0.351 peaks=135 ratio=12.11']
+Q ['turns=11.43 bestN=5 R2=0.324 peaks=134 ratio=11.72', 'turns=8.34 bestN=5 R2=0.301 peaks=135 ratio=16.18', 'turns=12.39 bestN=5 R2=0.290 peaks=134 ratio=10.82']
+R ['turns=14.98 bestN=5 R2=0.308 peaks=133 ratio=8.88', 'turns=7.99 bestN=5 R2=0.335 peaks=134 ratio=16.78', 'turns=12.99 bestN=5 R2=0.298 peaks=133 ratio=10.24']
+S ['turns=17.53 bestN=5 R2=0.372 peaks=133 ratio=7.59', 'turns=9.52 bestN=5 R2=0.360 peaks=133 ratio=13.97', 'turns=16.51 bestN=5 R2=0.354 peaks=133 ratio=8.06']
+T ['turns=7.73 bestN=5 R2=0.346 peaks=135 ratio=17.46', 'turns=9.72 bestN=5 R2=0.308 peaks=134 ratio=13.79', 'turns=12.73 bestN=5 R2=0.355 peaks=134 ratio=10.52']
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```

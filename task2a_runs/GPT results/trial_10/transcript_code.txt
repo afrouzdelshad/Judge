@@ -1,0 +1,79 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast
+import numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+        for j, lab in enumerate(labels)}
+
+print("samples", len(t), "labels", labels, "dt", np.median(np.diff(t)))
+
+for lab in labels:
+    z = data[lab][:,0] + 1j*data[lab][:,1]
+    # Estimate central axis in the projected plane by the coordinate mean.
+    c = np.mean(z)
+    w = z-c
+    theta = np.unwrap(np.angle(w))
+    turns = abs(theta[-1]-theta[0])/(2*np.pi)
+    r = np.abs(w)
+    
+    # Dominant temporal frequencies of complex position and radius.
+    fc = np.abs(np.fft.rfft((w.real-np.mean(w.real))))**2 + np.abs(np.fft.rfft((w.imag-np.mean(w.imag))))**2
+    fr = np.abs(np.fft.rfft(r-np.mean(r)))**2
+    fc[0] = fr[0] = 0
+    topc = np.argsort(fc)[-6:][::-1]
+    topr = np.argsort(fr)[-6:][::-1]
+    
+    # Fit polar radius against integer angular harmonics; report explained
+    # variance for harmonics 1..12 (using sin and cos together).
+    scores = []
+    rv = np.var(r)
+    for n in range(1,13):
+        X = np.column_stack([np.ones(len(theta)), np.cos(n*theta), np.sin(n*theta)])
+        pred = X @ np.linalg.lstsq(X, r, rcond=None)[0]
+        scores.append(1 - np.var(r-pred)/rv if rv else 0)
+    
+    print(lab, "turns", round(turns,2),
+          "complex bins", topc[:4].tolist(),
+          "rad bins", topr[:4].tolist(),
+          "ratio", round(topr[0]/topc[0],3) if topc[0] else None,
+          "polar best", int(np.argmax(scores)+1), round(max(scores),3),
+          "scores", [round(x,2) for x in scores])
+```
+
+[System: execution output]
+samples 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] dt 0.10000000000000142
+A turns 6.41 complex bins [11, 14, 5, 7] rad bins [132, 133, 134, 131] ratio 12.0 polar best 5 0.276 scores [np.float64(0.01), np.float64(0.01), np.float64(0.01), np.float64(0.0), np.float64(0.28), np.float64(0.04), np.float64(0.0), np.float64(0.0), np.float64(0.06), np.float64(0.06), np.float64(0.06), np.float64(0.01)]
+B turns 9.25 complex bins [8, 15, 5, 12] rad bins [133, 134, 131, 128] ratio 16.625 polar best 5 0.316 scores [np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.0), np.float64(0.32), np.float64(0.01), np.float64(0.01), np.float64(0.01), np.float64(0.03), np.float64(0.16), np.float64(0.03), np.float64(0.01)]
+C turns 11.53 complex bins [13, 8, 11, 14] rad bins [131, 132, 134, 130] ratio 10.077 polar best 5 0.249 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.25), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.0), np.float64(0.17), np.float64(0.01), np.float64(0.01)]
+D turns 16.07 complex bins [14, 146, 16, 20] rad bins [132, 129, 126, 130] ratio 9.429 polar best 5 0.241 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.24), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.2), np.float64(0.0), np.float64(0.0)]
+E turns 9.4 complex bins [9, 6, 3, 1] rad bins [132, 135, 130, 134] ratio 14.667 polar best 5 0.242 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.24), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.21), np.float64(0.0), np.float64(0.0)]
+F turns 7.75 complex bins [13, 15, 14, 11] rad bins [133, 130, 134, 129] ratio 10.231 polar best 5 0.27 scores [np.float64(0.01), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.27), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.01), np.float64(0.19), np.float64(0.01), np.float64(0.01)]
+G turns 9.8 complex bins [7, 11, 1, 13] rad bins [133, 131, 126, 125] ratio 19.0 polar best 5 0.267 scores [np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.27), np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.2), np.float64(0.01), np.float64(0.0)]
+H turns 12.28 complex bins [15, 12, 7, 11] rad bins [130, 133, 135, 132] ratio 8.667 polar best 5 0.221 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.22), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.18), np.float64(0.0), np.float64(0.0)]
+I turns 11.0 complex bins [11, 13, 144, 7] rad bins [133, 132, 127, 122] ratio 12.091 polar best 5 0.23 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.23), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.18), np.float64(0.0), np.float64(0.0)]
+J turns 12.15 complex bins [15, 13, 12, 11] rad bins [132, 130, 131, 133] ratio 8.8 polar best 5 0.245 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.25), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.0), np.float64(0.19), np.float64(0.0), np.float64(0.01)]
+K turns 9.56 complex bins [9, 13, 8, 11] rad bins [134, 133, 131, 132] ratio 14.889 polar best 5 0.238 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.24), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.18), np.float64(0.0), np.float64(0.0)]
+L turns 6.36 complex bins [7, 6, 2, 5] rad bins [132, 130, 131, 134] ratio 18.857 polar best 10 0.279 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.01), np.float64(0.28), np.float64(0.01), np.float64(0.0)]
+M turns 12.06 complex bins [10, 12, 8, 14] rad bins [133, 131, 134, 132] ratio 13.3 polar best 5 0.299 scores [np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.3), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.03), np.float64(0.19), np.float64(0.01), np.float64(0.0)]
+N turns 10.95 complex bins [7, 13, 9, 12] rad bins [132, 134, 128, 131] ratio 18.857 polar best 5 0.303 scores [np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.0), np.float64(0.3), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.02), np.float64(0.17), np.float64(0.02), np.float64(0.01)]
+O turns 14.11 complex bins [11, 12, 14, 144] rad bins [131, 132, 134, 129] ratio 11.909 polar best 5 0.28 scores [np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.28), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.03), np.float64(0.19), np.float64(0.01), np.float64(0.01)]
+P turns 13.2 complex bins [16, 13, 14, 147] rad bins [131, 130, 132, 134] ratio 8.188 polar best 5 0.213 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.21), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.0), np.float64(0.17), np.float64(0.01), np.float64(0.01)]
+Q turns 11.43 complex bins [12, 6, 10, 15] rad bins [133, 130, 132, 126] ratio 11.083 polar best 5 0.268 scores [np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.0), np.float64(0.27), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.18), np.float64(0.02), np.float64(0.0)]
+R turns 14.98 complex bins [15, 12, 11, 146] rad bins [132, 131, 133, 127] ratio 8.8 polar best 5 0.235 scores [np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.24), np.float64(0.0), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.19), np.float64(0.0), np.float64(0.0)]
+S turns 17.53 complex bins [14, 13, 15, 17] rad bins [131, 130, 129, 133] ratio 9.357 polar best 5 0.294 scores [np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.0), np.float64(0.29), np.float64(0.0), np.float64(0.0), np.float64(0.0), np.float64(0.03), np.float64(0.2), np.float64(0.02), np.float64(0.0)]
+T turns 7.73 complex bins [10, 14, 8, 4] rad bins [132, 133, 130, 134] ratio 13.2 polar best 5 0.282 scores [np.float64(0.01), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.28), np.float64(0.0), np.float64(0.01), np.float64(0.01), np.float64(0.02), np.float64(0.18), np.float64(0.02), np.float64(0.01)]
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```

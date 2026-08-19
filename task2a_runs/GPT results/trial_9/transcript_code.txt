@@ -1,0 +1,77 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {}
+for j, lab in enumerate(labels, 1):
+    data[lab] = np.array([ast.literal_eval(r[j]) for r in rows[1:]], float)
+
+print("labels:", labels)
+print("samples:", len(t), "time:", (t[0], t[-1]), "dt median:", np.median(np.diff(t)))
+
+def analyze(xy):
+    z = xy[:,0] + 1j*xy[:,1]
+    # Centers to compare: raw origin and coordinate mean
+    out = []
+    for cname, c in [("origin", 0j), ("mean", np.mean(z))]:
+        w = z-c
+        th = np.unwrap(np.angle(w))
+        r = np.abs(w)
+        turns = (th[-1]-th[0])/(2*np.pi)
+        # regress radius on angular harmonics; lobe count maximizes explained variance
+        detr = r - np.mean(r)
+        scores = []
+        for n in range(1,21):
+            A=np.column_stack([np.cos(n*th),np.sin(n*th),np.ones(len(th)),th])
+            fit=A@np.linalg.lstsq(A,r,rcond=None)[0]
+            scores.append(1-np.var(r-fit)/np.var(r))
+        # Fourier over angle via complex phase coherence, insensitive to nonuniform angular sampling
+        coh=[abs(np.mean(detr*np.exp(-1j*n*th)))/np.std(r) for n in range(1,21)]
+        out.append((cname,c,turns,np.argmax(scores)+1,max(scores),np.argmax(coh)+1,max(coh),scores,coh))
+    return out
+
+for lab in labels:
+    a=analyze(data[lab])
+    vals=[]
+    for cname,c,turns,ns,ss,nc,cc,_,_ in a:
+        vals.append(f"{cname}:turn={turns:.2f} fitN={ns}({ss:.3f}) cohN={nc}({cc:.3f})")
+    print(lab, " | ".join(vals))
+```
+
+[System: execution output]
+labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+samples: 1001 time: (np.float64(0.0), np.float64(100.0)) dt median: 0.10000000000000142
+A origin:turn=-10.37 fitN=5(0.161) cohN=10(0.226) | mean:turn=-6.41 fitN=5(0.276) cohN=5(0.355)
+B origin:turn=-10.28 fitN=5(0.158) cohN=10(0.223) | mean:turn=-9.25 fitN=5(0.316) cohN=5(0.367)
+C origin:turn=-11.55 fitN=5(0.159) cohN=10(0.226) | mean:turn=-11.53 fitN=5(0.249) cohN=5(0.304)
+D origin:turn=-15.08 fitN=5(0.192) cohN=5(0.232) | mean:turn=-16.07 fitN=5(0.241) cohN=10(0.298)
+E origin:turn=-9.39 fitN=10(0.160) cohN=10(0.227) | mean:turn=-9.40 fitN=5(0.242) cohN=10(0.304)
+F origin:turn=-11.77 fitN=5(0.163) cohN=10(0.225) | mean:turn=-7.75 fitN=5(0.271) cohN=5(0.326)
+G origin:turn=-9.77 fitN=5(0.154) cohN=10(0.220) | mean:turn=-9.80 fitN=5(0.267) cohN=5(0.303)
+H origin:turn=-12.27 fitN=5(0.165) cohN=10(0.229) | mean:turn=-12.28 fitN=5(0.221) cohN=10(0.276)
+I origin:turn=-11.00 fitN=5(0.161) cohN=10(0.233) | mean:turn=-11.00 fitN=5(0.230) cohN=10(0.280)
+J origin:turn=-12.13 fitN=5(0.166) cohN=10(0.227) | mean:turn=-12.15 fitN=5(0.246) cohN=10(0.298)
+K origin:turn=-9.58 fitN=5(0.147) cohN=10(0.225) | mean:turn=-9.56 fitN=5(0.238) cohN=10(0.286)
+L origin:turn=-6.34 fitN=10(0.167) cohN=20(0.227) | mean:turn=-6.36 fitN=10(0.279) cohN=10(0.349)
+M origin:turn=-11.06 fitN=10(0.151) cohN=10(0.224) | mean:turn=-12.06 fitN=5(0.299) cohN=5(0.345)
+N origin:turn=-10.95 fitN=5(0.158) cohN=10(0.217) | mean:turn=-10.95 fitN=5(0.303) cohN=5(0.356)
+O origin:turn=-12.02 fitN=5(0.162) cohN=10(0.234) | mean:turn=-14.11 fitN=5(0.280) cohN=5(0.334)
+P origin:turn=-14.18 fitN=5(0.194) cohN=5(0.230) | mean:turn=-13.20 fitN=5(0.213) cohN=10(0.260)
+Q origin:turn=-10.38 fitN=5(0.157) cohN=10(0.210) | mean:turn=-11.43 fitN=5(0.268) cohN=5(0.313)
+R origin:turn=-13.98 fitN=5(0.181) cohN=5(0.223) | mean:turn=-14.98 fitN=5(0.235) cohN=10(0.295)
+S origin:turn=-12.51 fitN=5(0.161) cohN=10(0.231) | mean:turn=-17.53 fitN=5(0.295) cohN=5(0.353)
+T origin:turn=-11.70 fitN=5(0.168) cohN=10(0.226) | mean:turn=-7.73 fitN=5(0.283) cohN=5(0.334)
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```

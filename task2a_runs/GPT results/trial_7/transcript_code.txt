@@ -1,0 +1,100 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast
+import numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task2a_data.csv"
+
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {
+    lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], dtype=float)
+    for j, lab in enumerate(labels)
+}
+
+print("samples:", len(t), "labels:", labels, "time range:", (t[0], t[-1]))
+
+for lab in labels:
+    xy = data[lab]
+    z = xy[:,0] + 1j*xy[:,1]
+    center = np.mean(z)
+    zc = z - center
+    theta = np.unwrap(np.angle(zc))
+    r = np.abs(zc)
+    
+    # Fit radius as Fourier series in unwrapped polar angle; lobe number should
+    # produce strong periodic content at that angular harmonic.
+    harmonics = np.arange(1, 21)
+    powers = []
+    for k in harmonics:
+        c = np.mean((r-r.mean()) * np.exp(-1j*k*theta))
+        powers.append(abs(c))
+    powers = np.array(powers)
+    top = harmonics[np.argsort(powers)[::-1][:6]]
+    
+    # Also analyze geometric turning angle and radial extrema.
+    d = np.diff(z)
+    tangent = np.unwrap(np.angle(d))
+    total_orbits = abs(theta[-1]-theta[0])/(2*np.pi)
+    total_turn = abs(tangent[-1]-tangent[0])/(2*np.pi)
+    
+    # Spectrum against angular coordinate after interpolation to uniform theta,
+    # if sufficiently monotone.
+    direction = np.sign(np.median(np.diff(theta))) or 1
+    th = direction*theta
+    frac_good = np.mean(np.diff(th) > 0)
+    spec_top = []
+    if frac_good > .8:
+        order = np.argsort(th)
+        thu, idx = np.unique(th[order], return_index=True)
+        ru = r[order][idx]
+        grid = np.linspace(thu[0], thu[-1], max(1024, len(r)))
+        rg = np.interp(grid, thu, ru)
+        ft = abs(np.fft.rfft((rg-rg.mean())*np.hanning(len(rg))))
+        # frequency in cycles per 2pi angle
+        freq = np.fft.rfftfreq(len(rg), d=(grid[1]-grid[0]))*2*np.pi
+        inds = np.argsort(ft[1:])[::-1][:8]+1
+        spec_top = [(round(freq[i],3), round(ft[i]/ft[inds[0]],3)) for i in inds]
+    
+    print(lab,
+          "center", tuple(np.round([center.real, center.imag],3)),
+          "orbits", round(total_orbits,2),
+          "turn", round(total_turn,2),
+          "monotone", round(frac_good,3),
+          "polar_top", [(int(k), round(powers[k-1]/powers.max(),3)) for k in top],
+          "uniform_top", spec_top)
+```
+
+[System: execution output]
+samples: 1001 labels: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] time range: (np.float64(0.0), np.float64(100.0))
+A center (np.float64(0.421), np.float64(-2.811)) orbits 6.41 turn 93.93 monotone 0.617 polar_top [(5, np.float64(1.0)), (9, np.float64(0.488)), (10, np.float64(0.48)), (11, np.float64(0.47)), (16, np.float64(0.423)), (6, np.float64(0.419))] uniform_top []
+B center (np.float64(1.97), np.float64(-0.223)) orbits 9.25 turn 92.64 monotone 0.633 polar_top [(5, np.float64(1.0)), (10, np.float64(0.775)), (16, np.float64(0.423)), (14, np.float64(0.374)), (11, np.float64(0.363)), (15, np.float64(0.363))] uniform_top []
+C center (np.float64(0.394), np.float64(0.662)) orbits 11.53 turn 85.9 monotone 0.677 polar_top [(5, np.float64(1.0)), (10, np.float64(0.909)), (15, np.float64(0.782)), (20, np.float64(0.605)), (16, np.float64(0.238)), (7, np.float64(0.219))] uniform_top []
+D center (np.float64(0.504), np.float64(-0.459)) orbits 16.07 turn 71.44 monotone 0.732 polar_top [(10, np.float64(1.0)), (5, np.float64(0.983)), (15, np.float64(0.89)), (20, np.float64(0.76)), (14, np.float64(0.191)), (18, np.float64(0.184))] uniform_top []
+E center (np.float64(0.435), np.float64(0.594)) orbits 9.4 turn 98.06 monotone 0.631 polar_top [(10, np.float64(1.0)), (5, np.float64(0.92)), (15, np.float64(0.717)), (20, np.float64(0.615)), (16, np.float64(0.221)), (4, np.float64(0.181))] uniform_top []
+F center (np.float64(0.572), np.float64(1.037)) orbits 7.75 turn 85.24 monotone 0.653 polar_top [(5, np.float64(1.0)), (10, np.float64(0.927)), (15, np.float64(0.686)), (20, np.float64(0.468)), (19, np.float64(0.349)), (16, np.float64(0.304))] uniform_top []
+G center (np.float64(-0.145), np.float64(-1.045)) orbits 9.8 turn 95.84 monotone 0.655 polar_top [(5, np.float64(1.0)), (10, np.float64(0.996)), (15, np.float64(0.825)), (20, np.float64(0.516)), (16, np.float64(0.351)), (14, np.float64(0.272))] uniform_top []
+H center (np.float64(-0.548), np.float64(0.339)) orbits 12.28 turn 83.96 monotone 0.669 polar_top [(10, np.float64(1.0)), (5, np.float64(0.997)), (15, np.float64(0.778)), (20, np.float64(0.63)), (14, np.float64(0.194)), (18, np.float64(0.189))] uniform_top []
+I center (np.float64(0.503), np.float64(0.126)) orbits 11.0 turn 88.87 monotone 0.667 polar_top [(10, np.float64(1.0)), (5, np.float64(0.991)), (15, np.float64(0.826)), (20, np.float64(0.684)), (16, np.float64(0.163)), (11, np.float64(0.151))] uniform_top []
+J center (np.float64(0.711), np.float64(-0.053)) orbits 12.15 turn 84.25 monotone 0.671 polar_top [(10, np.float64(1.0)), (5, np.float64(0.976)), (15, np.float64(0.847)), (20, np.float64(0.657)), (17, np.float64(0.308)), (13, np.float64(0.288))] uniform_top []
+K center (np.float64(-0.29), np.float64(-0.472)) orbits 9.56 turn 94.71 monotone 0.674 polar_top [(10, np.float64(1.0)), (5, np.float64(0.989)), (15, np.float64(0.897)), (20, np.float64(0.659)), (17, np.float64(0.236)), (12, np.float64(0.177))] uniform_top []
+L center (np.float64(-1.096), np.float64(0.114)) orbits 6.36 turn 75.8 monotone 0.671 polar_top [(10, np.float64(1.0)), (20, np.float64(0.727)), (19, np.float64(0.493)), (9, np.float64(0.226)), (8, np.float64(0.198)), (18, np.float64(0.195))] uniform_top []
+M center (np.float64(-1.268), np.float64(0.401)) orbits 12.06 turn 88.71 monotone 0.695 polar_top [(5, np.float64(1.0)), (10, np.float64(0.864)), (15, np.float64(0.675)), (19, np.float64(0.502)), (20, np.float64(0.426)), (14, np.float64(0.411))] uniform_top []
+N center (np.float64(0.528), np.float64(1.356)) orbits 10.95 turn 88.3 monotone 0.65 polar_top [(5, np.float64(1.0)), (10, np.float64(0.805)), (15, np.float64(0.484)), (14, np.float64(0.408)), (16, np.float64(0.341)), (9, np.float64(0.321))] uniform_top []
+O center (np.float64(0.964), np.float64(-1.159)) orbits 14.11 turn 85.03 monotone 0.706 polar_top [(5, np.float64(1.0)), (10, np.float64(0.908)), (15, np.float64(0.618)), (14, np.float64(0.464)), (20, np.float64(0.418)), (9, np.float64(0.388))] uniform_top []
+P center (np.float64(0.19), np.float64(0.485)) orbits 13.2 turn 76.73 monotone 0.696 polar_top [(10, np.float64(1.0)), (5, np.float64(0.985)), (15, np.float64(0.915)), (20, np.float64(0.746)), (13, np.float64(0.38)), (18, np.float64(0.31))] uniform_top []
+Q center (np.float64(0.883), np.float64(1.005)) orbits 11.43 turn 92.41 monotone 0.666 polar_top [(5, np.float64(1.0)), (10, np.float64(0.936)), (15, np.float64(0.693)), (16, np.float64(0.475)), (20, np.float64(0.407)), (11, np.float64(0.376))] uniform_top []
+R center (np.float64(-0.093), np.float64(0.608)) orbits 14.98 turn 75.53 monotone 0.724 polar_top [(10, np.float64(1.0)), (5, np.float64(0.95)), (15, np.float64(0.863)), (20, np.float64(0.76)), (13, np.float64(0.251)), (18, np.float64(0.224))] uniform_top []
+S center (np.float64(1.018), np.float64(-1.114)) orbits 17.53 turn 81.83 monotone 0.704 polar_top [(5, np.float64(1.0)), (10, np.float64(0.84)), (15, np.float64(0.65)), (19, np.float64(0.484)), (20, np.float64(0.479)), (14, np.float64(0.412))] uniform_top []
+T center (np.float64(-0.886), np.float64(0.937)) orbits 7.73 turn 86.64 monotone 0.653 polar_top [(5, np.float64(1.0)), (10, np.float64(0.881)), (15, np.float64(0.641)), (20, np.float64(0.483)), (14, np.float64(0.388)), (16, np.float64(0.345))] uniform_top []
+
+
+[Assistant]
+```json
+{"outlier":"L"}
+```
