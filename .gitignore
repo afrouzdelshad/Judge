@@ -4,3 +4,5 @@
 .env
 *.tex
 *.xlsx
+
+.DS_Store
