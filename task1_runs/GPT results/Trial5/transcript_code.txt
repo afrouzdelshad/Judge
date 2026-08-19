@@ -1,0 +1,206 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+from scipy.signal import find_peaks
+from scipy.ndimage import gaussian_filter1d
+from scipy.optimize import least_squares
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task1_data.csv"
+
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {
+    lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+    for j, lab in enumerate(labels)
+}
+
+print("labels:", labels, "samples:", len(t), "time range:", (t[0], t[-1]))
+
+for lab in labels:
+    p = data[lab]
+    x, y = p[:,0], p[:,1]
+
+    # Several plausible estimates of the central axis in the xy plane.
+    centers = []
+    centers.append(("mean", np.mean(p, axis=0)))
+    centers.append(("median", np.median(p, axis=0)))
+
+    # Algebraic least-squares circle center.
+    A = np.c_[2*x, 2*y, np.ones(len(x))]
+    b = x*x + y*y
+    sol, *_ = np.linalg.lstsq(A, b, rcond=None)
+    centers.append(("circle", sol[:2]))
+
+    summaries = []
+    for cname, c in centers:
+        q = p - c
+        r = np.hypot(q[:,0], q[:,1])
+        th = np.unwrap(np.arctan2(q[:,1], q[:,0]))
+        turns = abs((th[-1] - th[0]) / (2*np.pi))
+
+        # Fit radial variation as Fourier modes in geometric polar angle.
+        # Scores are normalized amplitudes for modes 1..30.
+        scores = []
+        for n in range(1, 31):
+            M = np.c_[np.ones(len(th)), np.cos(n*th), np.sin(n*th)]
+            coef, *_ = np.linalg.lstsq(M, r, rcond=None)
+            scores.append(np.hypot(coef[1], coef[2]) / (np.std(r) + 1e-12))
+        top = np.argsort(scores)[::-1][:6] + 1
+
+        # Angular-bin average radius and count its smoothed maxima.
+        phi = np.mod(np.arctan2(q[:,1], q[:,0]), 2*np.pi)
+        nb = 720
+        idx = np.floor(phi/(2*np.pi)*nb).astype(int) % nb
+        sums = np.bincount(idx, weights=r, minlength=nb)
+        cnts = np.bincount(idx, minlength=nb)
+        rb = np.divide(sums, cnts, out=np.full(nb, np.nan), where=cnts>0)
+        good = np.isfinite(rb)
+        if not np.all(good):
+            inds = np.arange(nb)
+            ext_i = np.r_[inds[good]-nb, inds[good], inds[good]+nb]
+            ext_v = np.r_[rb[good], rb[good], rb[good]]
+            rb = np.interp(inds, ext_i, ext_v)
+        sm = gaussian_filter1d(rb, 5, mode="wrap")
+        prom = max(0.08*(np.max(sm)-np.min(sm)), 1e-12)
+        pk, _ = find_peaks(np.r_[sm, sm, sm], prominence=prom,
+                           distance=max(3, nb//60))
+        pk = pk[(pk >= nb) & (pk < 2*nb)] - nb
+
+        summaries.append(
+            (cname, np.round(c,3), round(turns,2), len(pk),
+             [(int(n), round(scores[n-1],3)) for n in top])
+        )
+
+    # Temporal radial spectrum using mean center, useful if angular speed varies.
+    c = np.mean(p, axis=0)
+    rr = np.hypot(x-c[0], y-c[1])
+    rr = rr - np.mean(rr)
+    spec = np.abs(np.fft.rfft(rr*np.hanning(len(rr))))
+    freqs = np.fft.rfftfreq(len(rr), d=np.median(np.diff(t)))
+    ids = np.argsort(spec[1:])[::-1][:5] + 1
+    temp_top = [(round(freqs[i],5), round(spec[i]/(spec[ids[0]]+1e-12),3))
+                for i in ids]
+
+    print("\n", lab, "range", np.round(np.ptp(p,axis=0),3),
+          "temporal", temp_top)
+    for s in summaries:
+        print(" ", s)
+```
+
+[System: execution output]
+
+[EXCEPTION]
+Traceback (most recent call last):
+  File "/Users/adelshad3/Documents/GitHub/Judge/LLM_factory.py", line 260, in _execute_code
+    exec(code, {"__builtins__": __builtins__})
+  File "<string>", line 2, in <module>
+ModuleNotFoundError: No module named 'scipy'
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task1_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+        for j, lab in enumerate(labels)}
+
+def circ_smooth(a, sigma):
+    n = len(a)
+    k = np.minimum(np.arange(n), n-np.arange(n))
+    ker = np.exp(-0.5*(k/sigma)**2)
+    ker /= ker.sum()
+    return np.fft.ifft(np.fft.fft(a)*np.fft.fft(ker)).real
+
+def periodic_peaks(a, minprom=0.05):
+    prev, nxt = np.roll(a,1), np.roll(a,-1)
+    cand = np.where((a > prev) & (a >= nxt))[0]
+    rng = np.ptp(a)
+    out = []
+    n = len(a)
+    for i in cand:
+        # local prominence against minima within roughly 1/12 circle
+        w = max(5, n//30)
+        left = np.min(a[(i-np.arange(1,w+1))%n])
+        right = np.min(a[(i+np.arange(1,w+1))%n])
+        if a[i] - max(left,right) >= minprom*rng:
+            out.append(i)
+    return out
+
+print("labels", labels, "samples", len(t))
+for lab in labels:
+    p = data[lab]
+    x,y = p.T
+    # candidate centers
+    A = np.c_[2*x, 2*y, np.ones(len(x))]
+    sol = np.linalg.lstsq(A, x*x+y*y, rcond=None)[0]
+    centers = [("mean", p.mean(0)), ("median", np.median(p,0)),
+               ("circle", sol[:2])]
+    print("\n"+lab, "ranges", np.round(np.ptp(p,axis=0),3))
+    for name,c in centers:
+        q=p-c
+        phi=np.mod(np.arctan2(q[:,1],q[:,0]),2*np.pi)
+        th=np.unwrap(np.arctan2(q[:,1],q[:,0]))
+        r=np.hypot(q[:,0],q[:,1])
+        turns=(th[-1]-th[0])/(2*np.pi)
+
+        # least-squares Fourier amplitudes against all raw points
+        amps=[]
+        for k in range(1,41):
+            z=np.exp(1j*k*phi)
+            amps.append(abs(np.mean((r-r.mean())*z))*2/(r.std()+1e-15))
+        top=np.argsort(amps)[::-1][:8]+1
+
+        # angular bin radial median-ish mean, smooth at several scales
+        nb=720
+        ii=(phi/(2*np.pi)*nb).astype(int)%nb
+        sums=np.bincount(ii,weights=r,minlength=nb)
+        cnt=np.bincount(ii,minlength=nb)
+        rb=np.divide(sums,cnt,out=np.full(nb,np.nan),where=cnt>0)
+        good=np.isfinite(rb)
+        if not good.all():
+            ind=np.arange(nb)
+            gi=ind[good]
+            rb=np.interp(ind, np.r_[gi-nb,gi,gi+nb], np.r_[rb[good]]*3)
+        peakcounts=[]
+        fftamps=np.abs(np.fft.rfft(rb-rb.mean()))
+        ftop=np.argsort(fftamps[1:41])[::-1][:8]+1
+        for sig in [2,4,7,10,14]:
+            sm=circ_smooth(rb,sig)
+            peakcounts.append(len(periodic_peaks(sm,.04)))
+        print(name, "c",np.round(c,2),"turns",round(turns,2),
+              "rawtop",[(int(k),round(amps[k-1],2)) for k in top],
+              "bintop",[(int(k),round(fftamps[k]/(fftamps[ftop[0]]+1e-15),2)) for k in ftop],
+              "peaks",peakcounts)
+```
+
+[System: execution output]
+labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T'] samples 1001
+
+A ranges [45.779 49.042]
+
+[EXCEPTION]
+Traceback (most recent call last):
+  File "/Users/adelshad3/Documents/GitHub/Judge/LLM_factory.py", line 260, in _execute_code
+    exec(code, {"__builtins__": __builtins__})
+  File "<string>", line 67, in <module>
+  File "/Users/adelshad3/opt/anaconda3/envs/judge/lib/python3.12/site-packages/numpy/lib/_function_base_impl.py", line 1686, in interp
+    return interp_func(x, xp, fp, left, right)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: fp and xp are not of the same length.
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"order":["A","D","L","H","O","F","T","Q","E","M","R","G","P","K","S","C","J","B","I","N"]}
+```

@@ -1,0 +1,234 @@
+Begin your analysis. Remember the protocol above.
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+from scipy.ndimage import gaussian_filter1d
+from scipy.signal import find_peaks
+from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task1_data.csv"
+
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+data = {
+    lab: np.array([ast.literal_eval(r[j + 1]) for r in rows[1:]], dtype=float)
+    for j, lab in enumerate(labels)
+}
+
+print("samples:", len(t), "labels:", labels, "dt:", np.median(np.diff(t)))
+
+for lab in labels:
+    p = data[lab]
+    # Estimate the central axis using the coordinate-wise midpoint of extreme quantiles.
+    qlo, qhi = np.quantile(p, [0.005, 0.995], axis=0)
+    c = (qlo + qhi) / 2
+    z = (p[:, 0] - c[0]) + 1j * (p[:, 1] - c[1])
+    r = np.abs(z)
+    theta = np.mod(np.angle(z), 2*np.pi)
+
+    # Angular occupancy and mean/outer radius as functions of angle.
+    B = 720
+    idx = np.floor(theta / (2*np.pi) * B).astype(int) % B
+    occ = np.bincount(idx, minlength=B).astype(float)
+    rsum = np.bincount(idx, weights=r, minlength=B)
+    rmean = np.divide(rsum, occ, out=np.full(B, np.nan), where=occ > 0)
+    # Fill any empty bins circularly by nearest/interpolated valid values.
+    good = np.isfinite(rmean)
+    if not np.all(good):
+        xg = np.flatnonzero(good)
+        xx = np.arange(B)
+        rmean = np.interp(xx, np.r_[xg-B, xg, xg+B],
+                         np.r_[rmean[good], rmean[good], rmean[good]])
+
+    # Fourier rotational-symmetry scores for occupancy and radial profile.
+    oh = np.fft.rfft(occ - occ.mean())
+    rh = np.fft.rfft(rmean - rmean.mean())
+    oscores = np.abs(oh[1:41]) / (np.abs(oh[1:41]).max() + 1e-12)
+    rscores = np.abs(rh[1:41]) / (np.abs(rh[1:41]).max() + 1e-12)
+    otop = (np.argsort(oscores)[-8:][::-1] + 1).tolist()
+    rtop = (np.argsort(rscores)[-8:][::-1] + 1).tolist()
+
+    # Count stable peaks in circularly smoothed angular profiles.
+    peak_report = []
+    for sig in (2, 4, 8, 12, 18, 25):
+        sm = gaussian_filter1d(rmean, sig, mode="wrap")
+        ext = np.r_[sm, sm, sm]
+        prom = max(np.ptp(sm) * 0.08, 1e-12)
+        pk, _ = find_peaks(ext, prominence=prom, distance=max(2, B//50))
+        count = np.sum((pk >= B) & (pk < 2*B))
+        peak_report.append(int(count))
+
+    # Clustering diagnostics: candidate lobe counts, using a subsample.
+    rng = np.random.default_rng(0)
+    take = np.linspace(0, len(p)-1, min(3000, len(p))).astype(int)
+    ps = p[take]
+    sils = []
+    inertias = []
+    for k in range(2, 21):
+        km = KMeans(n_clusters=k, n_init=5, random_state=0).fit(ps)
+        inertias.append(km.inertia_)
+        sils.append(silhouette_score(ps, km.labels_,
+                                     sample_size=min(1500, len(ps)),
+                                     random_state=0))
+    bestsil = np.argsort(sils)[-5:][::-1] + 2
+
+    # Dominant temporal frequencies of complex position.
+    zc = z - z.mean()
+    ft = np.abs(np.fft.rfft(zc.real))**2 + np.abs(np.fft.rfft(zc.imag))**2
+    ft[0] = 0
+    ftop = (np.argsort(ft)[-8:][::-1]).tolist()
+
+    print(
+        f"\n{lab}: center={np.round(c,3)}, "
+        f"range={np.round(np.ptp(p,axis=0),3)}, "
+        f"rCV={np.std(r)/np.mean(r):.3f}"
+    )
+    print(" radial Fourier top:", rtop,
+          "scores:", np.round(rscores[np.array(rtop)-1], 3).tolist())
+    print(" occupancy Fourier top:", otop,
+          "scores:", np.round(oscores[np.array(otop)-1], 3).tolist())
+    print(" radial peaks by smoothing:", peak_report)
+    print(" best silhouette k:", bestsil.tolist(),
+          "values:", np.round(np.array(sils)[bestsil-2], 3).tolist())
+    print(" temporal FFT bins:", ftop)
+```
+
+[System: execution output]
+
+[EXCEPTION]
+Traceback (most recent call last):
+  File "/Users/adelshad3/Documents/GitHub/Judge/LLM_factory.py", line 260, in _execute_code
+    exec(code, {"__builtins__": __builtins__})
+  File "<string>", line 2, in <module>
+ModuleNotFoundError: No module named 'scipy'
+
+
+[Assistant]
+```python
+import csv, ast, numpy as np
+
+path = "/Users/adelshad3/Documents/GitHub/Judge/task1_data.csv"
+with open(path, newline="") as f:
+    rows = list(csv.reader(f))
+labels = rows[0][1:]
+t = np.array([float(r[0]) for r in rows[1:]])
+D = {lab: np.array([ast.literal_eval(r[j+1]) for r in rows[1:]], float)
+     for j, lab in enumerate(labels)}
+
+def circ_profile(theta, val=None, B=720):
+    u = theta/(2*np.pi)*B
+    i = np.floor(u).astype(int) % B
+    if val is None:
+        return np.bincount(i, minlength=B).astype(float)
+    cnt = np.bincount(i, minlength=B)
+    sm = np.bincount(i, weights=val, minlength=B)
+    good = cnt > 0
+    a = np.divide(sm, cnt, out=np.full(B, np.nan), where=good)
+    if not good.all():
+        g = np.flatnonzero(good)
+        a = np.interp(np.arange(B), np.r_[g-B,g,g+B], np.r_[a[g],a[g],a[g]])
+    return a
+
+def smooth_circular(a, sigma):
+    n=len(a)
+    k=np.fft.fftfreq(n)*n
+    return np.fft.ifft(np.fft.fft(a)*np.exp(-.5*(2*np.pi*sigma*k/n)**2)).real
+
+def peaks_circular(a, minprom=.08):
+    b=(a>np.roll(a,1))&(a>=np.roll(a,-1))
+    inds=np.flatnonzero(b)
+    # retain maxima substantially above neighboring angular valleys
+    keep=[]
+    n=len(a)
+    w=max(4,n//50)
+    for i in inds:
+        local=np.r_[a[(np.arange(i-w,i)%n)],a[(np.arange(i+1,i+w+1)%n)]]
+        if a[i]-np.min(local) >= minprom*np.ptp(a):
+            keep.append(i)
+    return keep
+
+def kmeans(X,k,seed=1,its=60):
+    rng=np.random.default_rng(seed)
+    # kmeans++ initialization
+    C=[X[rng.integers(len(X))]]
+    for _ in range(1,k):
+        d=np.min(((X[:,None,:]-np.array(C)[None,:,:])**2).sum(2),axis=1)
+        C.append(X[rng.choice(len(X),p=d/d.sum())])
+    C=np.array(C)
+    for _ in range(its):
+        ds=((X[:,None,:]-C[None,:,:])**2).sum(2)
+        q=ds.argmin(1)
+        C2=np.array([X[q==j].mean(0) if np.any(q==j) else C[j] for j in range(k)])
+        if np.max(abs(C2-C))<1e-7: break
+        C=C2
+    inertia=np.sum(np.min(((X[:,None,:]-C[None,:,:])**2,).pop().sum(2),axis=1))
+    return C,q,inertia
+
+print("n",len(t),"labels",labels)
+for lab in labels:
+    p=D[lab]
+    centers = {
+        "mean":p.mean(0),
+        "med":np.median(p,0),
+        "mid":(np.quantile(p,.005,axis=0)+np.quantile(p,.995,axis=0))/2,
+    }
+    print("\n",lab,"range",np.round(np.ptp(p,axis=0),2))
+    for cn,c in centers.items():
+        z=(p[:,0]-c[0])+1j*(p[:,1]-c[1])
+        th=np.mod(np.angle(z),2*np.pi); rr=np.abs(z)
+        profiles={"rad":circ_profile(th,rr),"occ":circ_profile(th)}
+        out=[]
+        for typ,a in profiles.items():
+            A=np.abs(np.fft.rfft(a-a.mean()))
+            top=(np.argsort(A[1:31])[-6:][::-1]+1)
+            vals=A[top]/(A[1:31].max()+1e-15)
+            out.append(typ+":"+",".join(f"{x}:{v:.2f}" for x,v in zip(top,vals)))
+        pk=[]
+        for s in [3,6,10,16,24]:
+            a=smooth_circular(profiles["rad"],s)
+            pk.append(len(peaks_circular(a,.06)))
+        print(cn,np.round(c,2)," ".join(out),"peaks",pk)
+    # curvature/slow-point center candidates: cluster points weighted toward low speed
+    v=np.linalg.norm(np.gradient(p,axis=0),axis=1)
+    sel=np.argsort(v)[:min(2500,len(p)//3)]
+    X=p[sel]
+    if len(X)>1200: X=X[np.linspace(0,len(X)-1,1200).astype(int)]
+    ins=[]
+    for k in range(1,21):
+        vals=[kmeans(X,k,s)[2] for s in range(2)]
+        ins.append(min(vals))
+    # normalized marginal reduction and second-difference elbow
+    drops=1-np.array(ins[1:])/np.array(ins[:-1])
+    elbows=np.array(ins[:-2])-2*np.array(ins[1:-1])+np.array(ins[2:])
+    print("kmeans drops k2..",np.round(drops,3))
+    print("largest curvature ks", (np.argsort(elbows)[-6:][::-1]+2).tolist())
+```
+
+[System: execution output]
+n 1001 labels ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']
+
+ A range [45.78 49.04]
+mean [ 0.11 -0.16] rad:3:1.00,6:0.56,9:0.35,12:0.19,17:0.19,7:0.16 occ:3:1.00,6:0.69,9:0.58,12:0.55,15:0.50,21:0.39 peaks [30, 14, 5, 3, 2]
+med [1.28 0.97] rad:3:1.00,6:0.56,9:0.29,5:0.22,2:0.21,15:0.21 occ:3:1.00,6:0.53,14:0.38,4:0.37,5:0.35,1:0.33 peaks [27, 12, 5, 3, 2]
+mid [-4.43 -1.93] rad:3:1.00,2:0.71,5:0.54,6:0.43,8:0.35,11:0.26 occ:1:1.00,4:0.76,3:0.74,5:0.51,6:0.40,7:0.36 peaks [20, 8, 3, 3, 1]
+
+[EXCEPTION]
+Traceback (most recent call last):
+  File "/Users/adelshad3/Documents/GitHub/Judge/LLM_factory.py", line 260, in _execute_code
+    exec(code, {"__builtins__": __builtins__})
+  File "<string>", line 91, in <module>
+  File "<string>", line 57, in kmeans
+AttributeError: 'tuple' object has no attribute 'pop'
+
+
+[System: This is your final iteration. Do not write any more code. You must give your final answer now, including the required ```json block.]
+
+[Assistant]
+```json
+{"order":["S","T","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R"]}
+```
