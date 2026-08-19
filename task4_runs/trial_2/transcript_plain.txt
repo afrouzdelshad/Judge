@@ -1,0 +1,18 @@
+## Method
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the large‑radius excursions (the lobe "tips"). In every case these angles cluster on a set of **equally spaced directions**, and the trajectory hops from one to the next. The lobe count is then N = 360°/Δθ.
+
+Examples:
+- **A**: tips at ≈180°, 138°, 92°, 47°, 3°, −44°, −88°, −133° → Δ≈45° → N = 8
+- **B**: ≈194°, 122°, 49°, −23°, −95° → Δ≈72° → N = 5
+- **H, O**: only three directions (≈170°, 50°, −70°) → N = 3
+- **S**: only two opposed clusters (≈+52°, ≈−130°) → N = 2
+- **C, Q**: 17 evenly spaced tips (Δ≈21.2°)
+- **L**: 21 tips (Δ≈17.1°); **N**: 19 tips (Δ≈19.0°); **J**: 16 tips (Δ≈22.5°); **D**: 14 tips (Δ≈25.7°)
+- **E, P, T**: 11 tips each (Δ≈32.7°); **K**: 10 (Δ≈36°); **A, R**: 8 (Δ=45°); **F**: 7 (Δ≈51.4°); **G**: 6 (Δ=60°); **B, I**: 5 (Δ=72°); **M**: 4 (Δ=90°)
+
+Consistency check: trajectories sharing the same N land on identical lobe azimuths (e.g. C and Q, E/P/T, A and R, B and I, H and O), which supports the identifications.
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

@@ -9,35 +9,25 @@ each cell an `"(x, y)"` pair. Each trajectory wanders around N distinct
 were shuffled by whoever generated the data.
 
 `task1.py` asks an LLM to recover the ascending-N order of the labels
-purely from the data, in two conditions:
-
-- `plain` -- a subsampled table pasted directly into the prompt.
-- `code` -- the LLM is given the CSV path and can write and execute Python
-  against it.
+purely from the data, pasted as a subsampled table directly into the
+prompt.
 
 Prompts live in `prompt_tasks.py`; models/providers are configured in
 `config.json` and dispatched via `LLM_factory.py`.
 
 ```
-python task1.py --mode both --model claude-opus-4-8
+python task1.py --model claude-opus-4-8
 ```
 
-- `--mode both` -- run both the `plain` and `code` conditions (use `plain`
-  or `code` to run just one).
 - `--model claude-opus-4-8` -- which model to query, must be listed in
   `config.json`.
 - `--data-file task1data_shuffled.csv` -- dataset to read (default).
-- `--points 120` -- rows shown per series in the `plain` prompt.
-- `--max-iters 6` -- max back-and-forth exchanges in `code` mode.
+- `--points 120` -- rows shown per series in the prompt.
 
-Each run writes `task1_runs/transcript_plain.txt` / `transcript_code.txt`
-and `task1_runs/results_<model>.json` (the model's predicted order for each
-mode). There is no ground-truth key for this dataset, so results are not
-scored -- just recorded.
-
-Note: in `code` mode, model-written Python is exec'd locally with no
-sandboxing. Only use this with trusted API providers on a machine you
-control.
+Each run writes `task1_runs/transcript_plain.txt` and
+`task1_runs/results_<model>.json` (the model's predicted order). There is
+no ground-truth key for this dataset, so results are not scored -- just
+recorded.
 
 ## Task 2: spot the trajectory with a different lobe count
 
@@ -47,21 +37,16 @@ from a different initial condition, so their paths differ) and exactly one
 has a different N. The labels are shuffled so the outlier's position is
 random.
 
-`task2.py` asks an LLM to find the label of that one outlier, in the same
-two conditions as task 1 (`plain` / `code`):
+`task2.py` asks an LLM to find the label of that one outlier:
 
 ```
-python task2.py --mode both --model claude-opus-4-8
+python task2.py --model claude-opus-4-8
 ```
 
-Same flags as `task1.py` (`--mode`, `--model`, `--data-file`, `--max-iters`,
-`--outdir`), plus `--key-file task2_key.csv`. If that key file exists (columns
+Same flags as `task1.py` (`--model`, `--data-file`, `--outdir`), plus
+`--key-file task2_key.csv`. If that key file exists (columns
 `output_label,is_outlier[,original_N]`, one row per label), results are
 scored against it; otherwise the outlier is just recorded, unscored.
 
-Each run writes `task2_runs/transcript_plain.txt` / `transcript_code.txt`
-and `task2_runs/results_<model>.json`.
-
-Note: in `code` mode, model-written Python is exec'd locally with no
-sandboxing. Only use this with trusted API providers on a machine you
-control.
+Each run writes `task2_runs/transcript_plain.txt` and
+`task2_runs/results_<model>.json`.

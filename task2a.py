@@ -6,21 +6,16 @@ Task 2: spot the one trajectory with a different lobe count
 Reads task2data_shuffled.csv (a "time" column, then one column per labeled
 trajectory holding "(x, y)" pairs). Of the labeled trajectories, all but one
 share the same number of lobes N (each from a different initial condition);
-exactly one has a different N. Asks an LLM to find that outlier label --
-either from a pasted table ("plain") or by writing Python against the CSV
-("code").
+exactly one has a different N. Asks an LLM to find that outlier label from
+a pasted table.
 
 Usage
 -----
-    python task2a.py --mode both --model claude-opus-4-8
+    python task2a.py --model claude-opus-4-8
 
 If task2a_key.csv is present ("Label,N" header, one row holding the true
 outlier's label and N), results are scored against it; otherwise the
 outlier is just recorded.
-
-Note: in "code" mode, model-written Python is exec'd locally with no
-sandboxing. Only use this with trusted API providers on a machine you
-control.
 """
 
 import argparse
@@ -29,8 +24,8 @@ import json
 import re
 from pathlib import Path
 
-from LLM_factory import chat_with_batch, code_augmented_chat_with
-from prompt_tasks import TASK2_CODE_PROMPT, TASK2_PLAIN_PROMPT
+from LLM_factory import chat_with_batch
+from prompt_tasks import TASK2_PLAIN_PROMPT
 from task1 import format_table, load_dataset
 
 DATA_FILE = "task2a_data.csv"
@@ -76,23 +71,11 @@ def run_plain_batch(model, labels, times, columns, n, use_batch=False):
     return outliers, replies
 
 
-def run_code(model, labels, data_file, max_iters):
-    system_prompt = TASK2_CODE_PROMPT.format(
-        n=len(labels), n_minus_1=len(labels) - 1,
-        data_file=str(Path(data_file).resolve()), max_iters=max_iters,
-    )
-    user_prompt = "Begin your analysis. Remember the protocol above."
-    reply, transcript = code_augmented_chat_with(model, system_prompt, user_prompt, max_iters)
-    return extract_outlier(reply), transcript
-
-
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
     p.add_argument("--key-file", default=KEY_FILE, dest="key_file")
-    p.add_argument("--max-iters", type=int, default=3, dest="max_iters")
     p.add_argument("--model", default="claude-opus-4-8")
-    p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
     p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
     p.add_argument("--batch", action="store_true",
@@ -113,12 +96,9 @@ def main(argv=None):
     base_outdir = Path(args.outdir)
     scale = args.scale
 
-    # Plain mode: one prompt, all `scale` repeats fired via chat_with_batch.
-    plain_outliers, plain_transcripts = [None] * scale, [None] * scale
-    if args.mode in ("plain", "both"):
-        plain_outliers, plain_transcripts = run_plain_batch(
-            args.model, labels, times, columns, scale, use_batch=args.batch
-        )
+    plain_outliers, plain_transcripts = run_plain_batch(
+        args.model, labels, times, columns, scale, use_batch=args.batch
+    )
 
     trials = []
     for i in range(scale):
@@ -128,22 +108,12 @@ def main(argv=None):
         outdir.mkdir(parents=True, exist_ok=True)
         results = {"model": args.model, "true_outlier": true_outlier}
 
-        if args.mode in ("plain", "both"):
-            outlier, transcript = plain_outliers[i], plain_transcripts[i]
-            (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
-            print(f"[plain] outlier: {outlier}\n")
-            results["plain"] = outlier
-            if true_outlier:
-                results["plain_correct"] = outlier == true_outlier
-
-        if args.mode in ("code", "both"):
-            print(f"[code] querying {args.model} ...")
-            outlier, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
-            (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
-            print(f"[code] outlier: {outlier}\n")
-            results["code"] = outlier
-            if true_outlier:
-                results["code_correct"] = outlier == true_outlier
+        outlier, transcript = plain_outliers[i], plain_transcripts[i]
+        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        print(f"[plain] outlier: {outlier}\n")
+        results["plain"] = outlier
+        if true_outlier:
+            results["plain_correct"] = outlier == true_outlier
 
         results_path = outdir / f"results_{args.model}.json"
         results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
@@ -152,7 +122,7 @@ def main(argv=None):
 
     if scale > 1:
         summary = {"model": args.model, "scale": scale, "trials": trials}
-        for key in ("plain_correct", "code_correct"):
+        for key in ("plain_correct",):
             scored = [t[key] for t in trials if key in t]
             if scored:
                 summary[f"{key}_rate"] = sum(scored) / len(scored)

@@ -1,8 +1,5 @@
-import contextlib
-import io
 import json
 import os
-import re
 import sys
 import time
 import traceback
@@ -245,57 +242,6 @@ def chat_with_batch(model_name, system_prompt, user_prompt, n=10, max_workers=5,
         rest = _threaded_repeats(model_name, system_prompt, user_prompt, n - 1, max_workers)
 
     return replies + rest
-
-
-def _extract_python_code(text):
-    match = re.search(r"```python\s*\n(.*?)```", text, re.DOTALL)
-    return match.group(1) if match else None
-
-
-def _execute_code(code):
-    """Run model-generated code locally (unsandboxed) and capture stdout."""
-    buf = io.StringIO()
-    try:
-        with contextlib.redirect_stdout(buf):
-            exec(code, {"__builtins__": __builtins__})
-    except Exception:
-        buf.write("\n[EXCEPTION]\n" + traceback.format_exc())
-    return buf.getvalue() or "(no output)"
-
-
-def code_augmented_chat_with(model_name, system_prompt, user_prompt, max_iters=3):
-    """Like chat_with, but lets the model execute Python code against local data.
-
-    Repeats up to `max_iters` times: send the prompt, and if the reply
-    contains a fenced ```python code block, exec it locally (unsandboxed)
-    and feed the captured stdout back as the next message. Stops as soon as
-    a reply has no code block, treating it as the final answer.
-
-    Note: code is exec'd with no sandboxing. Only use this with trusted API
-    providers on a machine you control.
-
-    Returns (final_reply, transcript).
-    """
-    transcript = user_prompt
-    reply = None
-    for i in range(max_iters):
-        if i == max_iters - 1:
-            transcript += (
-                "\n\n[System: This is your final iteration. Do not write any more code. "
-                "You must give your final answer now, including the required ```json block.]"
-            )
-
-        reply = chat_with(model_name, system_prompt, transcript, use_cache=False)
-        transcript += f"\n\n[Assistant]\n{reply}"
-
-        code = _extract_python_code(reply)
-        if code is None:
-            return reply, transcript
-
-        output = _execute_code(code)
-        transcript += f"\n\n[System: execution output]\n{output}"
-
-    return reply, transcript
 
 
 if __name__ == "__main__":

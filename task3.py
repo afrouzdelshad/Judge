@@ -6,8 +6,7 @@ Task 3: cluster labeled trajectories by inferred complexity level
 Reads task3a_data.csv / task3b_data.csv (same "time" + one "(x, y)" column
 per label layout as task1/task2) and asks an LLM to partition the labels
 into groups that share the same lobe count N, ordered from least to most
-complex -- either from a pasted table ("plain") or by writing Python
-against the CSV ("code").
+complex, from a pasted table.
 
 --variant a (fixed group structure): the number of groups (X) and members
 per group (Y) are read from task3a_key.csv and disclosed to the model in
@@ -19,17 +18,13 @@ be uniform.
 
 Usage
 -----
-    python task3.py --variant a --mode both --model claude-opus-4-8
-    python task3.py --variant b --mode both --model claude-opus-4-8
+    python task3.py --variant a --model claude-opus-4-8
+    python task3.py --variant b --model claude-opus-4-8
 
 If the matching key file is present ("Label,N" header, one row per label),
 results are scored against it; otherwise clusters are just recorded. For
 --variant a, if the key file is absent you must pass --num-groups and
 --group-size explicitly, since the prompt needs to state them.
-
-Note: in "code" mode, model-written Python is exec'd locally with no
-sandboxing. Only use this with trusted API providers on a machine you
-control.
 """
 
 import argparse
@@ -40,13 +35,8 @@ from collections import Counter
 from math import comb
 from pathlib import Path
 
-from LLM_factory import chat_with_batch, code_augmented_chat_with
-from prompt_tasks import (
-    TASK3A_CODE_PROMPT,
-    TASK3A_PLAIN_PROMPT,
-    TASK3B_CODE_PROMPT,
-    TASK3B_PLAIN_PROMPT,
-)
+from LLM_factory import chat_with_batch
+from prompt_tasks import TASK3A_PLAIN_PROMPT, TASK3B_PLAIN_PROMPT
 from task1 import format_table, load_dataset
 
 DATA_FILES = {"a": "task3a_data.csv", "b": "task3b_data.csv"}
@@ -150,21 +140,6 @@ def run_plain_batch(model, variant, labels, times, columns, n, num_groups=None, 
     return parsed, replies
 
 
-def run_code(model, variant, labels, data_file, max_iters, num_groups=None, group_size=None):
-    if variant == "a":
-        system_prompt = TASK3A_CODE_PROMPT.format(
-            n=len(labels), num_groups=num_groups, group_size=group_size,
-            data_file=str(Path(data_file).resolve()), max_iters=max_iters,
-        )
-    else:
-        system_prompt = TASK3B_CODE_PROMPT.format(
-            n=len(labels), data_file=str(Path(data_file).resolve()), max_iters=max_iters,
-        )
-    user_prompt = "Begin your analysis. Remember the protocol above."
-    reply, transcript = code_augmented_chat_with(model, system_prompt, user_prompt, max_iters)
-    return extract_groups(reply), transcript
-
-
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--variant", choices=["a", "b"], required=True)
@@ -174,9 +149,7 @@ def parse_args(argv=None):
                     help="variant a only; overrides/replaces the count derived from the key file")
     p.add_argument("--group-size", type=int, default=None, dest="group_size",
                     help="variant a only; overrides/replaces the count derived from the key file")
-    p.add_argument("--max-iters", type=int, default=3, dest="max_iters")
     p.add_argument("--model", default="claude-opus-4-8")
-    p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=None)
     p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
     p.add_argument("--batch", action="store_true",
@@ -214,12 +187,10 @@ def main(argv=None):
     scale = args.scale
 
     # Plain mode: one prompt, all `scale` repeats fired via chat_with_batch.
-    plain_parsed, plain_transcripts = [(None, None, None)] * scale, [None] * scale
-    if args.mode in ("plain", "both"):
-        plain_parsed, plain_transcripts = run_plain_batch(
-            args.model, args.variant, labels, times, columns, scale, num_groups, group_size,
-            use_batch=args.batch,
-        )
+    plain_parsed, plain_transcripts = run_plain_batch(
+        args.model, args.variant, labels, times, columns, scale, num_groups, group_size,
+        use_batch=args.batch,
+    )
 
     trials = []
     for i in range(scale):
@@ -229,24 +200,12 @@ def main(argv=None):
         outdir.mkdir(parents=True, exist_ok=True)
         results = {"model": args.model, "variant": args.variant}
 
-        if args.mode in ("plain", "both"):
-            (groups, x_est, y_est), transcript = plain_parsed[i], plain_transcripts[i]
-            (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
-            print(f"[plain] groups: {groups}  X={x_est}  Y={y_est}\n")
-            results["plain"] = {"groups": groups, "X": x_est, "Y": y_est}
-            if groups is not None and true_n is not None:
-                results["plain_ari"] = cluster_ari(groups, true_n)
-
-        if args.mode in ("code", "both"):
-            print(f"[code] querying {args.model} ...")
-            (groups, x_est, y_est), transcript = run_code(
-                args.model, args.variant, labels, data_file, args.max_iters, num_groups, group_size
-            )
-            (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
-            print(f"[code] groups: {groups}  X={x_est}  Y={y_est}\n")
-            results["code"] = {"groups": groups, "X": x_est, "Y": y_est}
-            if groups is not None and true_n is not None:
-                results["code_ari"] = cluster_ari(groups, true_n)
+        (groups, x_est, y_est), transcript = plain_parsed[i], plain_transcripts[i]
+        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        print(f"[plain] groups: {groups}  X={x_est}  Y={y_est}\n")
+        results["plain"] = {"groups": groups, "X": x_est, "Y": y_est}
+        if groups is not None and true_n is not None:
+            results["plain_ari"] = cluster_ari(groups, true_n)
 
         results_path = outdir / f"results_{args.model}.json"
         results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
@@ -255,7 +214,7 @@ def main(argv=None):
 
     if scale > 1:
         summary = {"model": args.model, "variant": args.variant, "scale": scale, "trials": trials}
-        for key in ("plain_ari", "code_ari"):
+        for key in ("plain_ari",):
             scored = [t[key] for t in trials if key in t]
             if scored:
                 summary[f"{key}_mean"] = sum(scored) / len(scored)

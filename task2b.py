@@ -7,20 +7,15 @@ Reads task2b_data.csv (a "time" column, then one column per labeled
 trajectory holding "(x, y)" pairs). Most of the labeled trajectories share
 the same majority lobe count N (each from a different initial condition);
 the rest have an N that differs from that majority. Asks an LLM to say how
-many outliers there are and identify each one -- either from a pasted table
-("plain") or by writing Python against the CSV ("code").
+many outliers there are and identify each one from a pasted table.
 
 Usage
 -----
-    python task2b.py --mode both --model claude-opus-4-8
+    python task2b.py --model claude-opus-4-8
 
 If task2b_key.csv is present ("Label,N" header, one row per true outlier
 label), results are scored against it; otherwise the outliers are just
 recorded.
-
-Note: in "code" mode, model-written Python is exec'd locally with no
-sandboxing. Only use this with trusted API providers on a machine you
-control.
 """
 
 import argparse
@@ -29,8 +24,8 @@ import json
 import re
 from pathlib import Path
 
-from LLM_factory import chat_with_batch, code_augmented_chat_with
-from prompt_tasks import TASK2B_CODE_PROMPT, TASK2B_PLAIN_PROMPT
+from LLM_factory import chat_with_batch
+from prompt_tasks import TASK2B_PLAIN_PROMPT
 from task1 import format_table, load_dataset
 
 DATA_FILE = "task2b_data.csv"
@@ -82,22 +77,11 @@ def run_plain_batch(model, labels, times, columns, n, use_batch=False):
     return outliers, replies
 
 
-def run_code(model, labels, data_file, max_iters):
-    system_prompt = TASK2B_CODE_PROMPT.format(
-        n=len(labels), data_file=str(Path(data_file).resolve()), max_iters=max_iters
-    )
-    user_prompt = "Begin your analysis. Remember the protocol above."
-    reply, transcript = code_augmented_chat_with(model, system_prompt, user_prompt, max_iters)
-    return extract_outliers(reply), transcript
-
-
 def parse_args(argv=None):
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
     p.add_argument("--key-file", default=KEY_FILE, dest="key_file")
-    p.add_argument("--max-iters", type=int, default=3, dest="max_iters")
     p.add_argument("--model", default="claude-opus-4-8")
-    p.add_argument("--mode", choices=["plain", "code", "both"], default="both")
     p.add_argument("--outdir", default=OUTDIR)
     p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
     p.add_argument("--batch", action="store_true",
@@ -118,12 +102,9 @@ def main(argv=None):
     base_outdir = Path(args.outdir)
     scale = args.scale
 
-    # Plain mode: one prompt, all `scale` repeats fired via chat_with_batch.
-    plain_outliers, plain_transcripts = [None] * scale, [None] * scale
-    if args.mode in ("plain", "both"):
-        plain_outliers, plain_transcripts = run_plain_batch(
-            args.model, labels, times, columns, scale, use_batch=args.batch
-        )
+    plain_outliers, plain_transcripts = run_plain_batch(
+        args.model, labels, times, columns, scale, use_batch=args.batch
+    )
 
     trials = []
     for i in range(scale):
@@ -133,22 +114,12 @@ def main(argv=None):
         outdir.mkdir(parents=True, exist_ok=True)
         results = {"model": args.model, "true_outliers": sorted(true_outliers) if true_outliers is not None else None}
 
-        if args.mode in ("plain", "both"):
-            outliers, transcript = plain_outliers[i], plain_transcripts[i]
-            (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
-            print(f"[plain] outliers: {outliers}\n")
-            results["plain"] = outliers
-            if outliers is not None and true_outliers is not None:
-                results["plain_f1"] = f1_score(outliers, true_outliers)
-
-        if args.mode in ("code", "both"):
-            print(f"[code] querying {args.model} ...")
-            outliers, transcript = run_code(args.model, labels, args.data_file, args.max_iters)
-            (outdir / "transcript_code.txt").write_text(transcript, encoding="utf-8")
-            print(f"[code] outliers: {outliers}\n")
-            results["code"] = outliers
-            if outliers is not None and true_outliers is not None:
-                results["code_f1"] = f1_score(outliers, true_outliers)
+        outliers, transcript = plain_outliers[i], plain_transcripts[i]
+        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        print(f"[plain] outliers: {outliers}\n")
+        results["plain"] = outliers
+        if outliers is not None and true_outliers is not None:
+            results["plain_f1"] = f1_score(outliers, true_outliers)
 
         results_path = outdir / f"results_{args.model}.json"
         results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
@@ -157,7 +128,7 @@ def main(argv=None):
 
     if scale > 1:
         summary = {"model": args.model, "scale": scale, "trials": trials}
-        for key in ("plain_f1", "code_f1"):
+        for key in ("plain_f1",):
             scored = [t[key] for t in trials if key in t]
             if scored:
                 summary[f"{key}_mean"] = sum(scored) / len(scored)
