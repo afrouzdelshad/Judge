@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and compared unwrapped angular phase during the early, regular portion, before the paths became strongly irregular. At comparable radii, the phase offsets form a clear ordered sequence: higher-lobe trajectories have progressively smaller phase increments, while lower-lobe cases require whole-turn phase unwrapping. This yields a consistent integer ranking, which I cross-checked against the trajectories’ later angular oscillation density and repeated turning structure.
+```
+
 ```json
-{"order":["N","A","J","K","L","M","R","E","P","O","B","F","G","Q","S","I","D","H","C","T"]}
+{"order":["A","O","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

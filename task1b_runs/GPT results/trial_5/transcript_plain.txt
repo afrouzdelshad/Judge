@@ -1,0 +1,7 @@
+```reasoning
+I treated the initial common state as a reference, excluded the shared transient, and compared each trajectory using phase-space recurrence, return-map dispersion, spectral breadth, short-horizon irregularity, and the rate at which nearby temporal segments separate. These indicators produced a consistent progression from trajectories with the strongest recurrence and narrowest effective spectrum to those with the fastest separation and most diffuse phase-space structure. The early-time divergence from the common initial condition corroborated the ordering and resolved close cases.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

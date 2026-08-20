@@ -1,0 +1,7 @@
+```reasoning
+I compared both coordinates using transient growth, permutation/spectral entropy, recurrence regularity, autocorrelation decay, and short-horizon predictability. The measures gave a consistent progression: lower-ranked trajectories showed more recurrent and locally predictable behavior, while higher-ranked ones had broader spectra, faster decorrelation, and less repeatable state-space evolution. The initial growth ordering provided a clear tie-breaker where finite-sample entropy estimates were close.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

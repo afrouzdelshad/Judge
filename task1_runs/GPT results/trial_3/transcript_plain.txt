@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and compared its unwrapped azimuthal evolution from the shared initial point. During the early, still-coherent portion, the trajectories form a stable ordering by angular departure. The departure decreases progressively along this sequence, consistent with increasing lobe count: fewer lobes produce a larger angular separation per lobe, while more lobes produce denser, smaller angular increments. Checking multiple early-time intervals resolves the closest neighboring cases and gives the ordering below.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

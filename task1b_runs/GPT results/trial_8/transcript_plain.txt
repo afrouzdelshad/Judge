@@ -1,0 +1,7 @@
+```reasoning
+The trajectories share the same initial condition, so their early-time separation provides a clean indicator of the differing dynamical parameter before long-term chaotic divergence obscures it. Both x and y at the first few time steps give the same strict ranking. I used that consistent early growth ordering and checked it against the increasing long-term variability and excursion size.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

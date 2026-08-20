@@ -1,3 +1,7 @@
+```reasoning
+I emphasized the early, coherent portion of each trajectory, before later irregular divergence obscures the underlying geometry. The trajectories form a clear one-parameter progression: initial curvature and angular displacement vary monotonically, and this ordering is consistent across several consecutive samples. I then cross-checked that progression against polar winding and repeated radial-extremum structure, which correspond to increasing lobe count. This gives the ascending lobe-count order below.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using their short-time separation from the common initial state, then checked the ranking against longer-term irregularity, amplitude variability, and loss of temporal coherence. The initial expansion rates provide a particularly clean monotonic discriminator: slower growth corresponds to less chaotic behavior, while faster growth is accompanied by stronger long-term instability. This yields the stated ascending order.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

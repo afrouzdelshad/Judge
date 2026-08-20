@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using short-horizon divergence, sustained irregularity, amplitude variability, and apparent recurrence. The initial transient provides a particularly clear monotonic discriminator: both coordinates respond in the same consistent order, and that ordering agrees with the broader progression from comparatively regular, lower-variability motion to stronger divergence and more erratic behavior over the full interval.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

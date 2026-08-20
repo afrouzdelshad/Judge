@@ -1,0 +1,7 @@
+```reasoning
+All trajectories share the same initial state, so their earliest divergence provides a clean indicator of the underlying control parameter before long-term chaotic sensitivity dominates. Ranking the labels by the first-step displacement gives the same strict ordering independently in both x and y. The later trajectories show increasingly large, irregular excursions along this ordering, supporting its interpretation as ascending chaos level.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory conceptually to polar form and focused on high-radius samples, where lobe directions are most distinct. I compared the angular concentration of these excursions, transition patterns between sectors, and repeated radial-burst statistics. The trajectories separate into five consistent angular-complexity classes, with approximately 4, 5, 6, 7, and 8 occupied lobe directions. Each class contains four trajectories, so my estimates are X=5 groups and Y=4 trajectories per group.
+```
+
+```json
+{"groups":[["E","L","Q","S"],["M","N","O","R"],["C","D","H","I"],["G","J","P","T"],["A","B","F","K"]],"X":5,"Y":4}
+```

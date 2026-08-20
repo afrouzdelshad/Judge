@@ -30,7 +30,7 @@ from task1 import format_table, load_dataset
 
 DATA_FILE = "task2a_data.csv"
 KEY_FILE = "task2a_key.csv"
-OUTDIR = "task2_runs"
+OUTDIR = "task2a_runs"
 
 
 def load_key(path):

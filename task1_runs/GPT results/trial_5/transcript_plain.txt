@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates, unwrapped its azimuth, and compared angular advance during the initial coherent portion, before the trajectories became strongly irregular. Their radial oscillations are synchronized, while the azimuthal advance is systematically different: faster advance produces fewer distinct lobe directions, whereas slower advance produces more lobes. The resulting angular-rate ranking is clear and is also consistent with the ordered initial geometric separation and later recurrence patterns.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

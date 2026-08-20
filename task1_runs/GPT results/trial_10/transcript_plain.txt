@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and compared its unwrapped angular phase during the early, highly regular interval, where the radial evolution is nearly identical across labels. The angular displacement scales monotonically and approximately as 2/(N+1): O has the largest displacement and therefore the smallest N, while T has the smallest displacement and the largest N. Sorting by this inferred lobe count gives the order below.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

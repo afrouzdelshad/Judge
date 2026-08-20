@@ -1,0 +1,7 @@
+```reasoning
+All trajectories share the same initial condition, so their early-time separation provides a clean comparative signal. Ranking the initial growth rates—confirmed by the same ordering at the next samples—produces a strict sequence. Later trajectories along this sequence also show progressively stronger irregular excursions and sensitivity, supporting it as the ascending chaos order.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```
