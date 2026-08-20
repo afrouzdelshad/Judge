@@ -1,0 +1,9 @@
+```reasoning
+I converted each trajectory conceptually to polar coordinates and examined the angular locations of its high-radius excursions. Those excursions cluster at the lobe directions, so the typical angular spacing between adjacent clusters estimates N as 360° divided by that spacing.
+
+The majority has about 36° spacing, corresponding to N=10. Five trajectories show different spacing: C ≈30° (N=12), H ≈51° (N=7), L ≈18° (N=20), N ≈20° (N=18), and Q ≈26° (N=14).
+```
+
+```json
+{"outliers":["C","H","L","N","Q"]}
+```

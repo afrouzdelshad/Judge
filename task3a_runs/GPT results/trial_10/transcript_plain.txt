@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using finite-difference speed, turning behavior, radial excursions, and angular occupancy. The labels begin from five repeated initial-state families, with four trajectories per family. Within every family, the initial motion separates consistently into four activity tiers; matching the corresponding tier across all five families produces four groups of five. Longer-term turning and angular-sector complexity support the same ordering, from the slowest/simplest tier to the fastest/most complex.
+```
+
+```json
+{"groups":[["G","K","L","N","Q"],["C","D","J","O","R"],["A","B","E","F","M"],["H","I","P","S","T"]]}
+```

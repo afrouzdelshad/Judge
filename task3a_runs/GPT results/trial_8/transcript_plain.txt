@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories in polar form, using angular concentration of large-radius excursions, turning behavior, and radial recurrence patterns. The repeated initial coordinates also reveal five initial-condition sets, so each complexity group must contain exactly one member from each set. Matching trajectories with similar lobe-direction statistics and transient responses produced four consistent five-member clusters. The first cluster has the fewest distinct angular sectors; each successive cluster shows an additional sector and correspondingly richer turning structure.
+```
+
+```json
+{"groups":[["H","I","M","O","S"],["A","C","J","Q","R"],["D","E","F","K","T"],["B","G","L","N","P"]]}
+```

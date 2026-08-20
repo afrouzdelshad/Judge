@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory robustly, converted the planar coordinates to polar form, and emphasized large-radius excursions so that transitions near the central axis did not create false angular modes. I then compared the number of persistent angular clusters and checked the result against the dominant angular harmonic. Nineteen trajectories show the same five-lobe structure; trajectory O instead has a distinct six-lobe signature.
+```
+
+```json
+{"outlier":"O"}
+```

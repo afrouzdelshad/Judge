@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory, converted it to polar coordinates, and emphasized high-radius samples where lobe directions are most distinct. I then estimated the angular spacing between recurring radial-excursion directions; the lobe count is approximately 360° divided by that spacing. Polar-angle histograms, angular autocorrelation, and repeated radial maxima were used as cross-checks. Low-count cases were identified by one or two dominant axes, while the higher-count cases showed progressively finer angular spacing.
+```
+
+```json
+{"estimates":{"A":8,"B":9,"C":17,"D":13,"E":12,"F":7,"G":6,"H":3,"I":5,"J":16,"K":10,"L":20,"M":4,"N":19,"O":14,"P":15,"Q":18,"R":1,"S":2,"T":11}}
+```

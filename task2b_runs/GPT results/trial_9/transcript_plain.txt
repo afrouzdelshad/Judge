@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories in polar coordinates, using the unwrapped angular progression and radial-envelope peaks to distinguish recurrent lobe sectors from ordinary loops within a lobe. Most trajectories shared the same modal sector count and recurrence pattern. N and O instead formed a separate, mutually consistent pattern with a different angular/radial recurrence ratio, so two trajectories differ from the majority.
+```
+
+```json
+{"outliers":["N","O"]}
+```

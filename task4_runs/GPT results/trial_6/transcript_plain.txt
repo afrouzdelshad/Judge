@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory using its dense, low-radius core, converted the remaining points to polar angle, and emphasized high-radius excursions where individual lobes are most distinct. I then estimated the dominant angular separation between recurring excursion directions and used N ≈ 360°/Δθ, checking for consistency across the full time span. Clear examples include approximately 120° spacing for H and O, 72° for B and I, 60° for G, 45° for A/R/S, and progressively finer spacing for the higher-count trajectories. The resulting independent estimates are listed below.
+```
+
+```json
+{"estimates":{"A":8,"B":5,"C":17,"D":14,"E":11,"F":7,"G":6,"H":3,"I":5,"J":16,"K":10,"L":21,"M":4,"N":20,"O":3,"P":11,"Q":17,"R":8,"S":8,"T":11}}
+```

@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and examined the angular locations of large-radius excursions, which mark the lobe centers. Trajectories with the same N showed the same angular lattice despite differing phases and radial profiles. The four observed spacings were approximately 45°, 32.7°, 22.5°, and 18°, corresponding respectively to N = 8, 11, 16, and 20. Clustering by these angular signatures and ordering by increasing N gives the groups below.
+```
+
+```json
+{"groups":[["H","I","M","O","S"],["A","B","F","G","R"],["D","E","K","P","T"],["C","J","L","N","Q"]]}
+```

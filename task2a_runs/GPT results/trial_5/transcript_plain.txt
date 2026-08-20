@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory conceptually to polar form and examined the angular locations of its large-radius excursions, which mark the lobe directions. Nineteen trajectories show five recurring angular clusters, approximately evenly spaced by 72°, consistent with five lobes. Trajectory L instead shows about ten distinct angular clusters spaced by roughly 36°, including persistent maxima between the five common directions. Therefore L has a different lobe count.
+```
+
+```json
+{"outlier":"L"}
+```

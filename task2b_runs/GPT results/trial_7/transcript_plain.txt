@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates, isolated high-radius lobe excursions, and clustered their azimuths. The majority exhibit ten angular sectors, spaced by about 36°, indicating N = 10. Five trajectories differ: C has 12 sectors, H has 7, L has 20, N has 9, and Q has 14.
+```
+
+```json
+{"outliers":["C","H","L","N","Q"]}
+```

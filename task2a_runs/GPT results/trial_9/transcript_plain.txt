@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory using its dense near-axis region, converted the points to polar coordinates, and examined the angular distribution of high-radius samples and radial maxima. Nineteen trajectories exhibit five persistent angular sectors, approximately evenly spaced by 72°, with a dominant fivefold circular harmonic. Trajectory L instead occupies ten persistent sectors spaced by about 36° and has a dominant tenfold harmonic. This distinction remains when varying the radial cutoff, so it is not caused by transition points or isolated excursions.
+```
+
+```json
+{"outlier":"L"}
+```

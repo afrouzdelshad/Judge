@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory conceptually to polar coordinates about its central axis and compared the recurring high-radius angular sectors. Fourteen trajectories show ten regularly spaced preferred directions, establishing the majority lobe count as N=10. Six trajectories have different angular symmetries: C≈12 lobes, H≈7, L≈20, N≈18, Q≈14, and S≈3. Therefore, six trajectories differ from the majority.
+```
+
+```json
+{"outliers":["C","H","L","N","Q","S"]}
+```

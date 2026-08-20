@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates about its robustly estimated center and examined the angular distribution of large-radius local maxima, which represent lobe tips. Nineteen trajectories exhibit five persistent angular clusters, approximately 72° apart. Trajectory L instead exhibits ten distinct tip-angle clusters, approximately 36° apart, so its lobe count differs from the shared count.
+```
+
+```json
+{"outlier":"L"}
+```

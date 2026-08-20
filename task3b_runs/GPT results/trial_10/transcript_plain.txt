@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using polar-angle occupancy, persistence near preferred angular directions, radial-excursion patterns, sign-transition rates, and qualitative recurrence. The data support five approximately equal clusters of four trajectories. The first cluster shows the longest residence near a small number of preferred directions and the smoothest angular evolution; subsequent clusters exhibit progressively more angular sectors, more frequent switching, and richer radial structure. Thus I estimate X = 5 groups and Y = 4 trajectories per group.
+```
+
+```json
+{"groups":[["C","E","R","S"],["B","F","L","M"],["G","N","Q","T"],["D","I","J","K"],["A","H","O","P"]],"X":5,"Y":4}
+```

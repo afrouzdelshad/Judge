@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates, emphasizing high-radius portions where individual lobes are most distinct. I then compared the recurring angular directions and their spacing. Sixteen trajectories show approximately 36° spacing, corresponding to the majority count N=10. Four trajectories have different angular symmetries: C≈12 lobes, H≈7 lobes, N≈18 lobes, and Q≈14 lobes. Thus, four trajectories differ from the majority.
+```
+
+```json
+{"outliers":["C","H","N","Q"]}
+```

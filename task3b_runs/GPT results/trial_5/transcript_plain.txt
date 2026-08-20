@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using centered polar-angle statistics, angular occupancy histograms, dominant angular harmonics, turning-rate distributions, and recurrence patterns. The clearest partition was into four equal clusters of five trajectories. Complexity was ordered by increasing angular-mode richness and decreasing spacing between recurrent lobe directions: the first cluster is strongly axis/diagonal concentrated, while successive clusters show progressively denser angular structure and more frequent lobe transitions.
+```
+
+```json
+{"groups":[["B","F","K","N","T"],["A","E","J","O","S"],["C","G","L","P","R"],["D","H","I","M","Q"]],"X":4,"Y":5}
+```

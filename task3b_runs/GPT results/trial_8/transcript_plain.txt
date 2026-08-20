@@ -1,0 +1,7 @@
+```reasoning
+I treated each path in polar form about the central axis and compared its angular advance, turning-rate distribution, radial recurrence pattern, and dominant angular harmonics. The trajectories separate most consistently into ten two-member clusters. As a cross-check, the paired paths have comparable short-time angular speeds and long-run recurrence complexity despite differing phases and initial conditions. Ordering the clusters by increasing angular/radial complexity gives the sequence below.
+```
+
+```json
+{"groups":[["A","P"],["J","Q"],["I","L"],["D","R"],["E","K"],["O","B"],["C","M"],["G","H"],["N","F"],["T","S"]],"X":10,"Y":2}
+```

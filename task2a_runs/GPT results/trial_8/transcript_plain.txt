@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and examined the angular distribution of high-radius points, which represent visits to the outer parts of the lobes. Nineteen trajectories form five persistent angular clusters, spaced by about 72°, indicating five lobes. Trajectory L instead forms ten persistent clusters spaced by about 36°, so its lobe count differs from the rest.
+```
+
+```json
+{"outlier":"L"}
+```

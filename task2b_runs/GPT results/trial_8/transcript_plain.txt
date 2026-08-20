@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory, converted it to polar coordinates, and examined the angular locations of high-radius passages, where lobe centers are most distinct. Most trajectories showed approximately 36° spacing between angular clusters, corresponding to the majority count N=10. Four trajectories had consistently different angular periodicities: C (about 12 lobes), H (about 7), N (about 18), and Q (about 14). Thus, four trajectories differ from the majority.
+```
+
+```json
+{"outliers":["C","H","N","Q"]}
+```

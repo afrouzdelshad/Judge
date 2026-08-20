@@ -1,0 +1,20 @@
+{
+  "model": "gpt-5.6-sol",
+  "true_outliers": [
+    "C",
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain": [
+    "C",
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain_f1": 1.0
+}
