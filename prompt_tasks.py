@@ -25,6 +25,25 @@ Structure your response as two fenced blocks, in this order: a ```reasoning bloc
 
 
 # ---------------------------------------------------------------------------
+# Task 1B: order trajectories by ascending chaos level
+# ---------------------------------------------------------------------------
+
+TASK1B_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory exhibits a different degree of chaotic behavior. You are given only the raw ((t, x, y)) data and must infer the level of chaos for each trajectory.
+
+You will be given {n} trajectories, each labeled with a single letter, in no particular order. Order the labels in ascending order of chaos level (least chaotic first, most last).
+
+Structure your response as two fenced blocks, in this order: a ```reasoning block containing your reasoning process, followed by a ```json block containing your final answer with all {n} labels, each exactly once. Each block must appear exactly once, with the json block last. Do not restate the raw data in your response.
+
+```reasoning
+<your reasoning process>
+```
+
+```json
+{{"order": ["<lowest N>", "...", "<highest N>"]}}
+```"""
+
+
+# ---------------------------------------------------------------------------
 # Task 2: spot the one trajectory with a different lobe count
 # ---------------------------------------------------------------------------
 
