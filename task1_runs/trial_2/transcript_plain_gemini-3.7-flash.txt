@@ -1,0 +1,54 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the angular distribution of the large excursions (peaks in radius $r(t) = \sqrt{x(t)^2 + y(t)^2}$). Each trajectory exhibits $N$-fold rotational symmetry around the origin, where excursions occur along distinct angular directions separated by $\Delta \theta = \frac{360^\circ}{N}$.
+
+By tracking the excursion angles $\theta = \operatorname{atan2}(y, x)$ and measuring the angular separation between consecutive lobes:
+- **O**: 2 lobes separated by $180^\circ$ ($\theta \approx 55^\circ, -125^\circ$) $\implies N = 2$
+- **A**: 3 lobes separated by $120^\circ$ ($\theta \approx 50^\circ, 172^\circ, -70^\circ$) $\implies N = 3$
+- **J**: 4 lobes separated by $90^\circ$ ($\theta \approx 49^\circ, 138^\circ, -130^\circ, -40^\circ$) $\implies N = 4$
+- **K**: 5 lobes separated by $72^\circ$ $\implies N = 5$
+- **L**: 6 lobes separated by $60^\circ$ $\implies N = 6$
+- **M**: 7 lobes separated by $\approx 51.4^\circ$ $\implies N = 7$
+- **S**: 8 lobes separated by $45^\circ$ $\implies N = 8$
+- **E**: 9 lobes separated by $40^\circ$ $\implies N = 9$
+- **N**: 10 lobes separated by $36^\circ$ $\implies N = 10$
+- **P**: 11 lobes separated by $\approx 32.7^\circ$ $\implies N = 11$
+- **B**: 12 lobes separated by $30^\circ$ $\implies N = 12$
+- **F**: 13 lobes separated by $\approx 27.7^\circ$ $\implies N = 13$
+- **G**: 14 lobes separated by $\approx 25.7^\circ$ $\implies N = 14$
+- **R**: 15 lobes separated by $24^\circ$ $\implies N = 15$
+- **Q**: 16 lobes separated by $22.5^\circ$ $\implies N = 16$
+- **I**: 17 lobes separated by $\approx 21.2^\circ$ $\implies N = 17$
+- **D**: 18 lobes separated by $20^\circ$ $\implies N = 18$
+- **H**: 19 lobes separated by $\approx 18.9^\circ$ $\implies N = 19$
+- **C**: 20 lobes separated by $18^\circ$ $\implies N = 20$
+- **T**: 21 lobes separated by $\approx 17.1^\circ$ $\implies N = 21$
+
+Sorting the trajectory labels by ascending $N$ yields the final ordering.
+```
+
+```json
+{
+  "order": [
+    "O",
+    "A",
+    "J",
+    "K",
+    "L",
+    "M",
+    "S",
+    "E",
+    "N",
+    "P",
+    "B",
+    "F",
+    "G",
+    "R",
+    "Q",
+    "I",
+    "D",
+    "H",
+    "C",
+    "T"
+  ]
+}
+```

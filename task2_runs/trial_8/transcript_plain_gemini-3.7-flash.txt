@@ -1,0 +1,20 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial distribution and angular positions of the outermost loops/peaks (where the trajectory orbits the equilibrium lobes, indicated by the local maxima of the radius $r = \sqrt{x^2 + y^2} \approx 20\text{–}28$).
+
+For 19 of the trajectories (A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T), the lobes are located at 5 distinct angular directions spaced by approximately $72^\circ$ ($360^\circ / 5$):
+- Lobe 1: $\approx 48^\circ$ ($x \approx +15$, $y \approx +18$)
+- Lobe 2: $\approx 120^\circ$ ($x \approx -11$, $y \approx +20$)
+- Lobe 3: $\approx 192^\circ$ ($x \approx -23$, $y \approx -5$)
+- Lobe 4: $\approx 264^\circ$ ($x \approx -2$, $y \approx -24$)
+- Lobe 5: $\approx 336^\circ$ ($x \approx +22$, $y \approx -10$)
+
+Thus, the common lobe count is $N = 5$.
+
+For trajectory **L**, the trajectory visits 10 distinct lobes distributed at angular intervals of approximately $36^\circ$ ($360^\circ / 10$):
+$12^\circ, 47^\circ, 82^\circ, 117^\circ, 155^\circ, 191^\circ, 225^\circ, 262^\circ, 298^\circ, 335^\circ$.
+Hence, trajectory L orbits $N = 10$ lobes and is the unique outlier.
+```
+
+```json
+{"outlier": "L"}
+```

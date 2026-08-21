@@ -1,0 +1,25 @@
+## Method
+
+Since these are multi‑lobe attractors arranged around a central axis, each "lobe" corresponds to a preferred **angular direction** θ = atan2(y,x). Within a lobe the trajectory oscillates in radius while θ stays nearly constant; at a lobe switch θ jumps by ≈ 360°/N. So I extracted θ at high‑radius points, measured the angular step between successive plateaus, and counted how many steps are needed to complete a full 360° revolution.
+
+## Representative results
+
+| Traj | plateau angles (°) | step | N |
+|---|---|---|---|
+| A | 115, 84, 47, 12, −24, −60, −97, −132, −169, 155 | ≈36 | 10 |
+| B | −25, −60, −97, −132, −169, 155, 118, 82, 47, 11 | ≈36 | 10 |
+| **C** | 45, 17, −12, −42, −73, −103, −133, −162, 167, 136, 108, 77 | ≈30 | **12** |
+| **H** | 47, −2, −53, −105, −157, 152, 100 | ≈51 | **7** |
+| **L** | 80, 63, 46, 29, 11, −5, −23, −40, … (21 plateaus) | ≈17 | **21** |
+| **N** | 65, 47, 26, 7, −13, −34, −53, −74, … (18 plateaus) | ≈20 | **18** |
+| **Q** | 72, 45, 20, −4, −31, −58, −82, −108, … (14 plateaus) | ≈26 | **14** |
+| **S** | 55, −65, 175 | ≈120 | **3** |
+| D,E,F,G,I,J,K,M,O,P,R,T | ten plateaus each | ≈36 | 10 |
+
+Full‑revolution counts confirm each value (e.g. C closes the circle in exactly 12 hops, Q in 14, N in 18, L in 21, H in 7, S in 3, while the rest close in 10).
+
+The majority N is **10** (14 trajectories); six trajectories deviate.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

@@ -1,0 +1,6 @@
+{
+  "model": "gemini-3.7-flash",
+  "true_outlier": "L",
+  "plain": "L",
+  "plain_correct": true
+}

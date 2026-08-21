@@ -1,0 +1,20 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the radial maxima (the outward excursions). In these systems the excursions land on lobes at equally spaced angles, and the trajectory steps to an adjacent lobe each excursion. Measuring the average angular step Δθ over many excursions gives N = 360°/Δθ.
+
+**Representative measurements (sequence of excursion angles):**
+
+- **A:** 119, 83, 47, 11, −25, −60, −96, −133, −169, 155 → Δθ ≈ 36° → **N = 10**
+- **B, D, E, F, G, I, J, K, M, O, P, R, T:** same 36° ladder → **N = 10**
+- **C:** 45, 16, −15, −44, −74, −104, −133, −163, 166, 135, 107, 76 → Δθ ≈ 30° → **N = 12**
+- **H:** 96, 45, −4, −55, −107, −158, 151, 98 → Δθ ≈ 51.3° → **N = 7**
+- **L:** 80, 63, 46, 29, 11, −5, −22, −39, −57, −74, −91, −108, −125, −142, −159, −177, 166 → Δθ ≈ 17.1° → **N = 21**
+- **N:** 65, 46, 26, 7, −14, −34, −53, −74, −93, −114, −133, −154, −173, 166 → Δθ ≈ 19.9° → **N = 18**
+- **Q:** 72, 46, 21, −4, −31, −56, −82, −107, −134, −159, 175 → Δθ ≈ 25.7° → **N = 14**
+- **S:** only three angular states visited: ≈ 55°, 175°, −65° → Δθ = 120° → **N = 3**
+
+**Conclusion:** the majority value is N = 10 (14 trajectories). Six trajectories deviate.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

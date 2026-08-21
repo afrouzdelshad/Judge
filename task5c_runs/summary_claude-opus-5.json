@@ -1,0 +1,134 @@
+{
+  "model": "claude-opus-5",
+  "variant": "c",
+  "scale": 10,
+  "trials": [
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 0.5
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        3,
+        2
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": [
+        2,
+        3
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "c",
+      "true_claims": [
+        2,
+        3
+      ],
+      "plain": null
+    }
+  ],
+  "plain_f1_mean": 0.9444444444444444
+}

@@ -201,7 +201,7 @@ def main(argv=None):
         results = {"model": args.model, "variant": args.variant}
 
         (groups, x_est, y_est), transcript = plain_parsed[i], plain_transcripts[i]
-        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        (outdir / f"transcript_plain_{args.model}.txt").write_text(transcript or "", encoding="utf-8")
         print(f"[plain] groups: {groups}  X={x_est}  Y={y_est}\n")
         results["plain"] = {"groups": groups, "X": x_est, "Y": y_est}
         if groups is not None and true_n is not None:

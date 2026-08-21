@@ -1,0 +1,9 @@
+{
+  "model": "gemini-3.7-flash",
+  "variant": "b",
+  "plain": {
+    "groups": null,
+    "X": null,
+    "Y": null
+  }
+}

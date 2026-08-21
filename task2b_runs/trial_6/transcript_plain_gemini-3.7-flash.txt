@@ -1,0 +1,20 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the angular positions $\theta = \operatorname{atan2}(y, x)$ corresponding to the local equilibrium regions (lobes) around which each trajectory orbits.
+
+1. **Majority Trajectories ($N = 10$):**
+   - For trajectories **A, B, D, E, F, G, I, J, K, M, O, P, R, T**, the lobes are spaced by $\Delta \theta \approx 36^\circ$, corresponding to $N = \frac{360^\circ}{36^\circ} = 10$ distinct lobes around the central axis (located at angles $\approx 11^\circ, 47^\circ, 83^\circ, 119^\circ, 155^\circ, -169^\circ, -133^\circ, -97^\circ, -61^\circ, -25^\circ$).
+
+2. **Outlier Trajectories ($N \neq 10$):**
+   - **C**: Lobe spacing is $\Delta \theta \approx 30^\circ \implies N = 12$.
+   - **H**: Lobe spacing is $\Delta \theta \approx 51.4^\circ \implies N = 7$.
+   - **L**: Lobe spacing is $\Delta \theta \approx 17.1^\circ \implies N = 21$.
+   - **N**: Lobe spacing is $\Delta \theta \approx 20^\circ \implies N = 18$.
+   - **Q**: Lobe spacing is $\Delta \theta \approx 25.7^\circ \implies N = 14$.
+   - **S**: Lobe spacing is $\Delta \theta \approx 120^\circ \implies N = 3$.
+
+Thus, there are 6 outliers: **C, H, L, N, Q, S**.
+```
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

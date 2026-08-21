@@ -1,0 +1,55 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial distribution and rotational symmetry of the trajectories in the $(x, y)$ plane.
+
+Each trajectory belongs to an $N$-scroll / $N$-wing dynamical system characterized by an $N$-fold discrete rotational symmetry around the central $z$-axis (origin in the $x$-$y$ plane). The lobes of an $N$-lobe attractor are located at fixed radial distances with angular centers spaced uniformly by $\Delta \theta = \frac{360^\circ}{N}$.
+
+By tracking the angular positions $\theta = \operatorname{atan2}(y, x)$ where the trajectories swirl and form outer-loop peaks, we measure the angular separation $\Delta \theta$ between consecutive adjacent lobes and calculate $N = \frac{360^\circ}{\Delta \theta}$:
+
+- **A**: Lobes at $\approx 0^\circ, 90^\circ, 180^\circ, 270^\circ$ ($\Delta \theta = 90^\circ \implies N = 4$).
+- **B**: Lobes at $\approx 48^\circ, 120^\circ, 192^\circ, 264^\circ, 336^\circ$ ($\Delta \theta = 72^\circ \implies N = 5$).
+- **C**: Lobes spaced by $\Delta \theta \approx 21.18^\circ$ ($360^\circ / 21.18^\circ = 17 \implies N = 17$).
+- **D**: Lobes spaced by $\Delta \theta \approx 25.71^\circ$ ($360^\circ / 25.71^\circ = 14 \implies N = 14$).
+- **E**: Lobes spaced by $\Delta \theta \approx 32.73^\circ$ ($360^\circ / 32.73^\circ = 11 \implies N = 11$).
+- **F**: Lobes spaced by $\Delta \theta \approx 51.43^\circ$ ($360^\circ / 51.43^\circ = 7 \implies N = 7$).
+- **G**: Lobes spaced by $\Delta \theta \approx 60.0^\circ$ ($360^\circ / 60.0^\circ = 6 \implies N = 6$).
+- **H**: Lobes at $\approx 48^\circ, 168^\circ, 288^\circ$ ($\Delta \theta = 120^\circ \implies N = 3$).
+- **I**: Lobes spaced by $\Delta \theta \approx 72^\circ$ ($360^\circ / 72^\circ = 5 \implies N = 5$).
+- **J**: Lobes spaced by $\Delta \theta \approx 22.5^\circ$ ($360^\circ / 22.5^\circ = 16 \implies N = 16$).
+- **K**: Lobes spaced by $\Delta \theta \approx 36.0^\circ$ ($360^\circ / 36.0^\circ = 10 \implies N = 10$).
+- **L**: Lobes spaced by $\Delta \theta \approx 17.14^\circ$ ($360^\circ / 17.14^\circ = 21 \implies N = 21$).
+- **M**: Lobes located in 4 quadrants at $\Delta \theta \approx 90^\circ$ ($360^\circ / 90^\circ = 4 \implies N = 4$).
+- **N**: Lobes spaced by $\Delta \theta \approx 18.95^\circ$ ($360^\circ / 18.95^\circ = 19 \implies N = 19$).
+- **O**: Lobes at $\approx 53^\circ, 170^\circ, 290^\circ$ ($\Delta \theta = 120^\circ \implies N = 3$).
+- **P**: Lobes spaced by $\Delta \theta \approx 32.73^\circ$ ($360^\circ / 32.73^\circ = 11 \implies N = 11$).
+- **Q**: Lobes spaced by $\Delta \theta \approx 21.18^\circ$ ($360^\circ / 21.18^\circ = 17 \implies N = 17$).
+- **R**: Lobes spaced by $\Delta \theta \approx 45.0^\circ$ ($360^\circ / 45.0^\circ = 8 \implies N = 8$).
+- **S**: Lobes alternating between two opposite quadrants ($\Delta \theta = 180^\circ \implies N = 2$).
+- **T**: Lobes spaced by $\Delta \theta \approx 32.73^\circ$ ($360^\circ / 32.73^\circ = 11 \implies N = 11$).
+```
+
+```json
+{
+  "estimates": {
+    "A": 4,
+    "B": 5,
+    "C": 17,
+    "D": 14,
+    "E": 11,
+    "F": 7,
+    "G": 6,
+    "H": 3,
+    "I": 5,
+    "J": 16,
+    "K": 10,
+    "L": 21,
+    "M": 4,
+    "N": 19,
+    "O": 3,
+    "P": 11,
+    "Q": 17,
+    "R": 8,
+    "S": 2,
+    "T": 11
+  }
+}
+```

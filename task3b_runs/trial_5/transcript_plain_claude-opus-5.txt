@@ -1,0 +1,23 @@
+## Analysis Approach
+
+For each trajectory I converted (x,y) to a polar angle θ = atan2(y,x). All of these trajectories show the same qualitative behaviour: the angle sits on a **plateau** (the trajectory oscillates radially inside one lobe), then jumps by a fixed increment Δθ to the neighbouring lobe. Measuring Δθ (and, where possible, counting the hops needed for a full 360° revolution) gives N = 360°/Δθ.
+
+Representative measurements:
+
+| Traj. | plateau angles (°) | Δθ | N |
+|---|---|---|---|
+| H, S | +58, −123 | 180 | 2 |
+| M, O | 169, 109, 49, −11, −71, −131 | 60 | 6 |
+| A, B, F, G, I, K, R | 3, 48, 93, 138, −177, −132, −87, −42 | 45 | 8 |
+| E, P, T | 45, 13, −20, −53, −85, … | 32.7 | 11 |
+| D | 72, 46, 20, −4, −32, −56, … | 25.8 | 14 |
+| J | 68, 46, 23, 1, −21, −44, … | 22.5 | 16 |
+| C, L, N, Q | 8.8 + 19k (19 hops per full turn) | 18.9 | 19 |
+
+Full‑revolution checks confirmed the counts (e.g. A returns to −87° after exactly 8 hops; L and N close a full 360° after exactly 19 hops; D after 14; J after 16).
+
+Note also that the seven distinct initial (x,y) values are re‑used across systems, consistent with the same seeds being integrated under different N.
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

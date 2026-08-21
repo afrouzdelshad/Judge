@@ -1,0 +1,21 @@
+## Analysis Approach
+
+Each trajectory oscillates radially along a fixed direction (a "lobe"), then hops to an adjacent lobe. Converting to polar angle θ = atan2(y,x) and looking only at large‑radius points, each trajectory reveals a discrete set of preferred directions spaced evenly by 360°/N. Counting the steps required to precess a full 360° gives N directly.
+
+**Measured lobe spacings / lobe counts:**
+
+| Trajectory | angular step | N |
+|---|---|---|
+| H, S | ~180° (two wings at +45°/−135°, Lorenz‑like) | 2 |
+| M, O | ~60° (48°,108°,168°,−132°,−72°,−12°) | 6 |
+| A,B,F,G,I,K,R | ~45° (2°,47°,92°,137°,−178°,−133°,−88°,−43°) | 8 |
+| E, P, T | ~32.7° (15°,47°,79°,112°,145°,177°,…) | 11 |
+| D | ~25.7° (20°,46°,72°,97°,122°,149°,175°,…) | 14 |
+| J | ~22.5° (1.5°,24°,46.5°,69°,91.5°,114°,…) | 16 |
+| C, L, N, Q | ~18.95° (8°,27°,46°,65°,84°,103°,…) | 19 |
+
+Consistency check: all systems share a lobe near +45°, and no two trajectories starting from the same (x,y) seed ever land in the same group — e.g. the seven runs starting at (0.591, 22.52) turn out to be one from each of the seven distinct N values.
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

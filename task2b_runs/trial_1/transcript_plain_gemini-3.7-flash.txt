@@ -1,0 +1,18 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyzed the spatial distribution of the local focal centers (equilibria/lobes) around the central $(0,0)$ axis by examining the angular positions ($\theta = \text{atan2}(y, x)$) and radial distances of the spiral loops over time $t \in [0, 100]$.
+
+1. **Majority System ($N = 6$ lobes):**
+   - The vast majority of the trajectories (A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, R) exhibit a 6-fold symmetric dynamical attractor whose distinct lobe centers are separated by angular intervals of $\Delta \theta \approx 60^\circ$ ($360^\circ / 6$).
+
+2. **Outliers ($N \neq 6$):**
+   - **L**: Exhibits 12 distinct focal regions evenly spaced by $\Delta \theta \approx 30^\circ$ around the full circle ($N = 12$).
+   - **Q**: Exhibits 14 distinct focal regions evenly spaced by $\Delta \theta \approx 25.7^\circ$ around the full circle ($N = 14$).
+   - **S**: Exhibits 3 distinct focal regions located at $\theta \approx 50^\circ, 170^\circ, 290^\circ$, separated by $\Delta \theta \approx 120^\circ$ ($N = 3$).
+   - **T**: Exhibits 10 distinct focal regions evenly spaced by $\Delta \theta \approx 36^\circ$ around the full circle ($N = 10$).
+
+Thus, the outliers are L, Q, S, and T.
+```
+
+```json
+{"outliers": ["L", "Q", "S", "T"]}
+```

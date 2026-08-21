@@ -1,0 +1,25 @@
+## Analysis
+
+I estimated, for each trajectory, the angular position (atan2(y,x)) of the far‑field excursions (large‑radius points), which mark successive lobe visits. Each trajectory steps to the next lobe by a fixed angular increment Δθ; the lobe count follows as N ≈ 360°/Δθ.
+
+**Examples**
+
+- **S**: excursion angles ≈ 143°, 45°, −40°, −133°, 140° → Δθ ≈ 90° → N ≈ 4
+- **A**: 45°, 15°, −19°, −53°, −84°, −118°, −149°, 178°, 144°, 111°, 79°, 45° → Δθ ≈ 33° → N ≈ 11
+- **T**: −22°, −44°, −67°, −88°, −112°, −134°, −157°, −180°, 159°, 137°, 114°, 91°, 69°, 46°, 23° → Δθ ≈ 22.5° → N ≈ 16
+- **C**: −152°, −135°, −117°, −99°, −81°, −63°, −45°, −27°, −9°, 9°, 28°, 46°, 64°, 82°, 100°, 117°, 154°, 172° → Δθ ≈ 18° → N ≈ 20
+
+**Grouping by angular step**
+
+| Δθ | N | Labels |
+|---|---|---|
+| ~90° | 4 | H, I, M, O, S |
+| ~33° | 11 | A, B, F, G, R |
+| ~22.5° | 16 | D, E, K, P, T |
+| ~18° | 20 | C, J, L, N, Q |
+
+Each cluster contains exactly 5 trajectories, consistent with the stated structure.
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

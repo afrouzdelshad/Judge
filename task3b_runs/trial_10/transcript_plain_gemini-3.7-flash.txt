@@ -1,0 +1,30 @@
+```reasoning
+To determine the number of lobes $N$ for each of the 20 trajectories (A through T), we analyze the phase-space geometry, the angular distribution of the visited lobe centers, and the local orbital period around each lobe.
+
+1. **Group with lowest $N$ ($N = 4$ lobes, angular spacing $\Delta \theta \approx 90^\circ$):**
+   - **E, F, G, H, S**: These trajectories exhibit local oscillations with period $T \approx 0.63$ and orbit around 4 symmetric lobe centers situated at angles $\theta \in \{45^\circ, 135^\circ, 225^\circ, 315^\circ\}$ (i.e. $(\pm 8.5, \pm 8.5)$).
+
+2. **Group with intermediate-low $N$ ($N = 6$ lobes, angular spacing $\Delta \theta \approx 50^\circ - 60^\circ$):**
+   - **D, M, O, P, T**: These trajectories switch between 6 distinct lobes symmetrically distributed around the central axis with an angular step of approximately $60^\circ$.
+
+3. **Group with intermediate-high $N$ ($N = 8$ lobes, angular spacing $\Delta \theta \approx 45^\circ$):**
+   - **A, B, I, K, R**: These trajectories visit 8 distinct lobe centers located at angles $\theta \in \{0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ, 225^\circ, 270^\circ, 315^\circ\}$.
+
+4. **Group with highest $N$ ($N = 16$ lobes, angular spacing $\Delta \theta \approx 22.5^\circ$):**
+   - **C, J, L, N, Q**: These trajectories navigate a dense array of 16 lobes around the central axis, displaying fine angular transitions of $\approx 22.5^\circ$.
+
+This yields $X = 4$ groups of $Y = 5$ trajectories each, ordered from least to most complex.
+```
+
+```json
+{
+  "groups": [
+    ["E", "F", "G", "H", "S"],
+    ["D", "M", "O", "P", "T"],
+    ["A", "B", "I", "K", "R"],
+    ["C", "J", "L", "N", "Q"]
+  ],
+  "X": 4,
+  "Y": 5
+}
+```

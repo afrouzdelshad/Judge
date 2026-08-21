@@ -1,0 +1,27 @@
+## Analysis
+
+Looking at the data, the 20 trajectories share only 5 distinct initial conditions (4 trajectories each), so each group of 5 must contain exactly one trajectory from each IC — a useful cross‑check.
+
+**Method:** For each trajectory I computed the polar angle θ = atan2(y, x) at times when the radius is large (the trajectory "sticks" near a lobe direction). The observed angles always cluster on a set of equally‑spaced rays, and the spacing Δθ = 360°/N gives N directly.
+
+Example results:
+
+- **I:** plateaus at ≈ 51°, −40°, −128°, 143° → Δθ ≈ 90° → N = 4
+- **A:** 45°, 12°, −19°, −51°, −84°, −117°, −150°, 177°, 144°, 111°, 78° → Δθ ≈ 32.7° → N = 11
+- **D:** 46°, 24°, 1°, −21°, −44°, −67°, −89°, −111°, −134°, −156°, −178°, 159°, 136°, 114° → Δθ ≈ 22.5° → N = 16
+- **L:** 46°, 28°, 10°, −8°, −26°, −44°, −62°, −80°, −98°, −116°, −134°, −152°, −170°, 172°, 154°, 136°, 118° → Δθ = 18° → N = 20
+
+Applying this to all 20 (each group's members land on *identical* ray sets, confirming the clustering):
+
+| N | ray spacing | trajectories |
+|---|---|---|
+| 4 | 90° | I, S, H, O, M |
+| 11 | 32.7° | A, B, G, F, R |
+| 16 | 22.5° | D, K, E, P, T |
+| 20 | 18° | L, J, C, Q, N |
+
+Each group contains exactly one trajectory from each of the five initial conditions — a perfect consistency check.
+
+```json
+{"groups": [["I", "S", "H", "O", "M"], ["A", "B", "G", "F", "R"], ["D", "K", "E", "P", "T"], ["L", "J", "C", "Q", "N"]]}
+```

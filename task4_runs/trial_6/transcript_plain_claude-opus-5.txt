@@ -1,0 +1,16 @@
+## Approach
+
+For each trajectory I computed the polar angle θ = atan2(y,x) at the points of maximum radius (the lobe "tips"). In every case the lobe tips fall at discrete angles spaced by exactly 360°/N (all offset from 45°), and the trajectory hops from one to the next. Reading off the angular spacing gives N directly.
+
+Examples:
+- **A**: tips at ≈ 0°, 45°, 92°, 136°, 180°, 227°, 273°, 318° → spacing 45° → N = 8
+- **H**: tips at ≈ 50°, 170°, −70° → spacing 120° → N = 3
+- **S**: tips only at ≈ 45° and ≈ −135° → N = 2
+- **C**: tips at 88.7°, 66.6°, 46°, 25.8°, 3.8°, −17°, … stepping ≈21.2° all the way around → N = 17
+- **L**: consecutive tips at 80°, 63.6°, 46.4°, 29.6°, 10.5°, −5.5°, … spacing ≈17.1° → N = 21
+
+Consistency check: trajectories sharing the same lobe-angle set (E/P/T; H/O; A/R; B/I; C/Q) came out with identical N, as expected for the same underlying system with different initial conditions.
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

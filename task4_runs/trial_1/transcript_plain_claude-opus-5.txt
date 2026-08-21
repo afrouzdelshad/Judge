@@ -1,0 +1,30 @@
+## Method
+
+For each trajectory I converted the raw (x, y) points to polar angle θ = atan2(y, x), then tracked the angle of the **large‑radius excursions** (the outer sweep of each lobe). In every case the orbit hops from lobe to lobe by a constant angular increment Δθ, so N = 360°/Δθ (verified by counting how many hops close one full revolution).
+
+Examples:
+- **A**: outer sweeps at ≈ −178°, 138°, 92°, 48°, 3°, −44°, −89°, −131° → Δθ ≈ 45° → N = 8
+- **B**: −168°, 122°, 48°, −24°, −95° → Δθ ≈ 72° → N = 5
+- **C**: 88°, 66°, 45°, 25°, 4°, −18°, … → Δθ ≈ 21.2° → N = 17
+- **S**: only two outer clusters (≈ +53° and ≈ −125°, 180° apart) → N = 2
+- **L**: Δθ ≈ 17.1° (21 hops to close the circle) → N = 21
+- **N**: Δθ ≈ 19.0° (19 hops) → N = 19
+
+Full set of measured angular steps:
+
+| Traj | Δθ (deg) | N | Traj | Δθ (deg) | N |
+|---|---|---|---|---|---|
+| A | 45 | 8 | K | 36 | 10 |
+| B | 72 | 5 | L | 17.1 | 21 |
+| C | 21.2 | 17 | M | 90 | 4 |
+| D | 25.7 | 14 | N | 19.0 | 19 |
+| E | 32.6 | 11 | O | 120 | 3 |
+| F | 51.4 | 7 | P | 32.7 | 11 |
+| G | 60 | 6 | Q | 21.2 | 17 |
+| H | 120 | 3 | R | 45 | 8 |
+| I | 72 | 5 | S | 180 | 2 |
+| J | 22.4 | 16 | T | 32.7 | 11 |
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

@@ -1,0 +1,21 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y,x) at the large‑radius excursions (the "lobe visits"), and looked at the angular spacing between successive lobe centers. The spacing Δθ gives N ≈ 360°/Δθ.
+
+**Examples:**
+- **A**: lobe angles ≈ 3°, 48°, 92°, 138°, 182°, 229°, 270°, 318° → Δθ ≈ 45° → N = 8
+- **B**: ≈ 193°, 122°, 50°, −24°, −95° → Δθ ≈ 72° → N = 5
+- **H**: ≈ −72°, 50°, 168° → Δθ ≈ 120° → N = 3
+- **S**: only two opposed lobe directions (≈ 54° and ≈ −124°) → N = 2
+- **L**: 22 successive visits stepping ≈ 17.2° apart, closing after 21 steps → N = 21
+- **N**: steps of ≈ 19° (64°, 46°, 27°, 8°, −11°, …) → N = 19
+- **C, Q**: steps of ≈ 21.2° → N = 17
+- **J**: steps of ≈ 22.4° → N = 16
+- **D**: steps of ≈ 25.7° → N = 14
+- **E, P, T**: steps of ≈ 32.7° → N = 11
+- **K**: steps of ≈ 36° → N = 10
+- **F**: ≈ 51.4° → N = 7; **G**: ≈ 60° → N = 6; **M**: ≈ 90° → N = 4; **I**: ≈ 72° → N = 5; **R**: ≈ 45° → N = 8; **O**: ≈ 120° → N = 3
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

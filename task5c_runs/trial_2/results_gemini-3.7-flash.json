@@ -1,0 +1,13 @@
+{
+  "model": "gemini-3.7-flash",
+  "variant": "c",
+  "true_claims": [
+    2,
+    3
+  ],
+  "plain": [
+    1,
+    4
+  ],
+  "plain_f1": 0.0
+}

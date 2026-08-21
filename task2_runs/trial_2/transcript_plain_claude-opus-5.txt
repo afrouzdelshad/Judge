@@ -1,0 +1,31 @@
+## Analysis Approach
+
+Since these trajectories orbit a central axis, the "lobes" show up as **preferred angular directions** θ = atan2(y,x) at which the trajectory makes large-radius excursions (r ≈ 20–25). A trajectory loops several times within one lobe, then rotates to the next lobe. So I extracted the angles of large-|r| points for each letter.
+
+**Typical trajectory (e.g. A, M, P, Q, R, S, T…):**
+- M: (−2.3,−21.6)→265°, (−19.9,−5.1)→194°, (−12.6,21.9)→123°, (14.7,16.0)→50°, (19.7,−8.0)→−21°
+- P: −25°, −93°, 194°, 122°, 50°
+- T: −22°, −94°, −164°, 121°, 47°
+
+All of these show **5 lobe directions spaced ~72° apart** (≈ 47°, 119°, 191°, 263°, 335°). Intermediate angles only appear at *small* radius during lobe-to-lobe transitions. I confirmed this pattern for A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T.
+
+**Trajectory L is different.** Its large-radius excursions occur at *twice as many* directions, spaced ~36°:
+
+| t | (x, y) | r | θ |
+|---|---|---|---|
+| 0.1 | (−25.4, −5.3) | 26 | 192° |
+| 4.3 | (−22.1, 10.1) | 24 | 155° |
+| 5.9 | (−11.8, 22.1) | 25 | 118° |
+| 7.4 | (3.4, 22.5) | 23 | 82° |
+| 8.1 | (14.6, 16.0) | 22 | 48° |
+| 8.9 | (22.7, 4.6) | 23 | 12° |
+| 9.7 | (21.6, −10.2) | 24 | −25° |
+| 10.5 | (11.9, −21.6) | 25 | −61° |
+| 11.2 | (−2.4, −21.1) | 21 | −97° |
+| 12.2 | (−17.2, −19.1) | 26 | −132° |
+
+L rotates steadily through **10 distinct lobes** (36° apart), including the intermediate directions that the others only cross at tiny radius.
+
+```json
+{"outlier": "L"}
+```

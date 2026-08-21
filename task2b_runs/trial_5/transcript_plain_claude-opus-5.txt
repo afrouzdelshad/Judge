@@ -1,0 +1,24 @@
+## Approach
+
+For each trajectory I tracked the **angle θ = atan2(y, x) at successive radial maxima**. In every trajectory the point makes repeated radial excursions ("petals") at a discrete set of angles, occasionally hopping to the neighbouring petal. The angular gap Δθ between adjacent petals gives the lobe count directly: **N = 360°/Δθ**.
+
+Sample results (angles of successive radial maxima):
+
+| Traj | lobe angles (°) | Δθ | N |
+|---|---|---|---|
+| A | 118.8, 83.5, 46.3, 10.8, −25, −60, −97… | 36.0 | 10 |
+| B | −26, −60, −97, −134 | 36.0 | 10 |
+| **C** | 76.5, 45.3, 16.6, −12.9, −44.3, −73.7 | 29.8 | **12** |
+| D | 44, 10.4, −24.8, −61.5, −97.2 | 35.9 | 10 |
+| E,F,G,I,J,K,M,O,P,R,T | … | ≈36 | 10 |
+| **H** | 47.6, −4.0, −54.4, −106, −159, −208 | 51.1 | **7** |
+| **L** | 79.9, 63.1, 46.2, 28.6, 11.3, −5.6, −22.6, −40.4, −57.8 | 17.2 | **≈21** |
+| **N** | 65.4, 46.5, 25.8, 5.9, −13.7, −34.4, −53.7, −74.4 | 20.0 | **18** |
+| **Q** | 72.0, 45.8, 20.7, −4.3, −32, −56, −82.6, −107.7 | 25.7 | **14** |
+| **S** | −70, 168, 50, −67, 171, 52 … | 120 | **3** |
+
+Fourteen trajectories (A, B, D, E, F, G, I, J, K, M, O, P, R, T) give a consistent Δθ ≈ 36°, i.e. **N = 10** — the majority. Six give clearly different spacings.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

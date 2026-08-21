@@ -1,0 +1,50 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial distribution and angular positions of the orbit's lobes (extrema/excursions in radius $r = \sqrt{x^2+y^2}$) around the central axis.
+
+First, by checking the initial conditions at $t=0$, we find that the 20 trajectories originate from 5 distinct initial coordinates, with 4 trajectories starting at each condition (one trajectory per $N$ group):
+1. $(15.25, 15.4)$: A, D, I, L
+2. $(0.5911, 22.52)$: B, J, K, S
+3. $(-11.92, -10.08)$: C, E, G, H
+4. $(-20.72, -13.16)$: F, O, P, Q
+5. $(22.15, 0.5664)$: M, N, R, T
+
+Analyzing the angular positions $\theta = \operatorname{atan2}(y, x)$ of the outer lobes for each set of trajectories reveals 4 distinct rotational symmetries / lobe counts:
+
+1. **$N = 4$ lobes** (angular spacing $\approx 90^\circ$, lobes at approximately $\pm 45^\circ, \pm 135^\circ$):
+   - From $(15.25, 15.4)$: **I**
+   - From $(0.5911, 22.52)$: **S**
+   - From $(-11.92, -10.08)$: **H**
+   - From $(-20.72, -13.16)$: **O**
+   - From $(22.15, 0.5664)$: **M**
+   - Group: `["H", "I", "M", "O", "S"]`
+
+2. **$N = 11$ lobes** (angular spacing $\approx 360^\circ / 11 \approx 32.7^\circ$):
+   - From $(15.25, 15.4)$: **A**
+   - From $(0.5911, 22.52)$: **B**
+   - From $(-11.92, -10.08)$: **G**
+   - From $(-20.72, -13.16)$: **F**
+   - From $(22.15, 0.5664)$: **R**
+   - Group: `["A", "B", "F", "G", "R"]`
+
+3. **$N = 16$ lobes** (angular spacing $\approx 360^\circ / 16 = 22.5^\circ$):
+   - From $(15.25, 15.4)$: **D**
+   - From $(0.5911, 22.52)$: **K**
+   - From $(-11.92, -10.08)$: **E**
+   - From $(-20.72, -13.16)$: **P**
+   - From $(22.15, 0.5664)$: **T**
+   - Group: `["D", "E", "K", "P", "T"]`
+
+4. **$N = 20$ lobes** (angular spacing $\approx 360^\circ / 20 = 18.0^\circ$):
+   - From $(15.25, 15.4)$: **L**
+   - From $(0.5911, 22.52)$: **J**
+   - From $(-11.92, -10.08)$: **C**
+   - From $(-20.72, -13.16)$: **Q**
+   - From $(22.15, 0.5664)$: **N**
+   - Group: `["C", "J", "L", "N", "Q"]`
+
+Ordering the groups from least to most complex ($N = 4 < 11 < 16 < 20$) yields the final clustering.
+```
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

@@ -1,0 +1,34 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the angular positions $\theta = \text{atan2}(y, x)$ of the lobe centers (the local maxima in radial distance $r = \sqrt{x^2+y^2}$ where the trajectory orbits distinct centers around the central $z$-axis).
+
+For a cyclically symmetric $N$-lobe attractor, the angular separation between adjacent lobe centers is given by $\Delta\theta = \frac{360^\circ}{N}$.
+
+By tracking the distinct lobe centers visited by each trajectory:
+- **A**: Lobes centered at angles $\approx 10^\circ, 47^\circ, 83^\circ, 119^\circ, 155^\circ, 190^\circ, 226^\circ, 262^\circ, 300^\circ, 335^\circ$ ($\Delta\theta \approx 36^\circ \implies N = 10$).
+- **B**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **C**: Lobes spaced by $\Delta\theta \approx 30^\circ$ (e.g., $16^\circ, 46^\circ, 76^\circ, 106^\circ, 136^\circ, 166^\circ, 196^\circ, 226^\circ, 256^\circ, 286^\circ, 316^\circ, 346^\circ \implies N = 12$).
+- **D**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **E**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **F**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **G**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **H**: Lobes spaced by $\Delta\theta \approx 51.4^\circ$ ($\implies N = 7$).
+- **I**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **J**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **K**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **L**: Lobes spaced by $\Delta\theta \approx 17.14^\circ$ ($\implies N = 21$).
+- **M**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **N**: Lobes spaced by $\Delta\theta \approx 20^\circ$ ($\implies N = 18$).
+- **O**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **P**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **Q**: Lobes spaced by $\Delta\theta \approx 25.7^\circ$ ($\implies N = 14$).
+- **R**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+- **S**: Lobes centered at $\approx 50^\circ, 170^\circ, 290^\circ$ ($\Delta\theta \approx 120^\circ \implies N = 3$).
+- **T**: $\Delta\theta \approx 36^\circ \implies N = 10$.
+
+The majority of trajectories have $N = 10$ lobes (14 trajectories).
+The outliers differing from the majority are C, H, L, N, Q, and S.
+```
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

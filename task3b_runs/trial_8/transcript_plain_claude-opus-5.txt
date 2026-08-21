@@ -1,0 +1,31 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the points of locally maximal radius (the lobe "tips"). In every trajectory these angles fall into a small set of sharply defined directions, and the spacing between adjacent directions gives N = 360°/Δθ directly.
+
+Examples:
+
+- **A**: tips at ≈ 2°, 48°, 93°, 138°, 183°, 227°, 272°, 317° → Δθ ≈ 45° → **N = 8**
+- **C**: tips at ≈ 8°, 27°, 46°, 65°, 84°, 103°, 122°, 141°, 160°, 179°, … → Δθ ≈ 18.9° → **N = 19**
+- **D**: Δθ ≈ 25.7° → **N = 14**;  **J**: Δθ ≈ 22.5° → **N = 16**
+- **E/P/T**: Δθ ≈ 32.7° → **N = 11**;  **M/O**: Δθ ≈ 60° → **N = 6**
+- **H/S**: only two broad spiral wings, centred ≈ 45° and ≈ 225° → **N = 2**
+
+(Every attractor turns out to have one lobe near 46°, with the others evenly spaced by 360/N, which makes the identification unambiguous.)
+
+## Resulting groups (ordered by increasing N)
+
+| Group | N | Members |
+|---|---|---|
+| 1 | 2 | H, S |
+| 2 | 6 | M, O |
+| 3 | 8 | A, B, F, G, I, K, R |
+| 4 | 11 | E, P, T |
+| 5 | 14 | D |
+| 6 | 16 | J |
+| 7 | 19 | C, L, N, Q |
+
+Group sizes are not uniform (7, 4, 3, 2, 2, 1, 1), so Y is reported as the typical/average size ≈ 3.
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

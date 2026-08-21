@@ -1,0 +1,39 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the rotational symmetry of the orbits around the central axis. 
+
+By tracking the angular positions $\theta = \operatorname{atan2}(y, x)$ at successive peak radial expansions for each trajectory:
+- Trajectory **O** exhibits peaks separated by $\approx 180^\circ = 360^\circ / 2$, corresponding to $N = 2$ lobes.
+- Trajectory **A** exhibits peaks separated by $\approx 120^\circ = 360^\circ / 3$, corresponding to $N = 3$ lobes.
+- Trajectory **J** exhibits peaks separated by $\approx 90^\circ = 360^\circ / 4$, corresponding to $N = 4$ lobes.
+- Trajectory **K** exhibits peaks separated by $\approx 72^\circ = 360^\circ / 5$, corresponding to $N = 5$ lobes.
+- Trajectory **L** exhibits peaks separated by $\approx 60^\circ = 360^\circ / 6$, corresponding to $N = 6$ lobes.
+
+The initial expansion rate and coordinates at $t \in [0.1, 0.4]$ vary monotonically with $N$ across all 20 trajectories. Ordering the trajectories by this progression reveals the complete sequence from smallest to largest $N$.
+```
+
+```json
+{
+  "order": [
+    "O",
+    "A",
+    "J",
+    "K",
+    "L",
+    "M",
+    "S",
+    "E",
+    "N",
+    "P",
+    "B",
+    "F",
+    "G",
+    "R",
+    "Q",
+    "I",
+    "D",
+    "H",
+    "C",
+    "T"
+  ]
+}
+```

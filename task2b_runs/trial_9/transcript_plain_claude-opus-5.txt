@@ -1,0 +1,44 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the points of maximum radius (the outer tips of each lobe). A trajectory dwells at one angular "lobe" for several radial oscillations, then hops to the next lobe. The angular step between successive lobe centers equals 360°/N.
+
+**Example (A):** lobe tips at θ ≈ 118.7°, 83.5°, 47.2°, 10.8°, −25.2°, −60.5°, −95.8°, −133.4°, −168.9°, 154.3° → step ≈ 36° → **N = 10**
+
+Applying the same to all:
+
+| Traj | lobe-angle step | N |
+|---|---|---|
+| A | 36° | 10 |
+| B | 36° | 10 |
+| **C** | **30°** | **12** |
+| D | 36° | 10 |
+| E | 36° | 10 |
+| F | 36° | 10 |
+| G | 36° | 10 |
+| **H** | **51.4°** | **7** |
+| I | 36° | 10 |
+| J | 36° | 10 |
+| K | 36° | 10 |
+| **L** | **17.1°** | **21** |
+| M | 36° | 10 |
+| **N** | **20.0°** | **18** |
+| O | 36° | 10 |
+| P | 36° | 10 |
+| **Q** | **25.7°** | **14** |
+| R | 36° | 10 |
+| **S** | **120°** | **3** |
+| T | 36° | 10 |
+
+Supporting detail:
+- **C**: tips at 166°, 135°, 107°, 76°, 46°, 17°, −13°, −44°, −74°, −104°, −136°, −162° (12 lobes).
+- **H**: tips at 152°, 100°, 48°, −2°, −53°, −105°, −157° (7 lobes).
+- **L**: tips march 80°→63°→46°→29°→11°→−5°→−23°→−40°→−58°… (17.1° steps).
+- **N**: 66°→46°→26°→6°→−13°→−34°… (20° steps).
+- **Q**: 72°→46°→21°→−4°→−31°→−56°… (25.7° steps).
+- **S**: only three angular families ≈ 52°, −70°, 172°.
+
+Majority N = 10 (14 trajectories); six differ.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

@@ -1,0 +1,67 @@
+{
+  "model": "gemini-3.7-flash",
+  "scale": 10,
+  "trials": [
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "true_outlier": "L",
+      "plain": "L",
+      "plain_correct": true
+    }
+  ],
+  "plain_correct_rate": 1.0
+}

@@ -1,0 +1,398 @@
+{
+  "model": "gemini-3.7-flash",
+  "variant": "a",
+  "scale": 10,
+  "trials": [
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "F",
+            "G",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "K",
+            "P",
+            "T"
+          ],
+          [
+            "C",
+            "J",
+            "L",
+            "N",
+            "Q"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 1.0
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "F",
+            "G",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "K",
+            "P",
+            "T"
+          ],
+          [
+            "C",
+            "J",
+            "L",
+            "N",
+            "Q"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 1.0
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "F",
+            "G",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "K",
+            "P",
+            "T"
+          ],
+          [
+            "C",
+            "J",
+            "L",
+            "N",
+            "Q"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 1.0
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "F",
+            "G",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "K",
+            "P",
+            "T"
+          ],
+          [
+            "C",
+            "J",
+            "L",
+            "N",
+            "Q"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 1.0
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "J",
+            "M",
+            "Q"
+          ],
+          [
+            "C",
+            "L",
+            "N",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "G",
+            "P",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "F",
+            "K",
+            "T"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 0.36666666666666664
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "E",
+            "F",
+            "R"
+          ],
+          [
+            "C",
+            "D",
+            "J",
+            "Q",
+            "T"
+          ],
+          [
+            "G",
+            "K",
+            "L",
+            "N",
+            "P"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 0.43
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "A",
+            "B",
+            "E",
+            "Q",
+            "R"
+          ],
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "D",
+            "G",
+            "K",
+            "N",
+            "P"
+          ],
+          [
+            "C",
+            "F",
+            "J",
+            "L",
+            "T"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 0.33499999999999996
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "G",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "B",
+            "D",
+            "F",
+            "H",
+            "R"
+          ],
+          [
+            "E",
+            "K",
+            "L",
+            "N",
+            "P"
+          ],
+          [
+            "A",
+            "C",
+            "J",
+            "Q",
+            "T"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 0.24
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "O",
+            "S"
+          ],
+          [
+            "A",
+            "B",
+            "F",
+            "G",
+            "R"
+          ],
+          [
+            "D",
+            "E",
+            "K",
+            "P",
+            "T"
+          ],
+          [
+            "C",
+            "J",
+            "L",
+            "N",
+            "Q"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 1.0
+    },
+    {
+      "model": "gemini-3.7-flash",
+      "variant": "a",
+      "plain": {
+        "groups": [
+          [
+            "H",
+            "I",
+            "M",
+            "P",
+            "S"
+          ],
+          [
+            "C",
+            "F",
+            "K",
+            "L",
+            "N"
+          ],
+          [
+            "B",
+            "D",
+            "E",
+            "O",
+            "T"
+          ],
+          [
+            "A",
+            "G",
+            "J",
+            "Q",
+            "R"
+          ]
+        ],
+        "X": null,
+        "Y": null
+      },
+      "plain_ari": 0.24
+    }
+  ],
+  "plain_ari_mean": 0.6611666666666667
+}

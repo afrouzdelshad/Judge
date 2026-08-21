@@ -1,0 +1,44 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) and tracked it over time. The dynamics show a clear pattern: the radius oscillates rapidly while θ **dwells at discrete plateau values**, then hops to the next one. These plateau angles form a uniform lattice with spacing 360°/N — this directly reveals the lobe count.
+
+**Example (D):** plateau angles 10°, −25°, −61°, −96°, −133°, −170°, 153°, 119°, 83°, 46°, 12° → spacing ≈ 36° → N = 10.
+
+## Measured spacings
+
+| Traj | plateau spacing | N |
+|---|---|---|
+| A | 36° | 10 |
+| B | 36° | 10 |
+| **C** | 29.9° | **12** |
+| D | 36° | 10 |
+| E | 35.9° | 10 |
+| F | 36° | 10 |
+| G | 36° | 10 |
+| **H** | 51.4° | **7** |
+| I | 36° | 10 |
+| J | 36° | 10 |
+| K | 36° | 10 |
+| **L** | 17.2° | **21** |
+| M | 36° | 10 |
+| **N** | 20.0° | **18** |
+| O | 36° | 10 |
+| P | 36° | 10 |
+| **Q** | 25.5° | **14** |
+| R | 36° | 10 |
+| **S** | 120° | **3** |
+| T | 35.6° | 10 |
+
+Representative verifications:
+- **H**: 48.6 → −2.2 → −53.3 → −105 → −157 → 151 → 100 → 48 (7 steps closes the circle).
+- **S**: dwells only at ≈ −65°, 174°, 55° (three lobes, 120° apart).
+- **C**: 45, 17, −13, −42, −73, −103, −133, −163, 167, 136, 108, 77, 46 → 12 steps per revolution.
+- **N**: 46.6, 25.8, 5.9, −13.6, −34.4, −53.2, −73.5 → 20° steps → 18 lobes.
+- **L**: 11 consecutive steps spanning 189° → 17.2° each → 21 lobes.
+- **Q**: 8 steps spanning 204° → 25.5° each → 14 lobes.
+
+Majority N = 10 (14 trajectories); six trajectories deviate.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

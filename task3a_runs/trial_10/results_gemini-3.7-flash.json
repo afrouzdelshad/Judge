@@ -1,0 +1,39 @@
+{
+  "model": "gemini-3.7-flash",
+  "variant": "a",
+  "plain": {
+    "groups": [
+      [
+        "H",
+        "I",
+        "M",
+        "P",
+        "S"
+      ],
+      [
+        "C",
+        "F",
+        "K",
+        "L",
+        "N"
+      ],
+      [
+        "B",
+        "D",
+        "E",
+        "O",
+        "T"
+      ],
+      [
+        "A",
+        "G",
+        "J",
+        "Q",
+        "R"
+      ]
+    ],
+    "X": null,
+    "Y": null
+  },
+  "plain_ari": 0.24
+}

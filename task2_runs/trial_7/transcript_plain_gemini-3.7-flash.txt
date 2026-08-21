@@ -1,0 +1,18 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we can analyze the spatial locations (specifically, the polar angles $\theta = \operatorname{atan2}(y, x)$) of the large-radius excursions / loop centers ($r = \sqrt{x^2+y^2} > 15$).
+
+For 19 of the 20 trajectories (A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T), all large excursions concentrate around $N = 5$ distinct angular directions spaced by approximately $72^\circ = 2\pi/5$:
+1. $\theta \approx +48^\circ$ (near $(+16, +18)$)
+2. $\theta \approx +120^\circ$ (near $(-11, +20)$)
+3. $\theta \approx +192^\circ$ (near $(-22, -4)$)
+4. $\theta \approx -96^\circ$ (near $(-2, -22)$)
+5. $\theta \approx -24^\circ$ (near $(+20, -9)$)
+
+Trajectory L, by contrast, visits 10 distinct lobe directions spaced by approximately $36^\circ = 2\pi/10$ (at angles $\approx +11^\circ, +47^\circ, +82^\circ, +119^\circ, +155^\circ, +191^\circ, -134^\circ, -97^\circ, -61^\circ, -25^\circ$), corresponding to an $N = 10$ lobe system.
+
+Therefore, trajectory L is the unique outlier.
+```
+
+```json
+{"outlier": "L"}
+```

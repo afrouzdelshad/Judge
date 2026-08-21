@@ -1,0 +1,27 @@
+## Approach
+
+For each trajectory I converted the raw (x,y) to polar coordinates and located the **local maxima of the radius** (the outer tips of each excursion). In every trajectory these tips cluster at a small set of fixed angular directions — the "lobes." The angular step between successively visited lobes turned out to be very nearly constant for each trajectory, so N = 360°/Δθ.
+
+Examples:
+- **A**: tip angles ≈ 0°, −44°, −88°, −132°, 180°, 138°, 92°, 46° → Δθ ≈ 45° → N = 8
+- **D**: ≈ 71°, 46°, 20°, −4°, −31°, −56°, −83°, −108°, −134°, −159°, 176°, 149°, 123°, 97° → Δθ ≈ 25.7° → N = 14
+- **C**: Δθ ≈ 18.95° → N = 19
+- **H/S**: only two opposed tip directions (≈ +50° and ≈ −130°) → N = 2
+
+A useful consistency check: several trajectories share identical initial conditions (e.g. (0.591, 22.52) is used by C, D, E, I, J, O, S). Within each such IC‑set my inferred N values are all *distinct*, exactly as required by the problem statement (one IC per group). This validates the clustering.
+
+**Results**
+
+| N | trajectories |
+|---|---|
+| 2 | H, S |
+| 6 | M, O |
+| 8 | A, B, F, G, I, K, R |
+| 11 | E, P, T |
+| 14 | D |
+| 16 | J |
+| 19 | C, L, N, Q |
+
+```json
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+```

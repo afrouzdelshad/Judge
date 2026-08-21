@@ -1,0 +1,27 @@
+## Approach
+
+Since these are rotationally symmetric multi‑lobe attractors, the lobes sit at fixed angles 2πk/N in the (x,y) plane. For each trajectory I collected the polar angle at the large‑radius excursions and measured the **angular spacing** between successive lobe visits:
+
+- Δθ ≈ 90° → N = 4
+- Δθ ≈ 33° → N = 11
+- Δθ ≈ 22.5° → N = 16
+- Δθ ≈ 18° → N = 20
+
+A useful structural check: only 5 distinct initial conditions appear at t=0, each shared by exactly 4 trajectories:
+- IC₁ (15.25, 15.40): A, D, I, L
+- IC₂ (0.591, 22.52): B, J, K, S
+- IC₃ (−11.92, −10.08): C, E, G, H
+- IC₄ (−20.72, −13.16): F, O, P, Q
+- IC₅ (22.15, 0.566): M, N, R, T
+
+So each group must contain exactly one trajectory from each IC family — a strong consistency constraint that the measured spacings satisfy.
+
+Sample measurements:
+- **H**: lobes at ≈140°, 50°, −41°, −130° → 4 lobes
+- **A**: 45°, 14°, −19°, −53°, −85°, −118°, −150°, 177°, 144°, 111°, 79° → 11 lobes
+- **T**: −22°, −44°, −67°, −88°, −112°, −134°, −157°, −179°, 159°, 137°, 114°, 91°, 69°, 46°, 22°, 1° → 16 lobes
+- **C**: 20 evenly spaced directions (Δ ≈ 18°) → 20 lobes
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

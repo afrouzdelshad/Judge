@@ -1,0 +1,18 @@
+## Method
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the times of maximal radius (the outward excursions = lobe visits). The lobe centers appear as tight angular clusters, and the angular spacing Δθ between successively visited lobes gives N = 360°/Δθ (checked by verifying the full set of cluster angles closes on 360°).
+
+Examples:
+- **A**: excursion angles ≈ 180°, 137°, 92°, 47°, 3°, −43°, −89°, −133° → Δθ ≈ 45° → N = 8
+- **S**: only two antipodal clusters ≈ +50° and −130° → N = 2
+- **H, O**: clusters ≈ 50°, 170°, −68° → Δθ ≈ 120° → N = 3
+- **C, Q**: 17 clusters spaced ≈ 21.2°
+- **N**: 19 clusters spaced ≈ 19.0°
+- **L**: clusters spaced ≈ 17.2° → N = 21
+- **E, P, T** share an identical lobe set (79°, 47°, 14°, −19°, −52°, −85°, −117°, −150°, 177°, 145°, 112°) → Δθ ≈ 32.7° → N = 11
+
+(Trajectories that share the same lobe-angle set were assigned the same N, e.g. A/R, B/I, C/Q, E/P/T, H/O.)
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

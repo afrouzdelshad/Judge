@@ -129,7 +129,7 @@ def main(argv=None):
         results = {"model": args.model}
 
         estimates, transcript = plain_estimates[i], plain_transcripts[i]
-        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        (outdir / f"transcript_plain_{args.model}.txt").write_text(transcript or "", encoding="utf-8")
         results["plain"] = estimates
         if estimates is not None and true_n is not None:
             accuracy, mae, per_label = score_estimates(estimates, true_n)

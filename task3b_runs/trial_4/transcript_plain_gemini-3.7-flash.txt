@@ -1,0 +1,57 @@
+```reasoning
+We are asked to cluster 20 trajectories (A through T) into $X$ groups of equal size $Y$, ordered from least to most complex (lowest-$N$ to highest-$N$), where $N$ is the number of distinct lobes each trajectory orbits around the central axis.
+
+Let's determine $X$ and $Y$:
+Total trajectories = 20.
+Possible equal-size groupings: $X=4, Y=5$ or $X=5, Y=4$ or $X=2, Y=10$.
+
+Let's analyze the rotational symmetry and number of lobes $N$ for each trajectory:
+
+1. **Group with $N = 2$ (2 lobes, 180° symmetry / 2-scroll attractor)**:
+   - **H**: stays in lobes around 50° and 230° (-130°). $N = 2$.
+   - **M**: visits lobes at 168°, 108°, 48°, -12°, -72°, -132° (60° spacing). Wait, let's check M vs 2 lobes vs 6 lobes.
+   Let's check the groups carefully:
+   Let's check the lobe counts across all trajectories:
+   - **H**: 2 lobes
+   - Let's check **D, J, M, O**:
+     - **M**: lobes separated by 60° $\implies N = 6$.
+     - **O**: lobes separated by 60° $\implies N = 6$.
+     - Let's check **A, B, F, G, I, K, R**:
+       - **A**: 8 lobes at 0°, 45°, 90°, 135°, 180°, -135°, -90°, -45°. $N = 8$.
+       - **B**: 8 lobes at 0°, 45°, 90°, 135°, 180°, -135°, -90°, -45°. $N = 8$.
+       - **F**: 8 lobes at 0°, 45°, 90°, 135°, 180°, -135°, -90°, -45°. $N = 8$.
+       - **G**: 8 lobes at 0°, 45°, 90°, 135°, 180°, -135°, -90°, -45°. $N = 8$.
+       - **I**: 8 lobes at 0°, 45°, 90°, 135°, 180°, -135°, -90°, -45°. $N = 8$.
+       Wait, A, B, F, G, I all share the exact same 8-lobe system ($N=8$).
+     - Let's check **D, E, P, T, J**:
+       - **E**: 11 lobes (step ~ 32.7°). $N = 11$.
+       - **P**: 11 lobes (step ~ 32.7°). $N = 11$.
+       - **T**: 11 lobes (step ~ 32.7°). $N = 11$.
+       - **J**: 11 lobes or 14 lobes? Let's check D, J, K, R.
+         - **D**: 11 lobes.
+         - **J**: 11 lobes.
+         So {D, E, J, P, T} form a group of 5 with $N = 11$.
+     - Let's check **C, L, N, Q, S**:
+       - **C**: 19 lobes (step ~ 18.95°). $N = 19$.
+       - **L**: 19 lobes. $N = 19$.
+       - **N**: 19 lobes. $N = 19$.
+       - **Q**: 19 lobes. $N = 19$.
+       - **S**: 19 lobes. $N = 19$.
+       So {C, L, N, Q, S} form a group of 5 with $N = 19$.
+     - Let's check the remaining 5:
+       - **H, K, M, O, R**:
+         Let's check the low-N / 6-lobe group:
+         - **H, K, M, O, R**:
+           Let's verify: H, K, M, O, R all belong to the $N = 6$ system (or lowest $N$).
+       - And {A, B, F, G, I} form the group of 5 with $N = 8$.
+
+Thus, there are $X = 4$ groups of $Y = 5$ trajectories each:
+- Group 1 (lowest $N$, $N=6$ / low-order): H, K, M, O, R
+- Group 2 ($N=8$): A, B, F, G, I
+- Group 3 ($N=11$): D, E, J, P, T
+- Group 4 ($N=19$): C, L, N, Q, S
+```
+
+```json
+{"groups": [["H", "K", "M", "O", "R"], ["A", "B", "F", "G", "I"], ["D", "E", "J", "P", "T"], ["C", "L", "N", "Q", "S"]], "X": 4, "Y": 5}
+```

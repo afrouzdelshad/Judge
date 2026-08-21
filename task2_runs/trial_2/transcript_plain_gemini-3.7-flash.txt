@@ -1,0 +1,14 @@
+```reasoning
+To find the outlier trajectory, we analyze the spatial distribution and lobe count of each trajectory in the $(x, y)$ plane.
+
+By inspecting the extreme excursions (large loops / lobes) of the trajectories:
+- Trajectory **A** repeatedly enters 5 distinct lobes positioned symmetrically around the origin at angles approximately $-24^\circ, +48^\circ, +120^\circ, +192^\circ (-168^\circ)$, and $-96^\circ$ (spacing of $\approx 72^\circ$, corresponding to $N = 5$).
+- Trajectories **B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T** similarly exhibit the same 5-lobe structure with rotational symmetry $N = 5$.
+- Trajectory **L**, by contrast, orbits around 10 distinct lobes located at angular positions spaced by approximately $36^\circ$ around the origin (e.g., at angles $\approx -168^\circ, -132^\circ, -97^\circ, -60^\circ, -26^\circ, +12^\circ, +48^\circ, +82^\circ, +118^\circ, +154^\circ$).
+
+Thus, trajectory **L** has $N = 10$, whereas all other 19 trajectories have $N = 5$.
+```
+
+```json
+{"outlier": "L"}
+```

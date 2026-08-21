@@ -109,7 +109,7 @@ def main(argv=None):
         results = {"model": args.model, "true_outlier": true_outlier}
 
         outlier, transcript = plain_outliers[i], plain_transcripts[i]
-        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        (outdir / f"transcript_plain_{args.model}.txt").write_text(transcript or "", encoding="utf-8")
         print(f"[plain] outlier: {outlier}\n")
         results["plain"] = outlier
         if true_outlier:

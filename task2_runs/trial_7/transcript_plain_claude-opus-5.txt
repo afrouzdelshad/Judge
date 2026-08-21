@@ -1,0 +1,39 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at times of large radius (the "lobe visits"), since lobes sit at fixed angular positions around the central axis.
+
+**Trajectories A–K, M–T:** all show radial maxima clustered at essentially the same five angles:
+
+≈ **+47°, +120°, −168°(192°), −96°, −24°**
+
+i.e. lobes spaced ~72° apart → **N = 5**. Examples:
+
+- A: −168° (t≈15.5) → 122° (t≈17.0) → 51° (t≈18.8) → −27° (t≈19.5) → −95° …
+- B: −93° → −167° → 120° → 48° → −26° …
+- S: 121° → 48° → −22° → −95° → −166° …
+- T: −23° → −95° → −167° → 120° → 50° …
+
+Each advances by ~72° per excursion, cycling through only 5 angular sectors.
+
+**Trajectory L** is different. Its large‑radius excursions occur at:
+
+| t | (x, y) | θ |
+|---|---|---|
+|0.1|(−25.4, −5.3)|−168°|
+|1.4|(−16.7, 8.0)|154°|
+|5.0|(−10.2, 18.2)|119°|
+|7.4|(3.4, 22.5)|82°|
+|20.3|(15.6, 16.7)|47°|
+|8.9 / 21.2|(22.7, 4.6)/(25.2, 5.2)|11°|
+|9.7|(21.6, −10.2)|−25°|
+|10.5|(11.9, −21.6)|−61°|
+|11.2|(−2.4, −21.1)|−97°|
+|12.2|(−17.2, −19.1)|−132°|
+
+The lobes are spaced ~**36°**, and the orbit marches monotonically through **ten** distinct sectors (11°, 47°, 82°, 119°, 154°, 192°, 228°, 263°, 299°, 335°) — confirmed again at late times (t ≈ 89 → 93 → 95: −98° → −133° → −169°). No other trajectory ever reaches the intermediate directions (11°, 82°, 154°, −61°, −132°) at large radius.
+
+So L has N = 10 while all others have N = 5.
+
+```json
+{"outlier": "L"}
+```

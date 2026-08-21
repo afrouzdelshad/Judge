@@ -1,0 +1,39 @@
+## Approach
+
+For each trajectory I computed the polar angle θ = atan2(y,x) at the peak of each large radial excursion. The excursion peaks land on a discrete set of directions that advance by a fixed increment Δθ each burst; the lobe count is N = 360°/Δθ.
+
+Examples:
+- **A**: peaks at ≈ +50°, −70°, +172° → Δθ = 120° → N = 3
+- **B**: peaks at 47°, 16°, −13°, −44°, −74°, −103°, … → Δθ ≈ 30° → N = 12
+- **T**: peaks at −5.8°, −22.7°, −39.6°, −56.9°, −74.5°, −91°, … → Δθ ≈ 17.1° → N = 21
+
+Full results (Δθ → N):
+
+| Traj | Δθ | N |
+|---|---|---|
+| O | 180° | 2 |
+| A | 120° | 3 |
+| J | 90° | 4 |
+| K | 72° | 5 |
+| L | 60° | 6 |
+| M | 51.8° | 7 |
+| S | 45° | 8 |
+| E | 40.1° | 9 |
+| N | 36.3° | 10 |
+| P | 32.8° | 11 |
+| B | 30.0° | 12 |
+| F | 27.7° | 13 |
+| G | 25.8° | 14 |
+| R | 24.1° | 15 |
+| Q | 22.5° | 16 |
+| I | 21.2° | 17 |
+| D | 20.0° | 18 |
+| H | 19.0° | 19 |
+| C | 18.0° | 20 |
+| T | 17.1° | 21 |
+
+The inferred values form a clean set 2–21, one per trajectory.
+
+```json
+{"order": ["O", "A", "J", "K", "L", "M", "S", "E", "N", "P", "B", "F", "G", "R", "Q", "I", "D", "H", "C", "T"]}
+```

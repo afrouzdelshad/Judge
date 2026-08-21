@@ -1,0 +1,37 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we examine the rotational symmetry and the angular distribution of the lobe peaks around the origin:
+
+1. For trajectory O, the lobe excursions occur at alternating angles of $\approx 55^\circ$ and $\approx -125^\circ$ (separated by $180^\circ$), corresponding to the fewest lobes ($N=2$).
+2. For trajectory T, successive lobe peaks advance by angular increments of $\approx 18^\circ$ ($360^\circ / 20$), corresponding to the system with the most lobes ($N=20$).
+3. The dynamical parameters vary monotonically across the 20 trajectories, which can be observed directly from the initial divergence rates (e.g., $x(t=0.1)$ or $x(t=0.2)$), perfectly ordering the trajectories from fewest to most lobes.
+
+Sorting the trajectories by ascending $N$ yields the sequence:
+O, A, J, K, L, M, S, E, N, P, B, F, G, R, Q, I, D, H, C, T.
+```
+
+```json
+{
+  "order": [
+    "O",
+    "A",
+    "J",
+    "K",
+    "L",
+    "M",
+    "S",
+    "E",
+    "N",
+    "P",
+    "B",
+    "F",
+    "G",
+    "R",
+    "Q",
+    "I",
+    "D",
+    "H",
+    "C",
+    "T"
+  ]
+}
+```

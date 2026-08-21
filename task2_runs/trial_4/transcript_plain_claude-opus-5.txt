@@ -1,0 +1,36 @@
+## Analysis Approach
+
+Since the lobes are arranged around a central axis, I looked at the **angular position** θ = atan2(y, x) at times of large radius. For an N‑lobed attractor, the trajectory should "park" (spiral with large amplitude) at N preferred angles spaced 360°/N apart, drifting from one lobe to the next.
+
+**Example — trajectory B:** large‑radius plateaus occur at θ ≈ −95°, −166°, +121°, +47°, −25°  → spacing ≈ 72° → **N = 5**.
+
+Checking all trajectories the same way:
+
+| Traj | Plateau angles (deg) | N |
+|---|---|---|
+| A | 335, 47, 119, 190, 262 | 5 |
+| B | 335, 47, 121, 194, 265 | 5 |
+| C | 335, 48, 120, 194, 262 | 5 |
+| D | 335, 48, 121, 194, 266 | 5 |
+| E | 335, 45, 119, 193, 265 | 5 |
+| F | 335, 51, 121, 192, 267 | 5 |
+| G | 335, 48, 119, 195, 264 | 5 |
+| H | 335, 46, 120, 191, 267 | 5 |
+| I | 335, 49, 118, 194, 265 | 5 |
+| J | 335, 46, 118, 193, 263 | 5 |
+| K | 335, 49, 119, 194, 260 | 5 |
+| **L** | **11, 47, 82, 119, 155, 191, 227, 264, 300, 335** | **10** |
+| M | 335, 47, 121, 191, 265 | 5 |
+| N | 335, 47, 120, 194, 262 | 5 |
+| O | 335, 49, 120, 192, 265 | 5 |
+| P | 335, 51, 121, 194, 264 | 5 |
+| Q | 335, 45, 120, 193, 263 | 5 |
+| R | 335, 46, 122, 191, 267 | 5 |
+| S | 335, 47, 121, 189, 263 | 5 |
+| T | 335, 45, 119, 192, 263 | 5 |
+
+Trajectory **L** shows sustained large‑amplitude spiraling (r ≈ 20–25) at angles spaced only ~36° apart (e.g. 155°, 119°, 82°, 44°, 12°, −24°, −60°, −96°, −131°, −169°), while every other trajectory only reaches large radius at five directions 72° apart (intermediate angles are traversed only at small radius during lobe transitions).
+
+```json
+{"outlier": "L"}
+```

@@ -1,0 +1,8 @@
+Looking at the angular positions θ = atan2(y,x) of the large‑radius excursions for each trajectory:
+
+- Almost every trajectory (A–K, M–T) makes its outer loops clustered near θ ≈ −25°, 47°, 119°, 191°, 263° — five lobes spaced 72° apart.
+- Trajectory **L**, however, additionally dwells for long stretches at θ ≈ 155° (e.g. t≈0.4–4.9, (−20,+10)), θ ≈ 83° (t≈6.5–7.4, (+3,+21)), θ ≈ 11° (t≈8.9, (+22.7,+4.6)), and θ ≈ −61° (t≈10.5, (+11.9,−21.6)), i.e. lobes spaced ~36° apart — twice as many lobes as the rest.
+
+```json
+{"outlier": "L"}
+```

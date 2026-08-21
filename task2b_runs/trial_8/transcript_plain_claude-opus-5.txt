@@ -1,0 +1,26 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the radial maxima (the "excursions"). In these systems the lobes sit at fixed angles forming a regular grid of spacing 360°/N, so the set of visited angles reveals N directly.
+
+**The dominant grid** (found in A, B, D, E, F, G, I, J, K, M, O, P, R, T) is:
+
+≈ {11°, 47°, 83°, 119°, 155°, −169°, −133°, −97°, −61°, −25°} → spacing 36° → **N = 10**
+
+These 14 trajectories all land repeatedly on exactly this lattice (e.g. A at t=23.5 → 10.8°, B at t=20.2 → 10.6°, T at t=18.4 → 11.3°, etc.).
+
+**Deviating trajectories:**
+
+| Traj | Sample lobe angles | Spacing | N |
+|---|---|---|---|
+| C | 165, 135, 105, 75, 45, 15, −15, −45, −75, −105, −135, −165 | 30° | 12 |
+| H | 151, 97, 47, −3, −55, −107, −158 | ≈51.4° | 7 |
+| L | 96, 80, 63, 46, 29, 11, −5, −22, −40, −58, −76, −92, … | ≈17.1° | ~21 |
+| N | 65, 46, 26, 6, −14, −34, −54, −74, −94, −115, … | ≈20° | 18 |
+| Q | 98, 73, 46, 20, −5, −31, −56, −83, −108, −135, −163, 175, 148, 122 | ≈25.7° | 14 |
+| S | ≈50, ≈−68, ≈172 only | 120° | 3 |
+
+Each of these visits angles that never fall on the 36° lattice (e.g. C at −44°, H at −4°, L at +29°, N at +6°, Q at +20°, S at −70°), and each returns to its starting angle after a different number of excursions.
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

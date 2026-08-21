@@ -1,0 +1,19 @@
+{
+  "model": "gemini-3.7-flash",
+  "true_outliers": [
+    "C",
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain": [
+    "H",
+    "L",
+    "N",
+    "Q",
+    "S"
+  ],
+  "plain_f1": 0.9090909090909091
+}

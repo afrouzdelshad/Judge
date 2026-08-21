@@ -1,0 +1,38 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the rotational symmetry and the equilibrium/focal points (lobes) around the central $z$-axis in the $(x, y)$ plane.
+
+1. **Dynamical Model & Geometry**:
+   The dynamical systems exhibit $\mathbb{Z}_N$ rotational symmetry around the origin. The focal centers (lobes) lie on a circle of radius $R \approx 12$ to $15$, with angular positions given by:
+   $$\theta_k = \theta_0 + k \cdot \frac{360^\circ}{N}, \quad k = 0, 1, \dots, N-1$$
+   where the angular step between adjacent lobes is $\Delta \theta = \frac{360^\circ}{N}$.
+
+2. **Trajectory-by-Trajectory Analysis**:
+   - **H, S ($N = 2$)**: Alternate between two lobes at $\approx 45^\circ$ and $\approx 225^\circ$ (standard 2-scroll Lorenz-type attractor). $\Delta \theta = 180^\circ \implies N = 2$.
+   - **M, O ($N = 6$)**: Visit lobes at angles spaced by $\Delta \theta \approx 60^\circ$ ($\approx 165^\circ, 105^\circ, 45^\circ, -15^\circ, -75^\circ, -135^\circ$). $\Delta \theta = 60^\circ \implies N = 6$.
+   - **C ($N = 7$)**: Visits lobes at angles spaced by $\Delta \theta \approx 51.4^\circ$ ($\approx 64.3^\circ, 12.9^\circ, -38.6^\circ, -90.0^\circ, -141.4^\circ, 167.1^\circ, 115.7^\circ$). $\Delta \theta = 51.43^\circ \implies N = 7$.
+   - **A, B, F, G, I, K, R ($N = 8$)**: Visit 8 distinct lobes at $0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ, -135^\circ, -90^\circ, -45^\circ$. $\Delta \theta = 45^\circ \implies N = 8$.
+   - **E, P, T ($N = 11$)**: Visit lobes with angular separation $\Delta \theta \approx 32.7^\circ$ ($\approx 8.2^\circ + k \cdot 32.73^\circ$). $\Delta \theta = 32.73^\circ \implies N = 11$.
+   - **D ($N = 14$)**: Visits lobes separated by $\Delta \theta \approx 25.7^\circ$. $\Delta \theta = 25.71^\circ \implies N = 14$.
+   - **J ($N = 16$)**: Visits lobes separated by $\Delta \theta \approx 22.5^\circ$. $\Delta \theta = 22.5^\circ \implies N = 16$.
+   - **L, N, Q ($N = 19$)**: Visit lobes separated by $\Delta \theta \approx 18.95^\circ$. $\Delta \theta = 18.95^\circ \implies N = 19$.
+
+3. **Grouping and Estimation**:
+   Ordering the groups by increasing $N$ (from least to most complex) yields 8 distinct groups ($X = 8$), with an average group size of $Y \approx 2$ to $3$ (mode $= 2$).
+```
+
+```json
+{
+  "groups": [
+    ["H", "S"],
+    ["M", "O"],
+    ["C"],
+    ["A", "B", "F", "G", "I", "K", "R"],
+    ["E", "P", "T"],
+    ["D"],
+    ["J"],
+    ["L", "N", "Q"]
+  ],
+  "X": 8,
+  "Y": 2
+}
+```

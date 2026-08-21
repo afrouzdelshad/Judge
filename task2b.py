@@ -115,7 +115,7 @@ def main(argv=None):
         results = {"model": args.model, "true_outliers": sorted(true_outliers) if true_outliers is not None else None}
 
         outliers, transcript = plain_outliers[i], plain_transcripts[i]
-        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        (outdir / f"transcript_plain_{args.model}.txt").write_text(transcript or "", encoding="utf-8")
         print(f"[plain] outliers: {outliers}\n")
         results["plain"] = outliers
         if outliers is not None and true_outliers is not None:

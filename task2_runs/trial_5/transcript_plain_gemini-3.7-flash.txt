@@ -1,0 +1,18 @@
+```reasoning
+To find the outlier, we analyze the geometry and symmetry of the lobes (regions of maximum radial excursion) in the $(x, y)$ plane for each trajectory:
+
+1. For the vast majority of trajectories (e.g., A, B, C, D, E, F, G, H, I, J, K, M, N, O, P, Q, R, S, T), the trajectory visits $N = 5$ distinct lobes distributed symmetrically around the central axis, with an angular separation of $\Delta \theta \approx 72^\circ$ ($360^\circ / 5$):
+   - Lobe 1: $\theta \approx -22^\circ$ (around $(22, -10)$)
+   - Lobe 2: $\theta \approx 50^\circ$ (around $(15, 18)$)
+   - Lobe 3: $\theta \approx 122^\circ$ (around $(-11, 20)$)
+   - Lobe 4: $\theta \approx 194^\circ$ (around $(-23, -5)$)
+   - Lobe 5: $\theta \approx 266^\circ$ (around $(-2, -22)$)
+
+2. Examining trajectory **L**, its peak excursions occur at angles separated by $\Delta \theta \approx 36^\circ$ (e.g., at $\approx -25^\circ, +11^\circ, +47^\circ, +82^\circ, +118^\circ, +154^\circ, +190^\circ, -132^\circ, -97^\circ, -61^\circ$), corresponding to $N = 10$ distinct lobes.
+
+Thus, trajectory **L** is the single outlier with a different number of lobes.
+```
+
+```json
+{"outlier": "L"}
+```

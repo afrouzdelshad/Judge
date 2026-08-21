@@ -1,0 +1,36 @@
+## Analysis Approach
+
+Each trajectory makes large radial excursions; measuring the polar angle θ = atan2(y,x) at each excursion maximum shows the excursions occur at **discrete, equally‑spaced angles**, stepping by a fixed Δθ each time. The lobe count is then N = 360°/Δθ.
+
+A useful cross‑check: only 5 distinct initial conditions appear, each used exactly once per group — so every group must contain exactly one of {A,D,I,L}, {B,J,K,S}, {C,E,G,H}, {F,O,P,Q}, {M,N,R,T}.
+
+**Measured angular steps between successive excursions:**
+
+| Traj | successive excursion angles (°) | Δθ | N |
+|---|---|---|---|
+| H | 140, 49, −41, −133 … | ≈ −90 | 4 |
+| I | 45, −41, −135, 141, 49 … | ≈ −90 | 4 |
+| M | −132, 138, 47, −40 … | ≈ −90 | 4 |
+| O | 138, 49, −41, −128 … | ≈ −90 | 4 |
+| S | 143, 46, −40, −133 … | ≈ −90 | 4 |
+| A | 45, 14, −19, −53, −85, −118 … | ≈ −32.7 | 11 |
+| B | 45, 14, −18, −50, −85, −116 … | ≈ −32.7 | 11 |
+| F | −148, 177, 145, 113, 80, 46 … | ≈ −32.7 | 11 |
+| G | −150, 177, 145, 113, 78, 47 … | ≈ −32.7 | 11 |
+| R | −51, −85, −117, −152, 179, 144 … | ≈ −33 | 11 |
+| D | 45, 24, 1, −22, −44, −66 … | ≈ −22.4 | 16 |
+| E | −157, −179, 158, 136, 113, 91 … | ≈ −22.4 | 16 |
+| K | 68, 45, 24, 1, −22, −44 … | ≈ −22.4 | 16 |
+| P | −155, −179, 159, 137, 113, 91 … | ≈ −22.4 | 16 |
+| T | −22, −44, −66, −88, −112, −134 … | ≈ −22.4 | 16 |
+| C | −152, −170, 172, 154, 135, 117 … | ≈ −18.2 | 20 |
+| J | 63, 46, 27, 10, −9, −27 … | ≈ −18.2 | 20 |
+| L | 45, 28, 10, −8, −26, −44 … | ≈ −18.2 | 20 |
+| N | −8, −26, −44, −62, −80, −98 … | ≈ −18.2 | 20 |
+| Q | −152, −170, 172, 154, 136, 118 … | ≈ −18.2 | 20 |
+
+Each group contains exactly one trajectory from each initial‑condition family — a strong consistency check.
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

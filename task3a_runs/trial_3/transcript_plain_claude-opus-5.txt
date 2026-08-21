@@ -1,0 +1,23 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y, x) at the outer (large‑radius) excursions — these are the lobe visits. In each trajectory the lobe angles fall on a discrete lattice with spacing ≈ 360°/N, so the angular step between successive lobe visits reveals N.
+
+**Examples:**
+
+- **A:** lobe angles ≈ 45°, 14°, −20°, −53°, −84°, −117°, −150°, 177°, 145°, 111°, 79° → step ≈ 33° → **N = 11**
+- **H:** lobe angles ≈ 140°, 48°, −41°, −131° → step ≈ 90° → **N = 4**
+- **D:** angles ≈ 45°, 23°, 1°, −22°, −44°, −66°, −89°, −111°, −134°, −156°, −179°, 159°, 136°, 113°, 92°, 68° → step ≈ 22.5° → **N = 16**
+- **C:** angles ≈ 46°, 28°, 9°, −8°, −27°, −44°, −62°, −81°, … , 172°, 154°, 117°, 100°, 82°, 64° → step ≈ 18° → **N = 20**
+
+**Group assignments:**
+
+| N | trajectories |
+|---|---|
+| 4 | H, I, M, O, S (four lobes ~90° apart) |
+| 11 | A, B, F, G, R (steps ~33°) |
+| 16 | D, E, K, P, T (steps ~22.5°) |
+| 20 | C, J, L, N, Q (steps ~18°) |
+
+```json
+{"groups": [["H", "I", "M", "O", "S"], ["A", "B", "F", "G", "R"], ["D", "E", "K", "P", "T"], ["C", "J", "L", "N", "Q"]]}
+```

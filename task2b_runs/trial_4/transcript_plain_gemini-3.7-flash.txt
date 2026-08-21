@@ -1,0 +1,32 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the angular positions $\theta = \arctan2(y, x)$ of the outer lobes (extrema of the radius $r = \sqrt{x^2 + y^2}$) as the trajectory orbits the central axis.
+
+For the dynamical system, the lobes are regularly spaced around the origin with angular separation $\Delta \theta = 360^\circ / N$:
+
+1. **A**: Outer peaks occur at angles $\approx 11^\circ, 47^\circ, 84^\circ, 119^\circ, 154^\circ, 190^\circ, 227^\circ, 262^\circ, 300^\circ, 335^\circ$ ($\Delta\theta \approx 36^\circ \implies N = 10$).
+2. **B**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+3. **C**: Outer peaks occur at angles separated by $\Delta\theta \approx 30^\circ$ ($16^\circ, 46^\circ, 76^\circ, 106^\circ, 136^\circ, 166^\circ, 196^\circ, 226^\circ, 256^\circ, 286^\circ, 316^\circ, 346^\circ \implies N = 12$).
+4. **D**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+5. **E**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+6. **F**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+7. **G**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+8. **H**: Peak angles separated by $\Delta\theta \approx 51.4^\circ$ ($N = 7$).
+9. **I**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+10. **J**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+11. **K**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+12. **L**: Peak angles separated by $\Delta\theta \approx 17.1^\circ\text{--}18^\circ$ ($N = 20\text{ or }21$).
+13. **M**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+14. **N**: Peak angles separated by $\Delta\theta \approx 20^\circ$ ($N = 18$).
+15. **O**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+16. **P**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+17. **Q**: Peak angles separated by $\Delta\theta \approx 25.7^\circ$ ($N = 14$).
+18. **R**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+19. **S**: Peak angles separated by $\Delta\theta \approx 120^\circ$ ($N = 3$).
+20. **T**: Peak angles spaced by $\approx 36^\circ$ ($N = 10$).
+
+The majority lobe count is $N = 10$ (shared by 14 trajectories). The trajectories with a differing number of lobes are C, H, L, N, Q, and S.
+```
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

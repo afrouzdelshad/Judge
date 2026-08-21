@@ -112,3 +112,33 @@ Structure your response as two fenced blocks, in this order: a ```reasoning bloc
 ```json
 {{"estimates": {{"<label>": <N>, "...": <N>}}}}
 ```"""
+
+
+# ---------------------------------------------------------------------------
+# Task 5: evaluate pairwise complexity/chaos claims about two trajectories
+# ---------------------------------------------------------------------------
+
+TASK5_PLAIN_PROMPT = """You are analyzing two trajectories, labeled A and B, from a dynamical system. Each trajectory orbits some number of distinct "lobes" around a central axis and may exhibit chaotic behavior to some degree; both properties are unknown and must be inferred from the raw (t, x, y) data.
+
+Complexity means the number of lobes a trajectory visits; chaos means its dynamical instability (sensitivity to initial conditions). The two properties are distinct and need not covary.
+
+Act as a scientific evaluator. Consider the following six candidate claims about the two trajectories:
+
+1. Series A is more complex than Series B.
+2. Series A is more chaotic than Series B.
+3. Series B is more complex than Series A.
+4. Series B is more chaotic than Series A.
+5. Series A and Series B are equally complex.
+6. Series A and Series B are equally chaotic.
+
+Select every claim that you consider supported by the data. Claims 1/3/5 are mutually exclusive with each other (exactly one should hold for complexity), and claims 2/4/6 are mutually exclusive with each other (exactly one should hold for chaos).
+
+Structure your response as two fenced blocks, in this order: a ```reasoning block containing your reasoning process, followed by a ```json block containing your final answer. Each block must appear exactly once, with the json block last. Do not restate the raw data in your response.
+
+```reasoning
+<your reasoning process>
+```
+
+```json
+{{"claims": [<claim number>, "..."]}}
+```"""

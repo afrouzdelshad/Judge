@@ -1,0 +1,138 @@
+{
+  "model": "claude-opus-5",
+  "variant": "b",
+  "scale": 10,
+  "trials": [
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    },
+    {
+      "model": "claude-opus-5",
+      "variant": "b",
+      "true_claims": [
+        3,
+        6
+      ],
+      "plain": [
+        3,
+        6
+      ],
+      "plain_f1": 1.0
+    }
+  ],
+  "plain_f1_mean": 1.0
+}

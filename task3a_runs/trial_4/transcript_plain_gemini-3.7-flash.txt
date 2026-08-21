@@ -1,0 +1,41 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the rotational symmetry and the angular positions $\theta = \text{atan2}(y, x)$ of the large-radius excursions (the outer lobes of the orbit).
+
+Each dynamical system was simulated from 5 different initial conditions at $t=0$:
+1. $(15.25, 15.4) \rightarrow \{A, D, I, L\}$
+2. $(0.5911, 22.52) \rightarrow \{B, J, K, S\}$
+3. $(-11.92, -10.08) \rightarrow \{C, E, G, H\}$
+4. $(-20.72, -13.16) \rightarrow \{F, O, P, Q\}$
+5. $(22.15, 0.5664) \rightarrow \{M, N, R, T\}$
+
+Analyzing the angular spacing $\Delta \theta$ between successive lobe orientations ($N = 360^\circ / \Delta \theta$):
+
+- **Group 1 ($N = 4$ lobes, $\Delta \theta = 90^\circ$):**
+  Orbits visit only the 4 principal quadrant angles ($\approx \pm 45^\circ, \pm 135^\circ$).
+  Trajectories: **H, I, M, O, S**
+
+- **Group 2 ($N = 10$ lobes, $\Delta \theta = 36^\circ$):**
+  Orbits exhibit lobes spaced by $36^\circ$ ($\approx 15^\circ, -21^\circ, -51^\circ, -85^\circ, -118^\circ, -150^\circ, 176^\circ, 145^\circ, 112^\circ, 78^\circ$).
+  Trajectories: **A, B, F, G, R**
+
+- **Group 3 ($N = 16$ lobes, $\Delta \theta = 22.5^\circ$):**
+  Orbits exhibit lobes spaced by $22.5^\circ$ ($\approx 0^\circ, \pm 22.5^\circ, \pm 45^\circ, \pm 67.5^\circ, \pm 90^\circ, \pm 112.5^\circ, \pm 135^\circ, \pm 157.5^\circ, 180^\circ$).
+  Trajectories: **D, E, K, P, T**
+
+- **Group 4 ($N = 20$ lobes, $\Delta \theta = 18^\circ$):**
+  Orbits exhibit lobes spaced by $18^\circ$ ($\approx \pm 9^\circ, \pm 27^\circ, \pm 45^\circ, \pm 63^\circ, \pm 81^\circ, \pm 99^\circ, \pm 117^\circ, \pm 135^\circ, \pm 153^\circ, \pm 171^\circ$).
+  Trajectories: **C, J, L, N, Q**
+
+Ordering the groups from least to most complex corresponds to increasing $N$ ($4 < 10 < 16 < 20$).
+```
+
+```json
+{
+  "groups": [
+    ["H", "I", "M", "O", "S"],
+    ["A", "B", "F", "G", "R"],
+    ["D", "E", "K", "P", "T"],
+    ["C", "J", "L", "N", "Q"]
+  ]
+}
+```

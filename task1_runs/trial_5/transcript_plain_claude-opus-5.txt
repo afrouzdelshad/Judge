@@ -1,0 +1,34 @@
+## Approach
+
+For each trajectory I extracted the angles θ = atan2(y, x) at the large‑radius excursions (the "lobe tips"). For an N‑lobe system these tips cluster on directions separated by 360°/N, so measuring the angular step between successive excursions gives N directly.
+
+Example results:
+
+| Traj | typical angular step | N |
+|---|---|---|
+| O | ~180° | 2 |
+| A | ~120° | 3 |
+| J | ~90° | 4 |
+| K | ~72° | 5 |
+| L | ~60° | 6 |
+| M | ~51° | 7 |
+| S | ~45° | 8 |
+| E | ~40° | 9 |
+| N | ~36° | 10 |
+| P | ~32.7° | 11 |
+| B | ~30° | 12 |
+| F | ~27.7° | 13 |
+| G | ~25.7° | 14 |
+| R | ~24° | 15 |
+| Q | ~22.5° | 16 |
+| I | ~21.2° | 17 |
+| D | ~20° | 18 |
+| H | ~19° | 19 |
+| C | ~18° | 20 |
+| T | ~17.1° | 21 |
+
+Nicely, the twenty trajectories fill N = 2 … 21.
+
+```json
+{"order": ["O", "A", "J", "K", "L", "M", "S", "E", "N", "P", "B", "F", "G", "R", "Q", "I", "D", "H", "C", "T"]}
+```

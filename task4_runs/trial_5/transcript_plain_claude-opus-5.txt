@@ -1,0 +1,17 @@
+## Analysis Approach
+
+For each trajectory I computed the polar angle θ = atan2(y,x) over time. In these systems the orbit "dwells" near a lobe (spiraling outward at a nearly fixed angular position) before hopping to the next lobe. The dwell angles form a set of equally spaced directions, and the angular step Δθ between successive lobes gives N = 360°/Δθ. I verified each by following a full 360° circuit and counting lobe visits.
+
+**Examples:**
+- **A**: dwell angles 180°, 135°, 90°, 45°, 0°, −45°, −90°, −135° → Δ = 45° → N = 8
+- **S**: only two dwell regions, centered near (−8.3, −8.5) and (+6, +7) — classic two‑lobe (Lorenz‑like) → N = 2
+- **G**: 48°, −12°, −72°, −132°, 168°, 108° → Δ = 60° → N = 6
+- **C**: 66°, 45°, 25°, 4°, −18°, … stepping ≈21.2° per lobe, 17 visits per full turn → N = 17
+- **L**: steps of ≈17.1°, 21 lobe visits from θ = 80° back to 80° → N = 21
+- **N**: steps of ≈18.9°, 19 visits per revolution → N = 19
+
+Counts verified over at least one complete revolution for each label.
+
+```json
+{"estimates": {"A": 8, "B": 5, "C": 17, "D": 14, "E": 11, "F": 7, "G": 6, "H": 3, "I": 5, "J": 16, "K": 10, "L": 21, "M": 4, "N": 19, "O": 3, "P": 11, "Q": 17, "R": 8, "S": 2, "T": 11}}
+```

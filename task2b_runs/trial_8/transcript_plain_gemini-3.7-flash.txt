@@ -1,0 +1,25 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial coordinates $(x(t), y(t))$ and compute the angular positions $\theta(t) = \text{atan2}(y(t), x(t))$ of the orbital centers (lobes) around the central axis $(0,0)$.
+
+For an $N$-lobed system with rotational symmetry around the origin, the lobes are located at angular intervals of $\Delta \theta = \frac{360^\circ}{N}$.
+
+By tracking the centers of circulation/spiraling for each of the 20 trajectories over the time interval $t \in [0, 100]$:
+
+- **Majority Trajectories ($N = 10$, $\Delta \theta \approx 36^\circ$):**
+  Trajectories **A, B, C, D, E, F, G, I, J, K, M, O, P, R, T** all exhibit 10 distinct lobes distributed at approximately:
+  $$\theta \in \{10^\circ, 46^\circ, 82^\circ, 118^\circ, 154^\circ, -170^\circ, -134^\circ, -98^\circ, -62^\circ, -26^\circ\}$$
+  with angular separation $\Delta \theta \approx 36^\circ$. Thus, the majority lobe count is $N = 10$.
+
+- **Outlier Trajectories ($N \neq 10$):**
+  1. **H**: Spirals around 7 lobes with angular separation $\Delta \theta \approx 51.4^\circ$ ($N = 7$).
+  2. **L**: Circulates through 21 distinct lobes with angular separation $\Delta \theta \approx 17.1^\circ$ ($N = 21$).
+  3. **N**: Circulates through 18 distinct lobes with angular separation $\Delta \theta \approx 20.0^\circ$ ($N = 18$).
+  4. **Q**: Circulates through 14 distinct lobes with angular separation $\Delta \theta \approx 25.7^\circ$ ($N = 14$).
+  5. **S**: Orbits 3 distinct lobes at approximately $\{45^\circ, -74^\circ, 167^\circ\}$ with angular separation $\Delta \theta \approx 120^\circ$ ($N = 3$).
+
+Therefore, the trajectories that differ from the majority are **H, L, N, Q, S**.
+```
+
+```json
+{"outliers": ["H", "L", "N", "Q", "S"]}
+```

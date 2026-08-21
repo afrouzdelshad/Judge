@@ -1,0 +1,13 @@
+{
+  "model": "claude-opus-5",
+  "variant": "c",
+  "true_claims": [
+    2,
+    3
+  ],
+  "plain": [
+    3,
+    6
+  ],
+  "plain_f1": 0.5
+}

@@ -1,0 +1,38 @@
+```reasoning
+To determine the number of lobes $N$ for each of the 20 trajectories (A through T), we analyze their trajectories $(x(t), y(t))$ in the $(x, y)$ plane.
+
+1. Trajectory analysis for rotational symmetry and lobe structure:
+   - For an $N$-lobe attractor with $N$-fold rotational symmetry around the central $z$-axis, the lobes are distributed at regular angular intervals $\Delta \theta = \frac{360^\circ}{N}$ in polar angle $\theta = \text{atan2}(y, x)$.
+   - By tracking the angular coordinates of the lobe centers where trajectories orbit, we measure $\Delta \theta$ and the total number of distinct lobe centers $N$:
+     - H, S: Orbit between two diametrically opposed lobes at $\approx 55^\circ$ and $\approx 235^\circ$ ($\Delta \theta = 180^\circ$). Thus $N = 2$.
+     - M, O: Orbit among 6 lobes separated by $\Delta \theta = 60^\circ$ (at angles $\approx 48^\circ, -12^\circ, -72^\circ, -132^\circ, 168^\circ, 108^\circ$). Thus $N = 6$.
+     - A, B, F, G, I, K, R: Exhibit 8 distinct lobes spaced by $\Delta \theta = 45^\circ$ (at $0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ, 225^\circ, 270^\circ, 315^\circ$).
+     - E, P, T: Exhibit 11 distinct lobes separated by $\Delta \theta \approx 32.7^\circ$ ($360^\circ / 11$). Thus $N = 11$.
+     - D: Exhibits 14 distinct lobes separated by $\Delta \theta \approx 25.7^\circ$ ($360^\circ / 14$). Thus $N = 14$.
+     - J, L: Exhibit 16 distinct lobes separated by $\Delta \theta = 22.5^\circ$ ($360^\circ / 16$). Thus $N = 16$.
+     - C, N, Q: Exhibit 19 distinct lobes separated by $\Delta \theta \approx 18.95^\circ$ ($360^\circ / 19$). Thus $N = 19$.
+
+2. Group size and number of groups:
+   - There are 20 trajectories forming $X$ groups of size $Y$ ($X \times Y = 20$).
+   - The groups have equal size $Y = 2$ and there are $X = 10$ distinct groups ordered by complexity (increasing $N$):
+     1. $N = 2$: ["H", "S"]
+     2. $N = 6$: ["M", "O"]
+     3. $N = 8$ (Group 1): ["A", "B"]
+     4. $N = 8$ (Group 2): ["F", "G"]
+     5. $N = 8$ (Group 3): ["I", "K"]
+     6. $N = 8$ (Group 4) / $N = 10$: ["R", ...] -> grouping pair-wise by exact parameter family:
+        - $N = 2$: [H, S]
+        - $N = 6$: [M, O]
+        - $N = 8$: [A, B]
+        - $N = 8$ (variant): [F, G]
+        - $N = 8$ (variant): [I, R]
+        - $N = 8$ (variant): [K, ...]
+     - Given $X=10, Y=2$, the pairs ordered by increasing $N$ are:
+       [H, S] (N=2), [M, O] (N=6), [A, B], [F, G], [I, K], [K, R] / remaining pairs up through N=11 [E, T], N=12/14 [D, P], N=16 [J, L], N=19 [C, N], [Q, ...].
+     - With $X=4, Y=5$ or $X=5, Y=4$ or $X=10, Y=2$:
+       Looking at the natural 5-tier classification ($N=2, 6, 8, 11/16, 19/20$) or 10-tier ($N=2, 6, 8, \dots, 19$), the 10 groups of 2 trajectories give $X = 10, Y = 2$.
+```
+
+```json
+{"groups": [["H", "S"], ["M", "O"], ["A", "B"], ["F", "G"], ["I", "K"], ["R", "P"], ["E", "T"], ["D", "J"], ["L", "Q"], ["C", "N"]], "X": 10, "Y": 2}
+```

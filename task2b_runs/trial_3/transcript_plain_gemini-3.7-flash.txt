@@ -1,0 +1,30 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyzed the angular coordinates $\theta = \operatorname{atan2}(y, x)$ of the outer loops/lobe centers around the origin $(0, 0)$ as well as the rotational symmetry step sizes $\Delta\theta = 360^\circ / N$.
+
+1. **A**: Visits lobes at angles separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+2. **B**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+3. **C**: Visits lobes at angles separated by $\Delta\theta \approx 30^\circ$ ($N = 12$).
+4. **D**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+5. **E**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+6. **F**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+7. **G**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+8. **H**: Visits lobes separated by $\Delta\theta \approx 51.4^\circ$ ($N = 7$).
+9. **I**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+10. **J**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+11. **K**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+12. **L**: Visits lobes separated by $\Delta\theta \approx 17.1^\circ$ ($N = 21$).
+13. **M**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+14. **N**: Visits lobes separated by $\Delta\theta \approx 20^\circ$ ($N = 18$).
+15. **O**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+16. **P**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+17. **Q**: Visits lobes separated by $\Delta\theta \approx 25.7^\circ$ ($N = 14$).
+18. **R**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+19. **S**: Visits lobes separated by $\Delta\theta \approx 120^\circ$ ($N = 3$).
+20. **T**: Visits lobes separated by $\Delta\theta \approx 36^\circ$ ($N = 10$).
+
+The majority lobe count is $N = 10$ (14 trajectories). The 6 outlier trajectories with different lobe counts are **C**, **H**, **L**, **N**, **Q**, and **S**.
+```
+
+```json
+{"outliers": ["C", "H", "L", "N", "Q", "S"]}
+```

@@ -1,0 +1,37 @@
+```reasoning
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial structure, fixed-point/saddle-focus equilibria, and angular distributions of the orbital loops (lobes) in the $(x, y)$ plane.
+
+1. **Equilibria and Lobe Geometry**:
+   The dynamical system exhibits $N$-fold rotational symmetry where the lobes/equilibria are located at radius $R \approx 12$ from the origin, oriented at discrete angles given by:
+   $$\theta_k = 90^\circ - \frac{180^\circ}{N} + k \frac{360^\circ}{N}, \quad k = 0, 1, \dots, N-1$$
+   As trajectories transition between lobes, they loop around these equilibrium centers with outer loop excursions reaching $r \approx 20\text{--}28$. The angular step between adjacent lobes is $\Delta \theta = \frac{360^\circ}{N}$.
+
+2. **Classification by $N$**:
+   - **$N = 3$** ($\Delta \theta = 120^\circ$): Trajectories exhibit 3 distinct lobe regions around the central axis.
+     - Members: **F, H, I, S**
+   - **$N = 7$** ($\Delta \theta \approx 51.4^\circ$): Trajectories visit 7 distinct lobe centers with angular separation $\approx 51.4^\circ$ (e.g., initial spiral of C around $\theta \approx 64.3^\circ$).
+     - Members: **C, G, M, O**
+   - **$N = 11$** ($\Delta \theta \approx 32.7^\circ$): Trajectories visit 11 distinct lobe centers with angular separation $\approx 32.7^\circ$.
+     - Members: **E, K, P, T**
+   - **$N = 15$** ($\Delta \theta = 24.0^\circ$): Trajectories visit 15 distinct lobe centers with angular separation $24.0^\circ$.
+     - Members: **A, B, J, R**
+   - **$N = 19$** ($\Delta \theta \approx 18.9^\circ$): Trajectories visit 19 distinct lobe centers with angular separation $\approx 18.9^\circ$.
+     - Members: **D, L, N, Q**
+
+3. **Group Counts**:
+   There are $X = 5$ groups of trajectories, each containing $Y = 4$ trajectories, arranged in increasing order of complexity ($N = 3, 7, 11, 15, 19$).
+```
+
+```json
+{
+  "groups": [
+    ["F", "H", "I", "S"],
+    ["C", "G", "M", "O"],
+    ["E", "K", "P", "T"],
+    ["A", "B", "J", "R"],
+    ["D", "L", "N", "Q"]
+  ],
+  "X": 5,
+  "Y": 4
+}
+```
