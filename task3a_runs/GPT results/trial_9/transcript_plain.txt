@@ -1,3 +1,7 @@
+```reasoning
+I compared trajectories using phase-plane geometry, angular/lobe occupancy, turning-rate statistics, radial excursions, and transient response from the shared initial-condition families. The labels naturally split into five initial-condition families of four; each final group must contain one member from each family. Within every family, the trajectories showed a consistent progression from simpler, slower geometry to denser, more rapidly turning geometry. Matching those complexity ranks across families produced four coherent groups. The middle two were separated using their longer-term turning density and recurrence patterns, not only their initial transients.
+```
+
 ```json
-{"groups":[["I","K","H","O","M"],["A","B","G","F","R"],["D","S","E","P","T"],["L","J","C","Q","N"]]}
+{"groups":[["L","K","G","P","N"],["D","B","C","Q","R"],["A","J","E","F","M"],["I","S","H","O","T"]]}
 ```

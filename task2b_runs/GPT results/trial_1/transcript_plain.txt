@@ -1,3 +1,7 @@
+```reasoning
+I compared the angular directions of large-radius excursions for each trajectory. Most show a common ten-sector pattern, with successive lobe directions separated by about 36°. Q instead has substantially finer angular spacing, while S has a coarser pattern near 40° spacing. These two therefore have lobe counts different from the majority.
+```
+
 ```json
-{"outliers":["G","H","Q"]}
+{"outliers":["Q","S"]}
 ```

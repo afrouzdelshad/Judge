@@ -1,8 +1,6 @@
 {
   "model": "gpt-5.6-sol",
   "true_outlier": "L",
-  "plain": "L",
-  "plain_correct": true,
-  "code": "L",
-  "code_correct": true
+  "plain": "O",
+  "plain_correct": false
 }

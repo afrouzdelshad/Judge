@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar form and compared its angular progression, radial peaks, and dominant lobe-related harmonic. Because each complexity level appears once for each of the five repeated initial-condition families, I also matched trajectories by their early angular response within those families. The resulting four sets show increasing angular/radial structure in the order reported below.
+```
+
 ```json
-{"groups":[["H","I","N","O","S"],["A","B","F","G","M"],["D","E","K","P","T"],["C","J","L","Q","R"]]}
+{"groups":[["G","K","L","N","Q"],["C","D","J","P","T"],["A","B","E","F","R"],["H","I","M","O","S"]]}
 ```

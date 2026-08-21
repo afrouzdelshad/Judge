@@ -1,3 +1,7 @@
+```reasoning
+I compared the angular locations of large-radius excursions in each \((x,y)\) trajectory. Nineteen trajectories repeatedly concentrate around five principal directions, separated by roughly \(72^\circ\), consistent with the same five-lobe geometry. Trajectory L instead exhibits persistent excursion directions spaced by about \(36^\circ\), indicating a different, higher lobe count. Thus L is the unique outlier.
+```
+
 ```json
 {"outlier":"L"}
 ```

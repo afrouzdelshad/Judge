@@ -1,3 +1,7 @@
+```reasoning
+I compared trajectories using phase-plane shape, angular turning behavior, radial excursions, and short-time evolution from the repeated initial-condition families. The labels split into five sets of four sharing identical starting coordinates; matching the dynamical fingerprints across those sets gives four consistent clusters. Ordering those clusters by increasing angular variation, lobe-switching rate, and phase-plane complexity yields the groups below.
+```
+
 ```json
-{"groups":[["B","C","L","N","P"],["D","E","F","J","T"],["A","G","K","Q","R"],["H","I","M","O","S"]]}
+{"groups":[["G","K","L","N","P"],["B","C","D","Q","R"],["A","E","F","J","M"],["H","I","O","S","T"]]}
 ```

@@ -1,3 +1,9 @@
+```reasoning
+I compared trajectories using polar coordinates, especially the angular locations of repeated large-radius excursions. Trajectories with the same lobe count exhibit the same characteristic angular spacing between occupied lobes, even from different initial conditions.
+
+Two initial conditions were close in angle, making several correspondences especially clear: C–F, E–R, G–Q, and H–P. Extending those signatures across the other initial conditions produced four consistent clusters. The H/P-type cluster has the widest angular spacing and therefore the fewest lobes; the E/R-type cluster has the narrowest spacing and the most lobes. The other two fall between them in the order shown.
+```
+
 ```json
-{"groups":[["B","G","L","M","P"],["C","D","K","N","Q"],["A","E","J","O","R"],["F","H","I","S","T"]]}
+{"groups":[["H","I","O","P","S"],["A","B","C","F","M"],["D","G","K","Q","T"],["E","J","L","N","R"]]}
 ```

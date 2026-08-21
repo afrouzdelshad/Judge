@@ -1,3 +1,7 @@
+```reasoning
+I compared the unwrapped polar angle of each trajectory across successive radial maxima. The angular advance per radial cycle follows approximately 360°/N, so larger advances indicate fewer lobes. This gives inferred lobe counts increasing consecutively from O through T: O≈2, A≈3, J≈4, K≈5, L≈6, M≈7, S≈8, E≈9, N≈10, P≈11, B≈12, F≈13, G≈14, R≈15, Q≈16, I≈17, D≈18, H≈19, C≈20, T≈21.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

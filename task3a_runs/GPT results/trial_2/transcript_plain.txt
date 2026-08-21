@@ -1,3 +1,7 @@
+```reasoning
+I compared trajectories using polar-angle evolution, radial turning points, recurrence cadence, and short-lag displacement statistics. The labels separate consistently into four five-member clusters, with each cluster showing a shared angular-turnover rate and comparable recurrence structure despite differing initial conditions. The first cluster has the slowest, simplest angular pattern; successive clusters show increasingly rapid turning, more frequent extrema, and more complex lobe visitation. The resulting complexity order is therefore G/K/L/N/P, then B/C/D/Q/R, then A/E/F/J/T, and finally H/I/M/O/S.
+```
+
 ```json
-{"groups":[["D","E","J","N","O"],["G","I","K","P","R"],["A","B","C","F","M"],["H","L","Q","S","T"]]}
+{"groups":[["G","K","L","N","P"],["B","C","D","Q","R"],["A","E","F","J","T"],["H","I","M","O","S"]]}
 ```

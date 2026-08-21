@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and compared its unwrapped angular displacement during the early, coherent portion of the motion, before later divergence obscured the shared structure. The displacement follows an inverse-integer progression: the strongest angular winding corresponds to the fewest lobes, while successively weaker winding identifies increasing lobe counts. This yields consecutive inferred counts from 2 through 21 and fixes the ordering below.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

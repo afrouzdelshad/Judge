@@ -1,0 +1,7 @@
+```reasoning
+I compared short-time growth, sustained amplitude, irregularity, and recurrence across the trajectories. The initial transient provides the clearest monotonic signature of the underlying control parameter: trajectories with weaker early growth remain associated with lower instability, while progressively stronger growth corresponds to increasing chaoticity. Longer-time fluctuations broadly support this ordering, with the highest-ranked trajectories showing stronger excursions and less regular recurrence.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

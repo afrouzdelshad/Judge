@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates, unwrapped its angular phase, and compared angular advance during the initial coherent portion before the trajectories became strongly irregular. The phase-drift ordering was stable across several early samples. Larger angular advance corresponded to fewer, broader lobes; smaller advance corresponded to more numerous, closely spaced lobes. Radial-return and turning-point statistics supported the same ordering.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

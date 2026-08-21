@@ -1,3 +1,7 @@
+```reasoning
+The repeated initial coordinates divide the data into five sets, each containing one trajectory from each unknown system. Within each set, I compared early finite-difference velocity, subsequent turning behavior, angular occupancy, and the number of distinct recurrent directional modes. Matching these signatures across the five initial-condition sets produces four consistent families. Their angular structure and transition complexity increase in the order shown below.
+```
+
 ```json
-{"groups":[["L","K","G","P","N"],["D","J","C","Q","M"],["A","B","E","F","T"],["I","S","H","O","R"]]}
+{"groups":[["A","G","K","N","P"],["B","C","D","Q","R"],["E","F","J","L","M"],["H","I","O","S","T"]]}
 ```

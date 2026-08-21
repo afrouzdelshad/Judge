@@ -1,3 +1,7 @@
+```reasoning
+I centered each trajectory robustly, converted the planar coordinates to polar form, and compared angular-density peaks, winding behavior, recurrence statistics, and low-order angular harmonics. The trajectories separate into five clusters of four. Within each cluster, phase and radial excursions differ, but the number and placement of persistent angular sectors agree. The clusters show successively about 2, 3, 4, 5, and 6 dominant lobe sectors, which determines the reported least-to-most-complex ordering.
+```
+
 ```json
-{"groups":[["R","S"],["C","E"],["I","J"],["D","O"],["H","K"],["B","M"],["G","N"],["F","L"],["P","Q"],["A","T"]],"X":10,"Y":2}
+{"groups":[["C","E","R","S"],["B","G","M","T"],["D","I","J","O"],["F","L","P","Q"],["A","H","K","N"]],"X":5,"Y":4}
 ```

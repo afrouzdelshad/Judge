@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and examined the angular distribution of its large-radius excursions, which correspond to visits to the outer lobes. Nineteen trajectories show five persistent angular clusters, approximately evenly spaced by 72°, indicating five lobes. Trajectory L instead shows about ten persistent sectors spaced by roughly 36°, including repeated excursions at angles lying between the five common sectors. This distinction remains visible across multiple cycles, making L the lobe-count outlier.
+```
+
 ```json
 {"outlier":"L"}
 ```

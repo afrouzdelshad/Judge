@@ -1,3 +1,7 @@
+```reasoning
+The trajectories share nearly identical radial oscillations early on, while their angular phases separate systematically. Unwrapping the polar angle shows a clear inverse progression: the fastest angular advance corresponds to the fewest lobes, while progressively slower angular motion allows more radial cycles—and therefore more distinct lobes—per revolution. Sorting by decreasing angular advance gives the ascending lobe-count order.
+```
+
 ```json
 {"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
 ```

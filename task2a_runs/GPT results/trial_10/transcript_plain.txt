@@ -1,3 +1,7 @@
+```reasoning
+I centered each trajectory, converted it to polar coordinates, unwrapped the angular phase, and compared the angular locations of significant radial maxima. Nineteen trajectories showed the same repeating number of radial sectors per full angular revolution, allowing for phase shifts and variable lobe amplitudes. Trajectory L consistently produced a different radial-peak count and corresponding angular spacing, making it the sole lobe-count outlier.
+```
+
 ```json
 {"outlier":"L"}
 ```

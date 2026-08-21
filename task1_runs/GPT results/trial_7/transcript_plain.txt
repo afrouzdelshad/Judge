@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates and compared unwrapped angular phase during the initial, highly regular portion of the data. The trajectories share essentially the same radial envelope there, while their angular phase advances at distinct rates. Ranking those phase-advance coefficients gives the inferred lobe-count ranking. The resulting ascending ranks are: T, C, H, D, I, Q, R, G, F, B, P, N, E, S, M, L, K, J, A, O.
+```
+
 ```json
-{"order":["O","A","J","K","L","M","S","E","N","P","B","F","G","R","Q","I","D","H","C","T"]}
+{"order":["T","C","H","D","I","Q","R","G","F","B","P","N","E","S","M","L","K","J","A","O"]}
 ```

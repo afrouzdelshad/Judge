@@ -1,0 +1,163 @@
+#!/usr/bin/env python3
+"""
+Task 1: order labeled trajectories in terms of chaos
+=========================================================
+
+Reads data (a "time" column, then one column per labeled
+trajectory holding "(x, y)" pairs) and asks an LLM to recover the
+ascending chaos order of the labels from a pasted table.
+
+Usage
+-----
+    python task1b.py --model claude-opus-4-8
+"""
+
+import argparse
+import csv
+import json
+import re
+from pathlib import Path
+
+from LLM_factory import chat_with_batch
+from prompt_tasks import TASK1B_PLAIN_PROMPT
+
+DATA_FILE = "task1b_data.csv"
+KEY_FILE = "task1b_key.csv"
+OUTDIR = "task1b_runs"
+
+
+def load_dataset(path):
+    """Read the CSV into (times, {label: [(x, y), ...]})."""
+    with open(path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    labels = rows[0][1:]
+    times = [float(row[0]) for row in rows[1:]]
+    columns = {label: [] for label in labels}
+    for row in rows[1:]:
+        for label, cell in zip(labels, row[1:]):
+            x, y = cell.strip("()").split(",")
+            columns[label].append((float(x), float(y)))
+    return times, columns
+
+
+def format_table(times, columns):
+    """Wide, quote-free text table of all labeled series for the 'plain' prompt."""
+    labels = sorted(columns)
+
+    header = "t," + ",".join(f"{lab}_x,{lab}_y" for lab in labels)
+    lines = [header]
+    for i in range(len(times)):
+        row = [f"{times[i]:.4g}"]
+        for lab in labels:
+            x, y = columns[lab][i]
+            row += [f"{x:.4g}", f"{y:.4g}"]
+        lines.append(",".join(row))
+    return "\n".join(lines)
+
+
+def load_key(path):
+    """Convert the ordered Label column into hidden numeric ranks."""
+    if not Path(path).exists():
+        return None
+
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        ordered_labels = [
+            row["Label"].strip()
+            for row in reader
+            if row.get("Label")
+        ]
+
+    return {
+        label: rank
+        for rank, label in enumerate(ordered_labels)
+    }
+
+
+def kendall_tau(order, true_n):
+    """Kendall's tau, rescaled to [0, 1], between a predicted order and the true N values (see README)."""
+    ranks = [true_n[lab] for lab in order]
+    n = len(ranks)
+    concordant = sum(ranks[i] < ranks[j] for i in range(n) for j in range(i + 1, n))
+    return concordant / (n * (n - 1) // 2)
+
+
+def extract_order(text):
+    """Return the "order" list from the last ```json block that has one."""
+    for block in reversed(re.findall(r"```json\s*\n(.*?)```", text, re.DOTALL)):
+        try:
+            data = json.loads(block)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(data, dict) and "order" in data:
+            return data["order"]
+    return None
+
+
+def run_plain_batch(model, labels, times, columns, n, use_batch=False):
+    """Same 'plain' prompt run n times via chat_with_batch (cache [+ batch] discount)."""
+    system_prompt = TASK1B_PLAIN_PROMPT.format(n=len(labels))
+    user_prompt = format_table(times, columns)
+    print(f"[plain] querying {model} x{n} ({'batched' if use_batch else 'realtime'}) ...")
+    replies = chat_with_batch(model, system_prompt, user_prompt, n=n, use_batch=use_batch)
+    orders = [extract_order(r) if r else None for r in replies]
+    return orders, replies
+
+
+def parse_args(argv=None):
+    p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("--data-file", default=DATA_FILE, dest="data_file")
+    p.add_argument("--key-file", default=KEY_FILE, dest="key_file")
+    p.add_argument("--model", default="claude-opus-4-8")
+    p.add_argument("--outdir", default=OUTDIR)
+    p.add_argument("--scale", type=int, default=1, help="repeat the run this many times")
+    p.add_argument("--batch", action="store_true",
+                    help="use the Anthropic Message Batches API for plain mode instead of concurrent realtime calls (50%% cheaper, but queues with no latency SLA)")
+    return p.parse_args(argv)
+
+
+def main(argv=None):
+    args = parse_args(argv)
+    times, columns = load_dataset(args.data_file)
+    labels = sorted(columns)
+    print(f"Loaded {len(labels)} labeled trajectories from {args.data_file}: {labels}\n")
+
+    true_rank = load_key(args.key_file)
+
+    base_outdir = Path(args.outdir)
+    scale = args.scale
+
+    plain_orders, plain_transcripts = run_plain_batch(
+        args.model, labels, times, columns, scale, use_batch=args.batch
+    )
+
+    trials = []
+    for i in range(scale):
+        if scale > 1:
+            print(f"=== trial {i + 1}/{scale} ===")
+        outdir = base_outdir / f"trial_{i + 1}" if scale > 1 else base_outdir
+        outdir.mkdir(parents=True, exist_ok=True)
+        results = {"model": args.model}
+
+        order, transcript = plain_orders[i], plain_transcripts[i]
+        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        results["plain"] = order
+        if order and true_rank:
+            results["plain_tau"] = kendall_tau(order, true_rank)
+        print(f"[plain] order: {order}  tau={results.get('plain_tau')}\n")
+
+        results_path = outdir / f"results_{args.model}.json"
+        results_path.write_text(json.dumps(results, indent=2), encoding="utf-8")
+        print(f"Results written to {results_path}")
+        trials.append(results)
+
+    if scale > 1:
+        summary_path = base_outdir / f"summary_{args.model}.json"
+        summary_path.write_text(
+            json.dumps({"model": args.model, "scale": scale, "trials": trials}, indent=2), encoding="utf-8"
+        )
+        print(f"Summary written to {summary_path}")
+
+
+if __name__ == "__main__":
+    main()

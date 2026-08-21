@@ -1,3 +1,7 @@
+```reasoning
+I separated the trajectories by their five shared initial-condition families, then compared rotation-sensitive features, especially the signed angular increment \(x_t y_{t+\Delta t}-y_t x_{t+\Delta t}\), along with radial behavior and recurring angular-sector occupancy. The same four dynamical signatures recur once in each initial-condition family, producing four groups of five. Ordering those signatures by the number and frequency of occupied angular sectors gives the groups below from lowest to highest lobe complexity.
+```
+
 ```json
-{"groups":[["I","S","H","O","M"],["A","B","G","F","R"],["D","J","E","P","T"],["L","K","C","Q","N"]]}
+{"groups":[["S","C","Q","L","T"],["K","E","F","D","N"],["J","G","P","A","R"],["B","H","O","I","M"]]}
 ```

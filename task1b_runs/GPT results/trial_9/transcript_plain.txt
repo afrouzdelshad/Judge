@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using short-time separation from the common initial state, then checked the ordering against longer-term irregularity, recurrence loss, and amplitude variability. The early divergence provides a particularly clean monotonic discriminator, while the later data broadly confirm increasing dynamical complexity.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

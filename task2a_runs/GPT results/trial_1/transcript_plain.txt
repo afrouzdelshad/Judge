@@ -1,3 +1,7 @@
+```reasoning
+I treated each trajectory as a planar curve, identified its large-radius excursions (lobe tips), and clustered their polar angles around the central region. Nineteen trajectories show five recurring angular sectors, with approximately fivefold spacing. Trajectory L instead shows six persistent tip sectors distributed around the full rotation, including distinct intermediate sectors not present in the five-lobed group. Thus L has the differing lobe count.
+```
+
 ```json
 {"outlier":"L"}
 ```

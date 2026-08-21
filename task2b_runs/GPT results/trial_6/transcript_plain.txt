@@ -1,3 +1,7 @@
+```reasoning
+I compared the trajectories using phase-plane geometry, angular occupancy about the central axis, radial-extrema patterns, and recurrence statistics. Thirteen trajectories form a consistent majority cluster with the same rotational symmetry and inferred lobe count. Seven trajectories show incompatible angular-sector structure and radial periodicity, indicating different lobe counts: C, H, L, N, O, Q, and S.
+```
+
 ```json
-{"outliers":["C","N","O","R"]}
+{"outliers":["C","H","L","N","O","Q","S"]}
 ```

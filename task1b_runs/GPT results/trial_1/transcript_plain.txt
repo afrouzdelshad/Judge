@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using short-time separation from the common initial state, local finite-difference variability, recurrence regularity, and the broadening of oscillatory behavior over later windows. The clearest ordering signal was the consistently increasing initial expansion rate; the longer-run irregularity and loss of recurrence broadly corroborated that ranking.
+```
+
+```json
+{"order":["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

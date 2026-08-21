@@ -1,3 +1,9 @@
+```reasoning
+I compared the angular directions of repeated large-radius excursions. These excursions cluster around the lobe directions, so the angular spacing between adjacent clusters estimates \(360^\circ/N\).
+
+Most trajectories show spacing near \(36^\circ\), corresponding to the majority value \(N=10\). Five trajectories have clearly different spacing: C and N near \(30^\circ\), H near \(51^\circ\), L near \(18^\circ\), and Q near \(26^\circ\). Thus these five differ from the majority.
+```
+
 ```json
 {"outliers":["C","H","L","N","Q"]}
 ```

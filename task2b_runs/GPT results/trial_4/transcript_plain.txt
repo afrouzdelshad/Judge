@@ -1,3 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates about its estimated center, unwrapped the angular phase, and compared the dominant angular harmonics and recurrence structure of radial maxima. Eighteen trajectories formed a consistent majority cluster in inferred lobe count. Trajectories N and O showed a different persistent angular/radial harmonic pattern, so two trajectories differ from the majority.
+```
+
 ```json
-{"outliers":["C","H","L","Q"]}
+{"outliers":["N","O"]}
 ```
