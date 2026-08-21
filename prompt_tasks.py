@@ -39,7 +39,7 @@ Structure your response as two fenced blocks, in this order: a ```reasoning bloc
 ```
 
 ```json
-{{"order": ["<lowest N>", "...", "<highest N>"]}}
+{{"order": ["<least chaotic>", "...", "<most chaotic>"]}}
 ```"""
 
 
