@@ -1,0 +1,25 @@
+```reasoning
+Approach: For each series I computed the polar angle θ = atan2(y,x) at the large-radius excursions (loop maxima) to identify the angular "lobes" the trajectory visits, and then examined the regularity of amplitudes, dwell counts per lobe, and full-rotation times to gauge dynamical instability.
+
+COMPLEXITY (number of lobes)
+
+Series A: the excursion maxima cluster tightly at angles ≈ 0°, 45°, 90°, 135°, 180°, 225°, 270°, 315° (e.g. (33.8, 1.4); (20.3, 22.9); (-0.8, 28.5); (-30.2, 27.3); (-38.1, -2.7); (-24.0, -28.4); (0.2, -25.7); (29.1, -27.5)). Eight well-separated angular directions, visited sequentially in a clockwise progression. → 8 lobes.
+
+Series B: the maxima cluster at ≈ 4°, 24°, 46°, 67°, 88°, 110°, 131°, 152°, 173°, 194°, 215°, 237°, 257°, 279°, 300°, 321°, 343°. The spacing is ~21.2°, i.e. 360/21.2 ≈ 17 distinct angular lobes, again traversed sequentially. → ~17 lobes.
+
+So B visits roughly twice as many lobes as A: Series B is more complex.
+
+CHAOS (instability / irregularity)
+
+- Peak radii: A ranges from ~25 to ~42 between successive excursions, with frequent near-origin collapses (e.g. (0.12, 1.58), (0.39, -0.80), (0.06, -0.06)) interleaved with very large spikes (39–43). B's peak radii are comparatively narrow, ~18–28, with more repeatable loop sizes within each lobe.
+- Full-rotation (all-lobe circuit) times: A gives ≈ 11.5, 10.3, 9.1, 9.0, 8.4, 15.4, 12.3 (spread factor ~1.8, large relative scatter). B gives ≈ 27.8, 31.8, 25.1 (spread factor ~1.27, i.e. much smaller relative scatter given its 17 lobes).
+- Dwell behavior: A's number of oscillations in a lobe and their amplitudes vary erratically (e.g. the +y lobe amplitudes 20.8, 21.8, 23.4, 28.5 with unpredictable exit), whereas B's dwells, though sometimes long (e.g. the extended near-+y episode), show smooth, nearly monotone amplitude drift — more regular/near-quasiperiodic behavior.
+
+Overall A shows larger relative amplitude scatter, more erratic escape/dwell statistics, and more variable circuit times → Series A is more chaotic.
+
+Conclusion: complexity favors B (claim 3); chaos favors A (claim 2).
+```
+
+```json
+{"claims": [3, 2]}
+```

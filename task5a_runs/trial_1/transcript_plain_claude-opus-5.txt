@@ -1,0 +1,37 @@
+```reasoning
+Both series are clearly of the same family: a rotating multi-lobe (multi-scroll) system in which the trajectory spirals outward within one lobe and then jumps to the neighboring lobe.
+
+Lobe identification (using the direction of the (x,y) excursion at each local maximum radius):
+
+Series A shows excursions along eight distinct directions:
+- (+x, y≈0): e.g. ~ (22.7, 0.5), (24.3, 0.9)
+- (+x, +y): (16.9, 18.6), (13.3, 14.6)
+- (x≈0, +y): (-0.5, 25.2), (0.1, 22.6)
+- (−x, +y): (−13, +13), (−16.9, 15.3)
+- (−x, y≈0): (−27.0, −1.4), (−22.1, −1.3)
+- (−x, −y): (−12.5, −12.8), (−15.1, −16.1)
+- (x≈0, −y): (1.2, −25.3), (0.8, −24.5)
+- (+x, −y): (15.6, −15.5), (14.1, −13.5)
+So A visits 8 lobes, traversed in a fixed cyclic order with a variable number of loops per lobe.
+
+Series B shows exactly the same eight directions:
+(31.6, 2.0), (22.0, 25.9), (−1.7, 36.2), (−25.6, 23.8), (−41.7, −1.6), (−22.7, −24.2), (3.0, −43.7), (24.8, −21.3).
+So B also visits 8 lobes, in the same cyclic order.
+
+⇒ Complexity (number of lobes) is the same: 8 vs 8.
+
+Chaos assessment:
+1. Within-lobe expansion rate. In A, successive loop amplitudes in a lobe grow very slowly (e.g. t≈73–77: radii 12.4, 12.4, 13.3, 12.5, 13.1, 13.8, 14.2, 16.9 ⇒ ~5% per loop, loop period ≈0.68 ⇒ λ ≈ 0.07/time). In B the corresponding growth is faster (e.g. t≈93–95.5 and t≈97–99.6: radii grow ~10% per loop with loop period ≈0.5 ⇒ λ ≈ 0.2/time).
+
+2. Near-recurrence divergence. A almost repeats itself between t≈80.2 and t≈90.2 (initial separation ≈0.14); the two passes stay close for ~5 time units before their lobe-residence counts differ (growth factor ~15 over 5 units, λ ≈ 0.5). B has a comparable near-recurrence (t≈0.6 vs t≈88.8, separation ≈0.18) but the two passes separate markedly within ~3–4 time units, ending with very different escape amplitudes (−28 vs −44), implying λ ≈ 1.
+
+3. Escape-amplitude variability. A's peak excursions cluster around 20–28 in magnitude; B's range from ~20 to ~44 and vary erratically from one lobe exit to the next, indicating a broader, less predictable return map.
+
+4. Lobe residence times are irregular in both, but B additionally switches lobes with more variable, shorter dwell sequences and larger amplitude scatter.
+
+Conclusion: equal complexity (both 8-lobe), with B showing a larger local expansion rate and faster divergence of near-recurrent states ⇒ B is more chaotic.
+```
+
+```json
+{"claims": [5, 4]}
+```

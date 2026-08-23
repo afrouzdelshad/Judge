@@ -1,0 +1,25 @@
+```reasoning
+**Step 1 – Geometry / lobe structure.**
+Converting each sample to a polar angle θ = atan2(y,x) and looking at the large-amplitude excursions:
+
+- Series A: peaks cluster tightly around θ ≈ +45°, 0°, −45°, −90°, −135°, 180°, +135°, +90° (e.g. (14.7,16.5); (22.7,0.54); (21.0,−19.1); (0.5,−17.8); (−14.3,−15.5); (−24.6,−1.3); (−15.6,14.3); (−0.5,23.1)).
+- Series B: exactly the same eight directions appear (e.g. (28.2,30.2); (19.2,0.43); (20.4,−17.8); (2.3,−28.1); (−17.5,−18.9); (−38.9,−2.6); (−16.2,15.1); (−0.9,22.4)).
+
+Both trajectories therefore live on an eight-lobe (45°-spaced) rotationally symmetric attractor, and both visit **all eight** lobes repeatedly during the 100-unit record. In both cases the lobe index advances monotonically in one direction around the ring, with a chaotic number of loops spent in each lobe. ⇒ Same number of lobes ⇒ equal complexity.
+
+**Step 2 – Chaos indicators.**
+
+(a) *Local expansion rate.* Inside a lobe the orbit spirals outward. In A a typical lobe residence gives amplitude sequences like 18.1 → 17.8 → 19.0 → 20.2 → 21.1 → 26.2 with a loop period ≈ 0.7–0.8, i.e. growth factor ≈1.07/loop ⇒ λ ≈ 0.10. In B a comparable sequence is 19.3 → 20.2 → 20.6 → 22.5 → 24.9 → 29.9 with a loop period ≈ 0.5 ⇒ growth ≈1.09/loop ⇒ λ ≈ 0.17. B stretches faster per unit time.
+
+(b) *Switching statistics (symbolic entropy rate).* Counting loops per lobe visit: A has ≈58 lobe transitions in 100 time units (mean dwell 2.3 loops, distribution entropy ≈1.44 nats), giving ≈0.84 nats per unit time. B has ≈72 transitions (mean dwell 2.2 loops, entropy ≈1.47 nats), giving ≈1.06 nats per unit time. B produces symbolic uncertainty faster.
+
+(c) *Amplitude irregularity.* B's excursion magnitudes range from ~19 to ~44 with strongly irregular jumps; A's stay in a narrower ~17–29 band, and A spends long stretches (up to 8 nearly self-similar loops) in a single lobe, i.e. behaves more like a slowly expanding near-periodic spiral before switching.
+
+All three indicators point the same way: identical lobe count, but faster stretching and faster, more irregular lobe switching in B.
+
+**Conclusion:** equal complexity (8 lobes each); Series B is the more chaotic.
+```
+
+```json
+{"claims": [5, 4]}
+```

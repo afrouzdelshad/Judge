@@ -1,0 +1,36 @@
+```reasoning
+**Step 1 — Recover the geometry (lobe structure).**
+For each series I computed the polar angle θ = atan2(y,x) at the successive amplitude maxima (the "bursts"), since these systems clearly consist of a spiralling oscillation whose orientation in the x–y plane jumps discretely from one preferred direction (lobe) to the next.
+
+Series A: the burst angles cluster tightly at
+≈ −135°, 180°, 135°, 90°, 45°, 0°, −45°, −90°, then back to −135°.
+That is a ring of **8 lobes**, spaced 45° apart, traversed monotonically in one rotational sense (e.g. t≈0–2.8 at 225°, t≈3–3.9 at 180°, t≈4.5 at 135°, t≈4.7–7 at 90°, t≈7.2–8.5 at 45°, t≈9 at 0°, t≈9.6–10.4 at −45°, t≈10.7–13.2 at −90°, then 225° again at t≈13.7). A full circuit takes ~13–14 time units.
+
+Series B: the burst angles cluster at
+≈ 46°, 25°, 4°, −17°, −39°, −59°, −81°, −103°, −123°, −145°, −166°, 173°, 152°, 131°, 110°, 88°, 67°, back to 46°.
+Spacing ≈ 21°, i.e. **≈17 lobes**, again traversed monotonically; a full circuit takes ~26 time units (t≈0.4 at 45° → t≈26.9 back at 46°).
+
+⇒ B visits roughly twice as many distinct lobes as A: **B is more complex.**
+
+**Step 2 — Assess chaos (instability / unpredictability).**
+Both series show the same qualitative mechanism: within a lobe the amplitude grows oscillation by oscillation until a threshold is exceeded, then the state hops to the next lobe. The relevant proxies are (a) the local expansion rate of the spiral and (b) the irregularity of the residence times/peak amplitudes.
+
+(a) Local expansion rate (ln of amplitude growth per unit time within a lobe):
+- A, lobe 225° (t=0.2–2.8): r ≈ 13.9→24.7 ⇒ λ ≈ 0.22
+- A, lobe 180° (t=22.8–24.8): 20.1→30.5 ⇒ λ ≈ 0.21
+- A, lobe −45° (t=37–39.2): 20.9→36.7 ⇒ λ ≈ 0.26
+- B, lobe −17° (t=2.8–6.4): 17.7→24.6 ⇒ λ ≈ 0.09
+- B, lobe 110° (t=21.8–24.6): 17.6→23.7 ⇒ λ ≈ 0.11
+- B, lobe 88° (t=50–57.3): 15.6→22.9 ⇒ λ ≈ 0.05
+A's divergence rate is consistently ~2–4× B's, and A's oscillation period (~0.5) is shorter than B's (~0.7–0.8), so A explores/amplifies perturbations faster.
+
+(b) Burst-amplitude spread: A's peak radii range wildly (~20 to ~41: 24.7, 36.9, 40.8, 33.8, 40.0, 38.2, 41, 36.4, …), whereas B's peaks are comparatively regular (~18–28). A's lobe-residence counts also swing more erratically between long dwells (5–6 oscillations) and immediate single-pass transits, with no stabilising pattern; B does show variable dwell times too (including long, slowly-growing dwells of 7–10 oscillations), but its within-lobe motion is much closer to a slow, near-marginal spiral.
+
+⇒ **A is the more chaotic series**, despite having fewer lobes — illustrating that complexity and chaos need not covary.
+
+**Conclusion:** complexity: B > A (claim 3); chaos: A > B (claim 2).
+```
+
+```json
+{"claims": [2, 3]}
+```

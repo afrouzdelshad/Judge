@@ -1,0 +1,35 @@
+```reasoning
+**Geometry / lobe structure**
+
+I converted each series to polar angle θ = atan2(y,x) and tracked which angular sector the trajectory oscillates in.
+
+Series A settles, in turn, into oscillations centered at approximately:
+0°, −45°, −90°, −135°, 180°, +135°, +90°, +45°, back to 0° …
+i.e. sectors spaced ~45° apart → **8 distinct lobes**, and the trajectory marches monotonically (one lobe at a time) around the axis, completing a full revolution roughly every 9–10 time units (~10–11 revolutions in the record).
+
+Series B settles into sectors at approximately:
++25°, +4°, −17°, −38°, −59°, −80°, −101°, −122°, −144°, −166°, +173°, +152°, +131°, +110°, +89°, +67°, +46°, +25° …
+Spacing ~21° → 360/21 ≈ **17 distinct lobes**, again traversed one at a time, with a full revolution taking ~15–27 time units.
+
+So B visits roughly twice as many lobes as A → B is structurally more complex.
+
+**Local instability / chaos**
+
+Both series show the same qualitative mechanism: inside each lobe the orbit spirals outward with a fixed oscillation period, then is ejected to the next lobe. The unstable spiral growth rate is the natural proxy for the largest Lyapunov exponent.
+
+Measuring successive peak-to-trough amplitudes inside several lobes:
+- A (t≈0.4–3.1, 10.4–12.2, 26–28.5, 88.5–91.3): amplitude ratios per oscillation ≈ 1.17–1.46, geometric mean ≈ 1.32–1.37 per ~0.5 time units → λ ≈ 0.55–0.6.
+- B (t≈0.4–3.1, 76–78.5, 80.7–82.6): ratios ≈ 1.23–1.47, geometric mean ≈ 1.31–1.35 per ~0.5 time units → λ ≈ 0.55–0.6.
+
+Oscillation periods are essentially identical (~0.5) in both, and the ejection amplitudes are comparable (A ~30–40; B ~29–41).
+
+Both also show strongly irregular, unpredictable dwell times: A's number of oscillations in the "0°" lobe on successive revolutions is 6,5,2,2,3,4,2,2,1,6,6; B likewise alternates between long revolutions (~26 t.u., many oscillations per lobe) and fast ones (~15 t.u., 1 oscillation per lobe). Neither shows any periodic pattern or lobe-skipping asymmetry; the sequencing is deterministic (always advancing one lobe) while the dwell is chaotic in both.
+
+Since the local expansion rates, oscillation frequencies, and dwell-time irregularity are statistically indistinguishable, there is no evidence that one is more chaotic; the difference between them lies purely in the rotational symmetry order (number of lobes).
+
+**Conclusion:** B is more complex (17 lobes vs 8); the two are comparably chaotic.
+```
+
+```json
+{"claims": [3, 6]}
+```

@@ -1,0 +1,19 @@
+```reasoning
+Both series are best understood in polar terms: each burst of oscillation occurs along a fixed direction in the (x,y) plane, and after a variable number of oscillations the direction jumps (always in the same rotational sense) to the next angular sector. So "lobes" = distinct angular sectors visited.
+
+Series A — reading off the (x,y) values at burst maxima gives directions clustered at roughly 225°, 180°, 135°, 90°, 45°, 0°, −45°, −90° (e.g. (−14,−14), (−30,−1), (−30,+27), (0,+30), (+20,+22), (+34,+1), (+29,−28), (+2,−29)). The angular step between successive lobes is ~45°, and the sequence repeats over the run. That is 8 distinct lobes.
+
+Series B — burst maxima give directions at ~46°, 24°, 4°, −18°, −39°, −59°, −81°, −103°, −123°, −144°, −166°, 173°, 152°, 131°, 110°, 88°, 67°, back to 46°. The step is ~22°, i.e. 16 distinct lobes covering the full circle. So B visits twice as many lobes as A → B is more complex.
+
+Chaos: both show irregular, non-repeating residence times in each lobe (A: 4,2,1,5,3,1,2,6,1,1,4,3,1,3,1,2,1,5…; B: 1,1,1,6,2,1,2,1,1,2,2,4,2,2,5,…), so both are chaotic rather than periodic. To compare instability, examine the local expansion inside each lobe (successive peak amplitudes) and the oscillation timescale:
+- A: peaks grow rapidly within a lobe (e.g. 13.9→15.1→19.1→24.7; 22.8→29.6), ratios ~1.1–1.3 per cycle, with a cycle time of ~0.5–0.6. This gives a per-unit-time expansion of order 0.3–0.4.
+- B: peaks grow slowly (e.g. 17.7→18.5→18.1→19.1→21.5→24.6), ratios ~1.05 per cycle, with a longer cycle time ~0.75–0.8, giving an expansion rate of order 0.08–0.1.
+
+A also shows far larger spread of peak amplitudes (≈14 to 39) and abrupt, large excursions, whereas B's peaks stay in a narrow band (~16–28) and B often lingers many cycles in one lobe with nearly reproducible amplitudes (e.g. t≈50–57), indicating weaker local divergence. Hence A is the more chaotic (larger effective Lyapunov exponent) despite having fewer lobes — complexity and chaos dissociate here.
+
+Conclusion: B more complex (claim 3); A more chaotic (claim 2).
+```
+
+```json
+{"claims": [3, 2]}
+```

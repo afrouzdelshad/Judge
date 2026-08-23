@@ -1,0 +1,17 @@
+```reasoning
+Both series are given as (x,y) projections. Converting to polar coordinates reveals the structure clearly.
+
+**Series A angular behavior:** The trajectory dwells at discrete angular positions and steps between them in a fixed direction. Sampled headings: ~0° (t≈0.4–3.1), −45° (3.3–3.8), −90° (4.0–4.3), −135° (4.4–5.3), 180° (5.5–5.9), +135° (6.0–7.5), +90° (8.2–9.6), +45° (10.0–10.2), then back to 0° (10.3–12.2), and the cycle repeats (0° again near t≈19, 29, 51, 88…). The angular step is a clean 45°, giving 360/45 = **8 lobes**, with a full revolution taking ≈9.4 time units.
+
+**Series B angular behavior:** The same kind of stepping, but with a much smaller angular increment: ~25°, 4°, −17°, −38°, −59°, −81°, −102°, −122°, −144°, −166°, 173°, 152°, 131°, 110°, 89°, 66°, 45°, and back to ~25° at t≈22.3. The step is ≈21.2°, i.e. 360/21.2 ≈ **17 lobes**, with a full revolution of ≈21.3 time units. This persists throughout the record (checked again around t≈88–98).
+
+So B visits roughly twice as many distinct lobes as A → B is more complex.
+
+**Chaos comparison:** In both series the radial coordinate r = √(x²+y²) shows the same behavior: an oscillation spiraling outward from an unstable focus within a lobe, followed by an escape to the neighboring lobe, with irregular (chaotic) dwell times. Early on, the two are essentially identical up to a rotation and a constant scale factor: at t=3.5 r_A = r_B = 12.34; at t=8 r_A = r_B = 38.7; the within-lobe peak sequences (A: 19.2, 20.1, 20.4, 22.3, 23.3, 24.2, 31.6; B: 17.5, 18.4, 18.5, 20.3, 21.1, 22.1, 28.6) differ only by a ~1.1 scale factor, so the per-oscillation amplification (local instability) is the same. Escape/switch events occur at essentially the same times, so the switching statistics also match. Mean dwell per lobe is comparable (≈1.17 for A vs ≈1.25 for B). Both eventually decorrelate from each other (around t≈17), confirming both are chaotic, but there is no evidence that one has a larger divergence rate than the other.
+
+Conclusion: B is more complex (17 lobes vs 8), while the two are equally chaotic.
+```
+
+```json
+{"claims": [3, 6]}
+```

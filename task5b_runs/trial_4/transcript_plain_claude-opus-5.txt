@@ -1,0 +1,25 @@
+```reasoning
+**Setup.** Both series show the same qualitative motion: fast oscillatory "bursts" of growing amplitude that build up in one angular sector, then get ejected into a neighboring sector. Characterizing each burst by the polar angle θ = atan2(y, x) of its peak reveals where the lobes sit.
+
+**Series A – lobe structure.**
+Peak angles across the record cluster tightly at ≈ 45°, 0°, −43°, −86°, −132°, 180°, +137°, +92°, then back to 45°. That is 8 clusters separated by ~45°, and the same 8 angles recur repeatedly over the full 100 time units (e.g. the 180° lobe at t≈5.9, 15.4, 21.6–23.9, 34.9, 45.7, 56.6, 69.5, 96.8; the 92° lobe at t≈8.4–9.5, 17.4, 25.7, 37.0, 49.1, 57.8, 70.6, 77.6...). → **8 lobes**.
+
+**Series B – lobe structure.**
+Peak angles cluster at ≈ 4°, −17°, −38°, −59°, −80°, −102°, −123°, −145°, −165°, +173°, +152°, +131°, +110°, +89°, +68°, +47°, +26°, back to 4°. Successive clusters are separated by ~21°, giving 17 distinct angular lobes, each of which is revisited many times (e.g. the −81° lobe at t≈6.3–8.0, 29.5–31.7, 54.8, 69.4, 89–91; the +89° lobe at t≈17.1, 43.9–45.4, 62.4, 76–79). → **~17 lobes**.
+
+So B explores roughly twice as many distinct lobes as A: B is clearly more complex.
+
+**Chaos comparison.** In both series the motion within a lobe is an unstable spiral: the oscillation amplitude grows geometrically until ejection, and the peak amplitudes and residence times (number of oscillations before ejection) are irregular and non-repeating in both. Quantifying the local expansion rate:
+- A, t≈0.4–3.1: deviations of successive minima grow 3.0→4.3→5.9→8.1→11.5 (ratio ≈1.4 per ~0.5 t) → λ ≈ 0.65.
+- B, same interval: 2.5→3.7→5.1→7.2→10.2 (ratio ≈1.4) → λ ≈ 0.65.
+- A, t≈80.4–82.6: 5.0→6.6→8.9→12.8 (ratio ≈1.37) → λ ≈ 0.63.
+- B, t≈80.2–82.6: 4.4→5.9→8.2→11.4 (ratio ≈1.37) → λ ≈ 0.63.
+
+The exponential stretching rates are essentially identical, and the residence-time statistics (bursts of 2–6 oscillations, occasional long stays of 5–8) are comparable in both. The lobe *ordering* is regular in both (each ejection advances by one fixed angular step), so the irregularity resides purely in amplitudes/residence times, which behave equivalently.
+
+**Conclusion.** B is more complex (17 lobes vs 8); the two are essentially equally chaotic (same local divergence rate, same irregularity of burst amplitudes and dwell times). The extra lobes in B come from a finer rotational symmetry, not from stronger instability — complexity and chaos are decoupled here.
+```
+
+```json
+{"claims": [3, 6]}
+```

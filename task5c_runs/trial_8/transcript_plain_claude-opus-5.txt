@@ -1,0 +1,21 @@
+```reasoning
+**Method.** For each series I converted (x,y) into polar form and tracked the angular position θ = atan2(y,x) over time, plus the radial amplitude of successive oscillation peaks.
+
+**Structure of A.** A oscillates rapidly (period ≈ 0.5) about a direction that stays fixed for a while and then jumps. The angular "dwell" directions cluster tightly at ≈ 228°, 180°, 138°, 90°, 48°, 0°, −43°, −88° — i.e. eight sectors spaced ~45° apart, traversed monotonically. Examples: (−19,−20)@2.2 → (−29.6,−0.9)@3.8 → (−30,27)@4.5 → (−0.1,22)@5.4 → (20,23)@8.5 → (34,1.4)@9.1 → (29,−27.5)@10.4 → (2,−29)@13.2 → back to (−17,−19)@13.7. So A visits **8 distinct lobes**, one full precession every ~9–13 time units.
+
+**Structure of B.** B does the same thing but with much finer angular quantization: dwell directions at ≈ 46°, 25°, 4°, −17°, −39°, −60°, −81°, −103°, −123°, −144°, −166°, 173°, 152°, 131°, 110°, 88°, 67° — steps of ~21°, i.e. roughly **16–17 distinct lobes** per full precession (period ~25–32 time units). Each of these sectors is genuinely dwelled in (several oscillations before hopping), not merely passed through.
+
+⇒ On lobe count, B is clearly the more complex trajectory.
+
+**Instability / chaos.** Within each lobe both systems spiral outward until they escape, so the per-lobe amplitude growth rate is a good proxy for the local expansion (Lyapunov) rate.
+- A: peak radii 19.9→36.9 over 2.6 t (λ≈0.24); 20.8→33.7 over 2.1 t (λ≈0.23); 22.8→29.6 over 0.55 t (λ≈0.48); 22.6→30.6 over 1.0 t (λ≈0.30); 19.3→29.3 over 2.5 t (λ≈0.17). Typical λ ≈ 0.25–0.3.
+- B: 17.8→24.6 over 3.6 t (λ≈0.09); 18.5→25.2 over 2.3 t (λ≈0.13); 16.9→23.7 over 2.9 t (λ≈0.12); 15.6→22.9 over 7.5 t (λ≈0.05); occasional faster episodes (~0.2). Typical λ ≈ 0.10–0.15.
+
+A's escape from each lobe is thus roughly twice as fast, and A shows much larger episode-to-episode irregularity: its precession period fluctuates between ~5.3 and ~13.7 (≈25–30 % scatter) and its burst amplitudes swing from r≈0.09 (near-origin saddle passage) to r≈39, whereas B's precession period is comparatively steady (25–32) and its peak amplitudes stay in a narrower band (~15–28) with long, slowly growing dwells.
+
+⇒ A is the more chaotic (more unstable, less predictable) trajectory, while B is the more complex (more lobes). The two properties therefore split between the series.
+```
+
+```json
+{"claims": [3, 2]}
+```

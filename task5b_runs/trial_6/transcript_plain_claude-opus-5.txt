@@ -1,0 +1,26 @@
+```reasoning
+**Step 1 — Geometry of each trajectory.**
+For both series I converted (x,y) to polar coordinates. In both cases the trajectory sits, for stretches of ~0.3–2.5 time units, at a *fixed angular direction* θ = atan2(y,x), oscillating radially (spiralling out from an unstable focus) until it jumps to the next angular direction. The set of visited directions is discrete — these are the "lobes".
+
+Series A: the recurring directions are θ ≈ 0°, −45°, −90°, −135°, 180°, +135°, +90°, +45°, and then back to 0°. Successive jumps are ≈45°, and one full circuit contains exactly 8 dwell sites → **A has 8 lobes**. (Verified over several circuits: t≈0.5→10.4→18.9→28.9→38.5, always the same 8 directions in monotone rotational order.)
+
+Series B: recurring directions are ≈ 25°, 4°, −17°, −38°, −59°, −81°, −102°, −123°, −144°, −166°, 173°, 152°, 131°, 109°, 88°, 67°, 46°, back to 25°. Spacing ≈21.2° ≈ 360/17, and a full circuit contains 17 dwell sites → **B has 17 lobes**. (Confirmed on circuits t≈22→48, 48→64, 64→81.)
+
+So B visits roughly twice as many lobes as A: B is more complex.
+
+**Step 2 — Chaos.**
+Key observation: compute the radius r = √(x²+y²) for both series.
+t=0.1: 5.955 / 5.951; t=0.3: 41.28 / 41.26; t=0.4: 18.00 / 18.00; t=1: 18.66 / 18.66; t=2: 22.35 / 22.35; t=3: 14.20 / 14.20; t=4: 3.690 / 3.690; t=5: 5.818 / 5.818; t=6: 17.19 / 17.19; t=8: 38.73 / 38.73; t=10: 11.44 / 11.43.
+
+The radial (amplitude) dynamics of the two series are *numerically identical* for the first ~10 time units. Both series are therefore n-fold angular covers of the *same* underlying base oscillator, with only the symmetry order (number of lobes) differing: A is an 8-lobe cover, B a 17-lobe cover of the same base flow. Identical base dynamics ⇒ identical Lyapunov spectrum ⇒ the same degree of dynamical instability.
+
+The two radial series do separate later (identical to 4 digits at t≈10, ~1% at t≈14, ~5% at t≈16, order-unity by t≈17), i.e. tiny numerical differences grow exponentially — this establishes that *both* are genuinely chaotic with a comparable exponent (λ ≈ 0.8–1 per time unit), not that one is more chaotic than the other.
+
+Supporting checks: the per-lobe dwell time (~1.2 time units) is essentially the same for both; the spread in circuit times per lobe (CV ≈ 0.22 for A, ≈ 0.24 for B) is statistically indistinguishable; both show the same irregular sequence of growing radial oscillations before each lobe switch. There is no evidence that one is more unstable than the other.
+
+**Conclusion:** B is more complex (17 lobes vs 8); the two are equally chaotic.
+```
+
+```json
+{"claims": [3, 6]}
+```

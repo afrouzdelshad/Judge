@@ -1,0 +1,25 @@
+```reasoning
+Both series show the same qualitative structure: the state moves out and back along a fixed ray in the (x,y) plane (rapid radial "spikes" with roughly constant direction), and the ray direction occasionally jumps by ~45°, always in the same rotational sense.
+
+Directions visited by A (sampled at spike peaks):
+~+45° (14.7,16.5), ~0° (22.7,0.5), ~-45° (21.0,-19.1), ~-90° (0.5,-17.8), ~-135° (-14.3,-15.5), ~180° (-24.6,-1.3), ~+135° (-15.6,14.3), ~+90° (-0.5,23.1) — then repeats. Eight distinct lobes, traversed cyclically ~8 times over the record.
+
+Directions visited by B:
+~+45° (28.2,30.2), ~0° (34.7,1.0), ~-45° (27.0,-24.6), ~-90° (1.6,-36.2), ~-135° (-27.3,-29.9), ~180° (-38.9,-2.6), ~+135° (-16.1,16.1), ~+90° (-1.6,32.1) — also eight distinct lobes, traversed ~10–11 times.
+
+So both trajectories explore the same number of lobes (8): equal complexity.
+
+Chaos: both are clearly aperiodic — the number of radial oscillations spent in a lobe before the direction jumps varies irregularly (A: 1–8 turns; B: 1–5 turns), and both show near-recurrences that separate.
+
+Quantitative comparison:
+- Recurrence pair in A: state at t≈79 nearly equals state at t≈89 (separation ≈0.1–0.3). The pair stays close through t≈83–84 and only fully separates near t≈86 (separation ~15). Growth of ~2 orders over ~6–7 time units → λ ≈ 0.7–0.8 per unit time.
+- Recurrence pair in B: state at t≈0.6 nearly equals state at t≈88.8 (separation ≈0.17). They track for ~3 time units, and are completely separated by t≈4.2/92.4 (separation ~20). Growth of ~2 orders over ~3.5–4 time units → λ ≈ 0.9–1.4 per unit time.
+- Intrinsic rates: B's radial oscillation period is ~0.5 vs A's ~0.75; B completes a full 8-lobe circuit in ~8.8 time units vs ~13.8 for A, i.e., ~0.84 lobe switches per unit time for B vs ~0.64 for A. Per-revolution expansion (≈2.2 turns per lobe before escape) is comparable, so the faster intrinsic rate in B translates to a larger per-unit-time divergence rate.
+- B also shows a broader spread of peak amplitudes (~15–44) than A (~12–29), and more erratic within-lobe amplitude sequences, whereas A frequently shows slow, nearly monotone amplitude growth over many turns (e.g., t≈39–43, t≈57–60), a more regular local behavior.
+
+Conclusion: equal complexity (8 lobes each), with B exhibiting the stronger dynamical instability.
+```
+
+```json
+{"claims": [5, 4]}
+```

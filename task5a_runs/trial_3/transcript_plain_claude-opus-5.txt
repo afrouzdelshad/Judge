@@ -1,0 +1,30 @@
+```reasoning
+**Step 1 — Identify the lobe structure.**
+Both series consist of oscillatory bursts whose amplitude grows within a "lobe," followed by a jump to a neighbouring lobe. Taking the local amplitude maxima and computing their angular position θ = atan2(y, x) reveals a discrete set of preferred directions.
+
+Series A maxima cluster at θ ≈ +48°, +1°, −43°, −88°, −133°, 177°, +138°, +91°.
+Series B maxima cluster at θ ≈ +47°, +1°, −41°, −85°, −133°, 176°, +137°, +92°.
+
+Both therefore visit 8 distinct lobes spaced ~45° apart around the central axis, and both traverse them in the same fixed cyclic order ((+,+) → (+,0) → (+,−) → (0,−) → (−,−) → (−,0) → (−,+) → (0,+) → …). Neither skips a lobe, and neither visits any lobe the other does not. Complexity (number of lobes) is thus identical: 8 vs 8.
+
+**Step 2 — Assess dynamical instability (chaos).**
+Within each lobe the trajectory spirals outward; the exponential growth rate of the amplitude between successive peaks is a proxy for the local Lyapunov exponent, and the switching/rotation rate indicates mixing speed.
+
+Series A (representative lobes):
+- (0,−) lobe t≈2.8–6.4: |y| peaks 17.8 → 24.5 over 3.6 t → rate ≈ 0.09/t, peak spacing ≈ 0.75.
+- (+,0) lobe t≈26–30: 18.1 → 26.2 over 3.7 t → ≈ 0.10/t.
+- (−,+) lobe t≈73–77: r 17.3 → 22.8 over 4.1 t → ≈ 0.07/t.
+
+Series B:
+- (+,0) lobe t≈0.6–3.1: 19.2 → 31.6 over 2.5 t → ≈ 0.20/t, peak spacing ≈ 0.5.
+- (+,+) lobe t≈26–28.5: r 19.3 → 29.8 over 2.5 t → ≈ 0.17/t.
+- (−,−) lobe t≈93.3–94.4: r 16.4 → 24.3 over 1.1 t → ≈ 0.36/t.
+
+B's expansion rate is roughly 2–3× A's, both per unit time and per oscillation. Consistently, B completes ~10 full circuits of the 8 lobes in 100 time units (mean period ≈ 8.8) versus ~7 for A (mean period ≈ 13.8), i.e. B escapes lobes after fewer turns and mixes faster. B also reaches much larger, more erratic excursions (|x| up to ~40, |y| up to ~44) than A (~25–29), indicating stronger stretching.
+
+**Conclusion:** equal complexity (8 lobes each); Series B is the more chaotic of the two.
+```
+
+```json
+{"claims": [5, 4]}
+```

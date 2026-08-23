@@ -1,0 +1,22 @@
+```reasoning
+**Structure of the data.** Both series consist of radial oscillations in the (x,y) plane confined to a fixed angular direction ("lobe") for a while, followed by a jump to the next angular direction. Computing the polar angle at successive radial maxima reveals the lobe structure.
+
+*Series A:* angles at successive radial peaks: ~+1°, −41°, −85°, −133°, −176°, +137°, +92°, +50°, ~0° … The angular increment per lobe transition is consistently ≈ 45°, and the sequence closes on itself after 8 steps → **8 distinct lobes**, each revisited roughly every 10 time units.
+
+*Series B:* angles at successive radial peaks: +25°, +4°, −16°, −38°, −59°, −81°, −102°, −122°, −146°, −165°, +173°, +151°, +131°, +109°, +89°, +67°, +46°, +25° … The increment is consistently ≈ 21°, closing after 17 steps → **17 distinct lobes**, one full circuit taking ~20–27 time units.
+
+So B visits more than twice as many lobes as A → B is the more complex trajectory.
+
+**Chaos assessment.** Both trajectories have the same qualitative mechanism: amplitude spirals outward within a lobe (peak-to-peak period ≈ 0.5 in both), the amplitude grows by ≈ 5–15 % per oscillation, and after reaching r ≈ 30–43 the orbit is re-injected at r ≈ 19–27 in the next lobe. Both show occasional near-passages through the origin, and maximum radii are comparable (A up to ~44, B up to ~41).
+
+Quantitative checks:
+- Number of radial oscillations per lobe: A averages ≈ 2.0–2.4 per lobe; B averages ≈ 2.5 per lobe — statistically indistinguishable, and both show the same irregular distribution (1 to 6 oscillations).
+- Remarkably, the per-lobe oscillation counts in the first circuit are identical for the two series (6,1,1,2,1,4,3,…), and the early time series values almost coincide (both start at (1,1)), indicating the same underlying radial/escape dynamics with only the rotation angle (symmetry order) differing.
+- Divergence of nearly recurrent segments: comparing two visits of A to the same lobe with nearly identical entry amplitudes, the amplitude discrepancy grows by roughly a factor ~2 per oscillation (0.2→0.5→1.5→2.6→5.4). Doing the same for two of B's visits to its 90° lobe gives a comparable amplification (~0.4→1.0→2.3→…→8). With equal oscillation periods, the implied largest Lyapunov exponents are essentially the same (≈1–1.4 per time unit) for both.
+
+Hence: complexity clearly differs (17 lobes vs 8), while the degree of dynamical instability is effectively equal.
+```
+
+```json
+{"claims": [3, 6]}
+```

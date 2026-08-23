@@ -1,0 +1,24 @@
+```reasoning
+Step 1 — Structure of each trajectory.
+Both series consist of a fast radial oscillation (period ≈ 0.5 time units) whose amplitude grows over several turns before the orbit "hops" to a new angular sector. Computing the polar angle θ = atan2(y,x) shows that each trajectory dwells near a discrete set of preferred angles, spending a chaotic number of turns in each before advancing (always in the same rotational sense) to the next.
+
+Step 2 — Lobe count (complexity).
+Series A dwells at θ ≈ 0°, −45°, −90°, −135°, 180°, +135°, +90°, +45°, then back to 0°. The angular spacing is ≈45°, i.e. 8 distinct lobes, and this sequence repeats consistently over the whole record (e.g. around t≈0–10, 19–29, 44–51).
+
+Series B dwells at θ ≈ +26°, +4°, −17°, −38°, −59°, −80°, −102°, −122°, −145°, −165°, +173°, +152°, +131°, +110°, +88°, +66°, +45°, then back to ≈+25°. Spacing ≈21°, i.e. roughly 17–18 distinct lobes per revolution, again repeated throughout the record.
+
+So B visits far more lobes than A → B is markedly more complex.
+
+Step 3 — Chaos.
+Compute the radius r = √(x²+y²) for both series: at t = 0.1, 0.2, 0.3, 5, 10, 13, 15.4 the two series have essentially identical radii (5.95/5.95, 23.2/23.2, 41.3/41.3, 5.82/5.82, 11.44/11.44, 8.75/8.73, 36.7/36.9), even though their angles are completely different. This shows the amplitude (radial) dynamics — the part that carries the instability, i.e. the spiral-out-and-switch mechanism — is the same in both systems; only the azimuthal winding number N differs.
+
+The number of turns before each lobe switch is likewise nearly the same early on (A: 6,1,1,3,1,4,3,1,4…; B: 6,1,1,2,1,4,3,1,3…), and both show the same irregular, non-repeating modulation of peak amplitudes throughout the 100-unit record. The two radial histories only decorrelate after t ≈ 16, consistent with a common positive Lyapunov exponent amplifying the small angular-coupling difference (growth of ~3 orders of magnitude in ~16 time units in both directions).
+
+Neither trajectory shows greater long-term regularity, wider amplitude spread, or slower/faster divergence than the other; the switching statistics and amplitude distributions are comparable. Hence the chaoticity is effectively equal, while complexity clearly differs — exactly the situation where the two properties do not covary.
+
+Conclusion: Series B is more complex; the two are equally chaotic.
+```
+
+```json
+{"claims": [3, 6]}
+```

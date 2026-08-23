@@ -1,0 +1,23 @@
+```reasoning
+Both series were segmented by looking at the direction (angle) of the large-amplitude excursions in the (x,y) plane.
+
+Series A repeatedly produces peaks in eight distinct angular directions:
+(+x,+y) e.g. t≈0.4, 11.8, 25.6, 48.9, 79.5; (+x, y≈0) t≈1.2, 12.5, 29.9, 49.7, 81; (+x,−y) t≈2.2, 15, 32, 50.5, 91.8; (x≈0,−y) t≈2.8, 33.7, 65.7, 92.6; (−x,−y) t≈7.1, 41.3, 93.3; (−x, y≈0) t≈8.7, 43.8, 56.6, 72.4, 94.9; (−x,+y) t≈9.4, 21.1, 44.4, 76.3, 95.6; (x≈0,+y) t≈11, 21.8, 47.4, 61, 78, 96.5.
+
+Series B shows exactly the same eight directional lobes:
+(+,+) t≈10.1, 38.1, 80.4, 88.4; (+,0) t≈1, 29.7, 39.8, 90.2; (+,−) t≈3.6, 19.7, 53.5, 60.4; (0,−) t≈4.2, 13.8, 32.3, 92.6; (−,−) t≈4.7, 21.4, 93.4; (−,0) t≈5.9, 15.4, 96.8; (−,+) t≈6.3, 8, 99.6; (0,+) t≈8.4, 17.4, 57.8, 87.7.
+
+Both traverse the eight lobes in the same strictly cyclic order with variable dwell times, so the number of visited lobes (complexity) is identical: 8 vs 8 → equally complex.
+
+For chaos, I compared (a) the per-revolution expansion of the spiral before re-injection and (b) the spread of peak radii.
+- A: within a lobe the peak radius grows slowly, typically ×1.04–1.08 per turn (e.g. lobe (0,−) from ~17 to ~21 over six turns; lobe (−,−) from ~17.6 to ~21.5 over six turns). Peak radii cluster tightly, roughly 17–28.
+- B: growth is markedly faster, ×1.10–1.35 per turn (e.g. 20.5→22.6→24.5→31 in three turns; 20.5→21.3→22.7→27.4→36.9), and the turn period is shorter (~0.5 vs ~0.65), so the expansion rate per unit time is clearly larger. Peak radii vary far more widely, roughly 18–44, and B makes much closer passes to the origin followed by violent re-amplification.
+
+The larger per-revolution/per-unit-time stretching factor, the wider distribution of excursion amplitudes, and the faster, less regular lobe switching all indicate stronger sensitivity to initial conditions in B.
+
+Conclusion: equal complexity (8 lobes each); B more chaotic.
+```
+
+```json
+{"claims": [5, 4]}
+```

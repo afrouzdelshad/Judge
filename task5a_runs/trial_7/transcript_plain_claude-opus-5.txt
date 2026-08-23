@@ -1,0 +1,36 @@
+```reasoning
+**Step 1 – Identify the geometry of each trajectory.**
+
+Both series consist of repeated "bursts": the orbit leaves the neighborhood of the origin along an approximately straight ray, reaches a maximum radius, and returns close to the origin. The ray direction is what defines a lobe.
+
+Angles of the burst maxima (atan2(y,x)):
+
+Series A: (14.7,16.5)≈48°, (22.7,0.5)≈0°, (21.0,−19.1)≈−42°, (0.5,−17.8)≈−88°, (−14.3,−15.5)≈−133°, (−24.6,−1.3)≈180°, (−15.6,14.3)≈137°, (−0.5,23.1)≈91°.
+
+Series B: (28.2,30.2)≈47°, (34.7,1.0)≈2°, (26.7,−23.4)≈−41°, (2.8,−32.7)≈−85°, (−20.8,−22.2)≈−133°, (−38.9,−2.6)≈−176°, (−25.7,23.1)≈138°, (−1.4,26.7)≈93°.
+
+Both trajectories therefore occupy the *same* eight discrete lobes spaced ~45° apart, and both are seen to visit all eight repeatedly (the lobe index precesses monotonically around the central axis in both). No intermediate ray directions occur in either record. Hence the number of distinct lobes visited is 8 for A and 8 for B → equal complexity.
+
+**Step 2 – Compare instability (chaos).**
+
+Within a lobe the orbit spirals outward, peak by peak, until the radius exceeds a threshold and it is ejected to the next lobe. The per-cycle amplitude growth factor is a proxy for the local stretching (Lyapunov) rate.
+
+Series A examples:
+- −90° lobe (t≈2.8–6.4): 17.8→24.5 over 5 intervals → ~1.07/cycle, cycle ≈0.72.
+- −90° lobe (t≈33.7–38.7): 16.9→28.6 over 7 → ~1.08/cycle.
+- −135° lobe (t≈39–43): 17.6→21.5 over 5 → ~1.04/cycle.
+- 135° lobe (t≈73–77): ~1.05/cycle.
+
+Series B examples:
+- 0° lobe (t≈0.6–3.1): 19.2→31.6 over 5 → ~1.10/cycle, cycle ≈0.5.
+- 45° lobe (t≈26–28.5): 20.2→29.9 over 5 → ~1.08/cycle.
+- −45° lobe (t≈40–42.3): 17→32.7 over 4 → ~1.18/cycle.
+
+B expands faster per cycle *and* has a shorter oscillation period (~0.5 vs ~0.72), so its stretching rate per unit time is roughly 2–3× that of A. Consistent secondary indicators: B ejects from lobes after fewer turns on average and its circuit through the eight lobes is shorter (≈6.5–11 t.u. vs ≈10–24 t.u. for A); B's peak amplitudes scatter far more widely (≈15–44) than A's (≈12–28); A exhibits long stretches of nearly periodic, slowly drifting oscillation inside a single lobe (e.g., t≈39–47, t≈66–77) that indicate weak local divergence.
+
+Conclusion: equal complexity (8 lobes each), with Series B the more chaotic.
+```
+
+```json
+{"claims": [5, 4]}
+```

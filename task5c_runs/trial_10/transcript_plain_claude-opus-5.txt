@@ -1,0 +1,36 @@
+```reasoning
+Approach: for each series I computed the polar angle θ = atan2(y,x) at successive amplitude maxima (bursts), to see where the orbit's "wings/lobes" sit, and tracked how the burst amplitude grows within each lobe to gauge local instability.
+
+COMPLEXITY (lobe count)
+
+Series A: burst angles cluster tightly at a fixed set of directions, repeated throughout the record:
+≈ +182°, +137°, +91°, +48°, +1°, −42°, −87°, −132°.
+Successive differences are all ≈ 45°, and the same eight directions recur from t≈2 to t≈100 (e.g. −25.7/−29.6 at t=50.8 reproduces the −132° lobe; 23.9/−21.0 at t=49.6 reproduces the −42° lobe). → A has 8 lobes, and the orbit precesses clockwise one lobe at a time.
+
+Series B: the same analysis gives burst angles at ≈ 46°, 24°, 4°, −18°, −39°, −59°, −81°, −103°, −123°, −144°, −166°, 173°, 152°, 131°, 110°, 88°, 67°, then back to 46°. Successive spacing is ≈ 21°, i.e. 360/17, and these fixed directions recur throughout (e.g. −17° at t=31.5, 63.5, 88.5; −103° at t=36.2, 99.1). → B has ~17 lobes.
+
+Hence B visits far more distinct lobes: B is the more complex trajectory.
+
+CHAOS (instability)
+
+Both series show the same qualitative mechanism: an unstable spiral within a lobe (amplitude grows turn by turn) followed by ejection/reinjection into the next lobe, with an irregular, non-repeating number of turns per lobe (A: 6,3,1,5,3,1,2,6,1,1,4,3,1,…; B: 5,2,1,2,1,1,2,2,4,2,2,5,…,7,12). So both are chaotic, not periodic; the question is the rate.
+
+Estimating the local expansion rate from peak radii:
+- A, lobe +91° (t=4.9–7.0): 20.8→33.7 in 4 turns, ≈1.13/turn, turn period ≈0.53 → λ ≈ 0.23
+- A, lobe 182° (t=22.8–24.8): ≈1.09/turn, period ≈0.5 → λ ≈ 0.17
+- A, lobe −42° (t=37.0–39.2): 20.8→36.3 in 4 turns → λ ≈ 0.25
+  ⇒ A: λ ≈ 0.17–0.25 per time unit; amplitudes swing widely (≈18 up to 40), strong folding.
+- B, lobe −18° (t=3.5–6.4): 18.5→24.6 in 4 turns, period ≈0.72 → λ ≈ 0.10
+- B, lobe 110° (t=21.7–24.6): → λ ≈ 0.12
+- B, lobe 131° (t=44.0–48.1): 16.4→22.0 in 6 turns → λ ≈ 0.07
+- B, lobe 88° (t=50–57): 12 slow turns, 15.6→22.9 → λ ≈ 0.05
+  ⇒ B: λ ≈ 0.05–0.12; long laminar episodes, narrow amplitude band (≈17–28).
+
+A also switches lobes about twice as fast per unit time and shows much larger relative amplitude excursions, indicating stronger stretching/folding. So A is the more chaotic series, while B (despite many more lobes) is dynamically more sluggish — a clear demonstration that complexity and chaos need not covary.
+
+Conclusion: claim 3 (B more complex) and claim 2 (A more chaotic).
+```
+
+```json
+{"claims": [2, 3]}
+```

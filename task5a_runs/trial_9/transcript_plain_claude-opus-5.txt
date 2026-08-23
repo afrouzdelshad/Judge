@@ -1,0 +1,29 @@
+```reasoning
+**Setting up the analysis.** Both series consist of spiral-out oscillations that repeatedly grow in amplitude and then get re-injected near the origin. Plotting angle θ = atan2(y,x) at each local amplitude maximum reveals the "lobes" each trajectory circulates around.
+
+**Lobe identification, Series A.** Peaks cluster at well-separated angular positions:
+- ~0° (x ≈ 20–26, y ≈ 0): t ≈ 1.2, 12.5, 13.3, 26–29.9, 49.7, 63.3, 80–81, 90–91, 98–99
+- ~+45° (x ≈ y > 0): t ≈ 0.4, 11.8, 25.6, 48.2, 61.6, 78.7, 88, 97.2
+- ~+90° (x ≈ 0, y ≈ +22): t ≈ 11.0, 21.8–24.6, 47.4, 60.9, 77.9, 87.3, 96.4
+- ~135° (x < 0, y > 0): t ≈ 9.4, 21.1, 44–46, 57–60, 73–77, 86.4, 95.6
+- ~180° (x ≈ −25, y ≈ 0): t ≈ 8.7, 20.1, 43.8, 56.6, 71.3, 72.4, 84.8, 94.9
+- ~−135°, ~−90°, ~−45°: likewise repeatedly occupied.
+So A visits **8 distinct lobes**, and in a fixed clockwise itinerary (45 → 0 → −45 → −90 → −135 → 180 → 135 → 90 → …), with variable dwell time in each.
+
+**Lobe identification, Series B.** Exactly the same eight angular clusters appear (e.g., 0°: t≈0.6–3, 19.1, 38.6–39.8, 88.8–91.3; 180°: t≈5.9, 15.4, 21.8–23.9, 34.9, 45.7, 56.6, 63.1, 69.6, 75.6, 86.6, 96.8; ±45°, ±90°, ±135° all present), and in the same cyclic order. So B also visits **8 lobes**.
+
+⇒ Complexity (number of lobes) is the same for the two series → claim 5.
+
+**Chaos / instability.** Since the symbolic itinerary is deterministic in both, the instability shows up in (i) the per-loop expansion rate inside each lobe and (ii) how quickly a lobe is escaped.
+- A, −135° lobe (t≈39.4–42.9): successive peak radii 17.6, 17.7, 18.4, 19.8, 21.0, 21.5 → growth ≈1.03–1.06 per loop, loop period ≈0.7 → λ ≈ 0.07/time unit.
+- B, −135° lobe (t≈93.4–95.5): radii 20.6, 22.2, 24.3, 27.6, 33.1 → growth ≈1.08–1.20 per loop, loop period ≈0.5 → λ ≈ 0.25–0.3/time unit.
+Similar contrasts hold in other lobes (A's 0° and −90° lobes creep up at ~3–5% per loop over 6–8 loops; B typically escapes after 1–3 loops with 10–20% growth).
+
+Consistently, A completes only ~7 full 8-lobe circuits in the 100-unit record, whereas B completes ~10; A frequently lingers 6–8 loops in a single lobe (long laminar phases), B rarely more than 3–5. B also reaches larger, far more variable peak amplitudes (up to ~44 vs. ~29), indicating stronger stretching before re-injection.
+
+⇒ B shows the faster local divergence and shorter predictability horizon → claim 4.
+```
+
+```json
+{"claims": [4, 5]}
+```

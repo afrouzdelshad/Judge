@@ -1,0 +1,27 @@
+```reasoning
+**Step 1 — Reconstruct the geometry of each orbit.**
+
+For both series, x and y are strongly correlated during each burst, so each large excursion lies along a definite direction (angle θ = atan2(y,x)) from the origin. Tracking the direction of successive bursts reveals the lobe structure.
+
+*Series A:* the burst directions take only the values ≈ −135°, 180°, 135°, 90°, 45°, 0°, −45°, −90°, and then repeat. E.g. (−14,−15) [−135°], (−29,−0.9) [180°], (−30,27) [135°], (0.7,15) [90°], (20,23) [45°], (34,1.4) [0°], (29,−28) [−45°], (2,−29) [−90°], and so on. These are eight sectors spaced exactly 45° apart, visited in monotone (precessing) order. → **A has 8 lobes.**
+
+*Series B:* the burst directions are ≈ 46°, 25°, 4°, −17°, −38°, −59°, −81°, −102°, −123°, −145°, −166°, 173°, 152°, 131°, 110°, 88°, 67°, and then exactly back to 46°. The step is ≈21.2° ≈ 360/17, and the same 17 angles recur in later cycles (t≈27–59 reproduces the same list). → **B has 17 lobes.**
+
+So B is clearly the structurally richer (more complex) orbit.
+
+**Step 2 — Assess dynamical instability.**
+
+Within each lobe both orbits spiral outward until they escape to the next lobe; the local expansion rate and the irregularity of escape are proxies for chaos.
+
+*Series A:* in-lobe peak amplitudes grow rapidly, e.g. 20.8 → 21.8 → 23.4 → 28.5 → 33.7 over ~4 cycles of period ≈0.5 (growth ≈13%/cycle, effective rate ≈0.20–0.25 per time unit). Dwell times per lobe hop erratically (6,3,1,5,3,1,2,6,1,1,4,3,1,3,1,2,1,5,…) and peak radii swing widely (16 to 39), i.e. large excursion-to-excursion unpredictability.
+
+*Series B:* the spirals expand far more slowly, e.g. in the 88° lobe peaks creep from 15.6 to 22.9 over ~11 cycles of period ≈0.65 (≈3.5%/cycle, rate ≈0.05); in the 131° lobe ≈5%/cycle. Peak radii are much more uniform (mostly 17–26), and the angular precession proceeds in very regular ~21° steps. Long, quasi-regular residence (up to 14 near-identical oscillations) indicates weak local instability.
+
+Thus A shows a substantially larger stretching rate and much more erratic amplitude/dwell statistics, while B is closer to a slowly precessing, near-quasiperiodic motion.
+
+**Conclusion:** B is more complex (17 lobes vs 8); A is more chaotic (faster divergence, more irregular bursts).
+```
+
+```json
+{"claims": [3, 2]}
+```

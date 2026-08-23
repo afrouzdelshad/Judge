@@ -1,0 +1,23 @@
+```reasoning
+Both series show trajectories that spiral outward within an angular "lobe" (an unstable focus), then jump to the neighboring lobe, always precessing in one rotational direction around a central axis. So the natural way to measure complexity is to count the distinct angular sectors (lobes) visited, and to measure chaos by the per-unit-time expansion rate (spiral growth of the oscillation amplitude) and irregularity of residence times.
+
+Lobe counting (angle θ = atan2(y,x) at the large-amplitude peaks):
+
+Series A peaks cluster tightly at θ ≈ +48°, +2°, −43°, −88°, −132° (=228°), 183°, 138°, 92°. These are eight directions spaced ~45° apart, repeated consistently over the whole 100-time-unit record (e.g., t≈2.8, 3.8, 4.5, 6.4, 8.5, 9.1, 10.4, 12.7 → next cycle at 13.7, 14.4, 16.5, 18.0, 18.6, 20.1, 20.7, 21.7 ...). ⇒ A has 8 lobes.
+
+Series B peaks cluster at θ ≈ 46°, 24°, 4°, −17°, −39°, −59°, −81°, −103°, −123°, −145°, −166°, 173°, 152°, 131°, 110°, 88°, 67°. Spacing is ~21.2°, i.e. 360/21.2 ≈ 17 distinct lobes, and this quantization repeats exactly in later cycles (t≈30.0, 31.5, 33.1, 33.9, 34.6, 36.2, 37.8, 38.5, 40.1, 40.8, 42.3, 44.0 ...). ⇒ B has 17 lobes.
+
+So B is clearly the more complex (more lobes) attractor.
+
+Chaos / instability: within each lobe the oscillation amplitude grows geometrically until escape.
+- A: e.g. the 90° lobe (t≈4.9–7.0) amplitudes ≈5.0, 6.4, 8.5, 12.2 with a loop period ≈0.5 → growth factor ≈1.3–1.4 per loop, λ ≈ ln(1.35)/0.5 ≈ 0.5–0.6. Same in the 0° lobe (t≈28–30): 4.45, 6.1, 8.1, 11.0 → λ ≈ 0.6.
+- B: e.g. the −17° lobe (t≈3.5–6.4) amplitudes ≈6.7, 6.9, 8.0, 10.0 with loop period ≈0.75 → λ ≈ ln(1.15)/0.75 ≈ 0.18–0.25. The 110° lobe (t≈21.7–24.6) gives 5.7, 7.0, 8.1, 9.6 → λ ≈ 0.24.
+
+A's local expansion rate per unit time is roughly 2–3× B's; A also has shorter cycle times and comparably (or more) erratic residence times per lobe (1–6 loops vs 1–5 for B). Hence A is the more chaotic, despite having fewer lobes — complexity and chaos are dissociated here.
+
+Conclusion: B more complex, A more chaotic.
+```
+
+```json
+{"claims": [3, 2]}
+```
