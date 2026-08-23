@@ -1,0 +1,32 @@
+```reasoning
+The dynamical system trajectories start from the identical initial condition $(x(0), y(0)) = (1, 1)$ at $t=0$. 
+
+By observing the short-time evolution (e.g., at $t=0.1$ and $t=0.2$), we can directly observe the monotonic variation of the underlying bifurcation/control parameter across the 20 trajectories:
+- At $t=0.1$, the values of $x$ (and $y$) are ordered monotonically as follows:
+  1. P: 1.430
+  2. C: 1.468
+  3. L: 1.570
+  4. S: 1.667
+  5. E: 1.750
+  6. O: 1.870
+  7. Q: 2.016
+  8. N: 2.149
+  9. M: 2.273
+  10. J: 2.459
+  11. G: 2.602
+  12. H: 2.770
+  13. T: 3.022
+  14. D: 3.251
+  15. R: 3.453
+  16. A: 3.865
+  17. I: 4.061
+  18. B: 4.470
+  19. K: 4.828
+  20. F: 5.280
+
+This corresponds to scanning the system's control parameter from lowest to highest, along the route to chaos where the degree of chaotic behavior increases monotonically with the parameter.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

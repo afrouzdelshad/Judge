@@ -1,0 +1,17 @@
+```reasoning
+All 20 trajectories start from the identical initial condition (1,1), yet they separate immediately: the value at t=0.1 differs systematically (1.43 … 5.28). Taking logs of these first-step values gives an almost uniformly spaced sequence (~0.07 apart), which strongly suggests the 20 runs correspond to 20 uniformly spaced values of a single system parameter, with the early growth rate proportional to that parameter.
+
+Next I checked whether irregularity grows or shrinks with that parameter by comparing the extremes.
+
+Small parameter (P = 1.43, C = 1.468, L = 1.57): the x-signal is a clean relaxation-type oscillation with a very stable period (~0.9–1.1) throughout the record. E.g., P between t = 60 and 64 gives peaks 15.7, 19.2, 21.5, 20.7, 12.6 at almost exactly equal spacing; C shows the same repeated rise–spike–collapse pattern with peaks in a narrow 15–23 band over the whole 100-time-unit run. Period and amplitude are only mildly modulated → weakly chaotic.
+
+Large parameter (F = 5.28, K = 4.828, B = 4.47): both period and amplitude fluctuate wildly. F between t = 60 and 63 goes from |x| ≈ 0.16 up to 47, with irregular interval lengths and frequent sign reversals; K similarly jumps between 4 and 36 and later flips signs erratically. These have no recognizable recurrent structure → strongly chaotic.
+
+Intermediate cases confirm the trend: M (2.273) keeps fairly uniform peak heights over long stretches, while T (3.022) and D (3.251) show progressively larger peak-to-peak scatter and slower loss of the periodic envelope, and A (3.865)/I (4.061) show envelope modulation that keeps amplifying.
+
+So the degree of chaos increases monotonically with the parameter inferred from the initial growth rate. Ordering the labels by their t = 0.1 value therefore gives the ascending chaos ranking.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

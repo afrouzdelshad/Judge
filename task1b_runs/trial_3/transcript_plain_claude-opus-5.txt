@@ -1,0 +1,25 @@
+```reasoning
+All 20 trajectories start from the identical initial condition (1,1), so any difference must come from a system parameter. Looking at the very first output step (t = 0.1), the x-values are spread smoothly:
+
+P 1.43, C 1.468, L 1.57, S 1.667, E 1.75, O 1.87, Q 2.016, N 2.149, M 2.273, J 2.459,
+G 2.602, H 2.77, T 3.022, D 3.251, R 3.453, A 3.865, I 4.061, B 4.47, K 4.828, F 5.28
+
+Successive ratios are all ≈1.05–1.12, i.e. essentially a geometric sweep of one control parameter across 20 values. So this initial response is a clean monotone proxy for the underlying parameter.
+
+Next, check whether irregularity grows with that parameter. All trajectories share an underlying oscillation of period ≈1 time unit; the "chaos" shows up as cycle-to-cycle variation in peak amplitude.
+
+- P (smallest parameter): peaks over t≈30–36 are 17.7, 17.9, 19.0, 22.5, 18.5, 19.9, 21.0 — very steady, essentially quasi-periodic with slow amplitude drift.
+- C (2nd smallest): peaks 6.3, 6.4, 6.3, 7.0, 7.5 and later 11.7, 12.0, 12.2, 12.4 — again nearly repeating.
+- J (mid): peaks 13.4, 15.0, 15.9, 6.7 — noticeably more scattered.
+- F (largest parameter): peaks 40, 21, 23, 31, 23, 44 — wildly irregular from cycle to cycle.
+
+Also, the global extreme excursions grow with the same parameter: C ≈ ±24, P ≈ ±26, L ≈ ±27, mid-group ≈ ±30–36, and A/I/B/K/F ≈ ±41–47.
+
+Both the irregularity of the peak sequence and the amplitude of excursions increase monotonically with the t=0.1 response, so the chaos level should be ordered by that parameter.
+
+Hence the ranking, least to most chaotic, follows the ordering of the initial response.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

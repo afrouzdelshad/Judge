@@ -1,0 +1,19 @@
+```reasoning
+All 20 trajectories start at (1,1) and show the same qualitative behaviour: repeated large "spikes" in (x,y) whose amplitude and direction change from cycle to cycle. Since the initial condition is identical, the runs must differ by a parameter, and indeed the very first growth phase differs strongly (x at t=0.1 ranges from 1.43 to 5.28, i.e. an effective growth rate from ~3.6 to ~16.6, and the spike period shrinks from ~0.9 to ~0.45 as this parameter grows).
+
+Two independent things were checked:
+
+1) Parameter proxy: x(0.1) ordering gives
+P 1.43 < C 1.47 < L 1.57 < S 1.67 < E 1.75 < O 1.87 < Q 2.02 < N 2.15 < M 2.27 < J 2.46 < G 2.60 < H 2.77 < T 3.02 < D 3.25 < R 3.45 < A 3.87 < I 4.06 < B 4.47 < K 4.83 < F 5.28.
+
+2) Direct irregularity: for each run I looked at the sequence of successive spike amplitudes (and the slow rotation of the spike direction) over t≈85–100.
+- C, E, P, O, N, L, S: spike peaks repeat with small, smoothly drifting amplitude (peak radius ~20 with only ~5–15% modulation) and the spike direction rotates in nearly constant steps → quasi-periodic / weakly chaotic.
+- Q, M, G, J, H, T: moderate cycle-to-cycle amplitude scatter, occasional jumps.
+- I, D, R, A, B, K, F: violent cycle-to-cycle jumps (e.g. K: −18, −21, −35, −11; F: 8 → 30 → 4; D and R show abrupt regime shifts with the y-component collapsing/flipping), plus irregular inter-spike intervals → strongly chaotic.
+
+The two rankings agree well (the largest-growth runs F, K, B, A, R, D, I are exactly the visibly most erratic ones, and the smallest-growth runs C, E, P, L, S, O, N are the most regular), so I use the parameter ordering, adjusted slightly where direct observation was clear (C looked the cleanest of all, so it goes first; I looked somewhat more erratic than T/D, so it moves up a little).
+```
+
+```json
+{"order": ["C", "P", "L", "S", "E", "O", "N", "Q", "M", "G", "J", "H", "T", "D", "I", "R", "A", "B", "K", "F"]}
+```

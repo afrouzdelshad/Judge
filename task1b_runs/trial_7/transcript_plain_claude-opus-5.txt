@@ -1,0 +1,20 @@
+```reasoning
+All 20 trajectories start from the identical initial condition (1,1), so the only thing distinguishing them must be a system parameter. The clearest fingerprint of that parameter is the very early growth: at t=0.1 the x-values are all different and spread out smoothly over a range:
+
+P 1.43 < C 1.468 < L 1.57 < S 1.667 < E 1.75 < O 1.87 < Q 2.016 < N 2.149 < M 2.273 < J 2.459 < G 2.602 < H 2.77 < T 3.022 < D 3.251 < R 3.453 < A 3.865 < I 4.061 < B 4.47 < K 4.828 < F 5.28
+
+That looks exactly like a monotone parameter sweep (a bifurcation-parameter ladder), with the growth rate a monotone function of the parameter.
+
+To check the direction (does chaos rise or fall with the parameter?), I inspected long-time behaviour of several series:
+
+- P (smallest parameter): over t≈60–80 it shows a very clean relaxation-oscillation with a nearly constant period (~0.9) and peak amplitudes clustering around 15–21; only mild amplitude modulation. Similar quasi-regular bursting is seen in L, C, O, Q, E, G — consistent period, moderate amplitude drift, y remaining roughly proportional to x.
+- F (largest parameter): amplitudes over the same window swing between ~0.2 and ~33, the sign of x flips repeatedly, and period varies strongly — clearly irregular.
+- Likewise K, B, I, A, R (upper part of the ladder) show erratic sign flips, wildly varying burst amplitudes and irregular inter-burst intervals.
+- Mid-ladder members (M, J, H, T, D, N) show intermediate behaviour: recognizable bursting rhythm but with substantial amplitude variability and occasional excursions.
+
+So irregularity/unpredictability grows monotonically with the inferred parameter. I therefore rank the trajectories in ascending order of that parameter.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

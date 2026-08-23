@@ -1,0 +1,26 @@
+```reasoning
+**Step 1 — Look at the very beginning of each series.**
+All 20 trajectories start at (1,1), but their initial rate of departure differs systematically:
+
+x(0.1): P 1.43 < C 1.47 < L 1.57 < S 1.67 < E 1.75 < O 1.87 < Q 2.02 < N 2.15 < M 2.27 < J 2.46 < G 2.60 < H 2.77 < T 3.02 < D 3.25 < R 3.45 < A 3.87 < I 4.06 < B 4.47 < K 4.83 < F 5.28
+
+The same ordering holds at t = 0.2, so this is a clean, monotone family parameter (all trajectories are the same system with a single control parameter).
+
+**Step 2 — Structure of the motion.**
+Velocity is nearly parallel to the position vector, so the motion is fast radial pulsing (period ≈ 0.5–0.9) with a slowly rotating direction. The interesting (possibly chaotic) part is the amplitude envelope of the pulses and the regularity of the near-zero passages.
+
+**Step 3 — Compare the extremes.**
+- P (smallest parameter), e.g. t = 60–66: peaks 15.7, 19.2, 21.5, 20.7, 12.6, 14.7, 6.1 — a smooth, slowly and regularly modulated envelope; looks quasi‑periodic (beating of two frequencies). Its near‑zero envelope minima recur at fairly comparable intervals (~12–20).
+- F (largest parameter), e.g. t = 60–68: amplitude jumps from 0.6 to 39.4 within a few steps, irregular sign changes, envelope minima at t ≈ 5.5, 9.9, 16.3, 19.1 (wildly uneven spacing). Clearly erratic.
+
+**Step 4 — Global extreme-value scan.**
+Scanning the table for |value| > 30, the offenders are almost exclusively F, K, B, A, I, R (and occasionally T, D, G), i.e. the large-parameter members; P, C, L, S, E, O, Q rarely exceed ~25 and mostly stay smooth. Heavy tails / large bursts accompany the more irregular behaviour.
+
+Spot checks on intermediates (E and Q very smooth and low-amplitude; O moderate; T moderately irregular; I strongly irregular) are consistent with chaos increasing monotonically with the parameter.
+
+**Conclusion.** Order by the family parameter (initial growth rate), ascending = increasing chaos.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

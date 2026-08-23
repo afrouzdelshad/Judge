@@ -1,0 +1,22 @@
+```reasoning
+All 20 trajectories start at (1,1) and immediately separate, so they differ by a system parameter rather than initial condition. Looking at the first step (t = 0.1), the x-values are spread very smoothly:
+
+P 1.430, C 1.468, L 1.570, S 1.667, E 1.750, O 1.870, Q 2.016, N 2.149, M 2.273, J 2.459,
+G 2.602, H 2.770, T 3.022, D 3.251, R 3.453, A 3.865, I 4.061, B 4.470, K 4.828, F 5.280
+
+The successive ratios are nearly constant (~1.06–1.09), i.e. this is a clean linear sweep of a parameter that sets the initial exponential growth rate. So the family is a parameter sweep, and the chaos level should be monotone (or nearly so) in that parameter.
+
+Direction check by inspecting long-time behaviour:
+
+- P (smallest parameter): a relaxation-type spiking oscillation of period ≈0.85–0.9 with comparatively modest, slowly modulated amplitudes; |x|,|y| stay within roughly ±25 for the whole run. Same for C, L, S — fairly repeatable spike trains.
+- Mid-range (M, N, Q, J, G, H): same spike structure but peak heights vary more, occasional excursions to ~30.
+- Largest parameters (A, I, B, K, F): spike amplitudes vary wildly (from <1 to >45), with frequent sign reversals and giant excursions (F: 47.0, −44.5, +45.8, −40.2; K: −34.9, −42.6, −44.3; B: −45.7, +43.6; I: 46.6, −38.7). Their inter-spike intervals and amplitudes are strongly irregular.
+
+So the maximum excursion size, amplitude variability and irregularity of the spike sequence all increase monotonically with the swept parameter, meaning the trajectory with the slowest initial growth (P) is the most regular/least chaotic and the fastest (F) is the most chaotic.
+
+Hence I order the labels by the inferred parameter, ascending.
+```
+
+```json
+{"order": ["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

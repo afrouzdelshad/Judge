@@ -1,0 +1,18 @@
+```reasoning
+All 20 trajectories start at exactly (1,1), so the differences must come from a parameter that varies between runs. Looking at the earliest times, the growth rate is strikingly monotone and cleanly ordered:
+
+t = 0.1 (x-values): P 1.43 < C 1.468 < L 1.57 < S 1.667 < E 1.75 < O 1.87 < Q 2.016 < N 2.149 < M 2.273 < J 2.459 < G 2.602 < H 2.77 < T 3.022 < D 3.251 < R 3.453 < A 3.865 < I 4.061 < B 4.47 < K 4.828 < F 5.28
+
+The same ordering holds exactly at t = 0.2, confirming this is a clean parameter sweep (the parameter controls the strength of the positive-feedback/growth term).
+
+Qualitative checks of the dynamics:
+- Low-parameter runs (P, C, L, S) show slower, more coherent spiking with a fairly consistent inter-spike interval (~0.85–1.0) and long quiescent intervals; peak heights vary but the oscillation remains fairly organized for many cycles.
+- High-parameter runs (K, B, I, F) show faster, larger-amplitude spikes with much more erratic peak-to-peak intervals (0.5–0.9) and highly irregular amplitudes right from the start (e.g., F: 24.2, 23.7, 28.4, 34.5, 20.9, 21.3, 25.3 ... with rapidly shifting timing).
+- No trajectory settles onto an exact periodic orbit (checked x(t) vs x(t+1) at late times for several), so all are aperiodic; the ranking is by degree of irregularity.
+
+Since the growth/forcing parameter drives the system deeper into the chaotic regime (larger, more erratic excursions and faster decorrelation), chaos should increase monotonically with that parameter. Hence the ordering follows the early-growth ordering.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

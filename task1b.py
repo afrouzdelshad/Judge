@@ -140,7 +140,7 @@ def main(argv=None):
         results = {"model": args.model}
 
         order, transcript = plain_orders[i], plain_transcripts[i]
-        (outdir / "transcript_plain.txt").write_text(transcript or "", encoding="utf-8")
+        (outdir / f"transcript_plain_{args.model}.txt").write_text(transcript or "", encoding="utf-8")
         results["plain"] = order
         if order and true_rank:
             results["plain_tau"] = kendall_tau(order, true_rank)

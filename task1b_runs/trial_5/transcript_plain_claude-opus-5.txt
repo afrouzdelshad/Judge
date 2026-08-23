@@ -1,0 +1,24 @@
+```reasoning
+All 20 trajectories start at (1,1) and share the same qualitative structure: fast spike‑like growth, then repeated relaxation‑type oscillations with occasional sign flips. This strongly suggests one system integrated with a swept control parameter, one value per trajectory.
+
+Key observation: the very first step (t=0.1) reveals the parameter directly, since x(0.1) ≈ exp(a·0.1). Sorted values at t=0.1:
+
+P 1.43, C 1.468, L 1.57, S 1.667, E 1.75, O 1.87, Q 2.016, N 2.149, M 2.273, J 2.459, G 2.602, H 2.77, T 3.022, D 3.251, R 3.453, A 3.865, I 4.061, B 4.47, K 4.828, F 5.28
+
+Taking logs gives an almost perfectly evenly spaced sequence (Δln ≈ 0.07 each), i.e. a clean linear sweep of a rate parameter a from ≈3.6 to ≈16.6 across the 20 runs. So the labels correspond to a monotone parameter sweep.
+
+Direction check (does irregularity grow with the parameter?):
+- Oscillation period shrinks with a: P ≈ 0.85, J ≈ 0.6, F ≈ 0.55.
+- Inter-peak interval variability (a good surrogate for chaoticity):
+  • P (smallest a): peaks at 0.5,1.4,2.2,3.0,3.9,4.7,5.5 → intervals 0.9,0.8,0.8,0.9,0.8,0.8 (CV ≈ 0.06); late-time peaks are equally metronomic (70.3, 71.2, 72.1, 72.9, 73.7, 74.5 …), only amplitude is modulated.
+  • L, C, E, O (small a): intervals still nearly constant (0.7–0.9).
+  • J (mid a): intervals 0.5,0.6,0.6,0.8,0.5,0.6,0.6,0.8 (CV ≈ 0.18).
+  • F (largest a): intervals 0.7,0.5,0.7,0.3,0.5,0.4,0.5,0.5,0.6 (CV ≈ 0.23), with wildly varying peak amplitudes (21→35→1) and large negative excursions in y.
+- Large-a runs (F, K, B, I, A) also show frequent sign reversals and erratic amplitude jumps late in the run, while small-a runs (P, C, L) keep a regular phase with only slow amplitude modulation.
+
+Hence chaos increases monotonically with the swept parameter, and the ascending chaos order is the ascending order of the t=0.1 response.
+```
+
+```json
+{"order": ["P","C","L","S","E","O","Q","N","M","J","G","H","T","D","R","A","I","B","K","F"]}
+```

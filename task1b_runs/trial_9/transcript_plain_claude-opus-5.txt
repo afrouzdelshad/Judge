@@ -1,0 +1,21 @@
+```reasoning
+All 20 trajectories start from the identical initial condition (1,1), so the differences must come from a system parameter. The value reached at t=0.1 (and t=0.2) therefore directly reflects that parameter, and the ordering is perfectly consistent at both times:
+
+t=0.1 x-values: P 1.43 < C 1.47 < L 1.57 < S 1.67 < E 1.75 < O 1.87 < Q 2.02 < N 2.15 < M 2.27 < J 2.46 < G 2.60 < H 2.77 < T 3.02 < D 3.25 < R 3.45 < A 3.87 < I 4.06 < B 4.47 < K 4.83 < F 5.28
+(t=0.2 gives exactly the same ranking, confirming a clean one-parameter family.)
+
+Next I checked whether dynamical irregularity increases along this ordering by extracting individual time series in a mid-run window (t≈40–50):
+
+- P (smallest): steady spiking with period ≈0.95, amplitudes evolving smoothly along a slow envelope (13→6→3→…→20). Looks quasi-periodic / weakly modulated.
+- C, L, S, E, O: similar — regular spike train (period 0.8–1.0), amplitudes varying smoothly, occasional slow amplitude collapse and recovery.
+- M, Q, T, D, R: envelope modulation becomes less smooth; more frequent amplitude collapses and sign reversals.
+- A: amplitude collapses to ~1 around t≈45 then reverses sign and rebuilds — clear erratic switching.
+- B, K: peak amplitudes jump around widely (5→31→17→2), frequent sign flips.
+- F (largest): fastest oscillation (period ≈0.5) with wildly erratic peak sequence (20.8, 9.7, 15.8, 23, 31.5, 37.9, 28.2, 12.1, 2.5, 6.3…), largest excursions (|y| up to 40) — clearly the most irregular.
+
+So irregularity (peak-to-peak amplitude scatter, frequency of collapse/sign-reversal events, spectral broadening) grows monotonically with the parameter inferred from the early growth rate. I therefore rank chaos in that same order.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```

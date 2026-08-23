@@ -1,0 +1,23 @@
+```reasoning
+All 20 trajectories start from the identical initial condition (1,1), so the differences must come from a parameter that varies between runs. Looking at t = 0.1, the immediate growth already separates them cleanly (P: 1.43 … F: 5.28), which indicates a parameter that directly scales the vector field.
+
+I then checked whether this parameter correlates with dynamical complexity:
+
+1. Peak excursion amplitude over the whole run:
+   - Low-parameter runs (P, C, L, S, E, O) stay within roughly |x| ≲ 25–29.
+   - High-parameter runs (F, K, B, I, A, R) reach |x| ≈ 39–47.
+   The ordering of max amplitude tracks the initial-growth ordering closely.
+
+2. Qualitative regularity of the late-time oscillations:
+   - C (small parameter) shows very smooth, nearly periodic oscillations with slowly modulated amplitude over t = 88–100.
+   - E, L, P, S similarly show fairly clean, repeatable oscillation cycles.
+   - F (largest parameter) shows strongly irregular amplitude sequences, abrupt sign reversals and bursts of very different sizes over the same window; B, K, I, A behave similarly with erratic burst amplitudes.
+
+Both proxies (peak amplitude, amplitude irregularity/burstiness) agree with the parameter ordering inferred from the initial slope, so I rank chaos level monotonically with that parameter.
+
+Ascending chaos: P, C, L, S, E, O, Q, N, M, J, G, H, T, D, R, A, I, B, K, F.
+```
+
+```json
+{"order": ["P", "C", "L", "S", "E", "O", "Q", "N", "M", "J", "G", "H", "T", "D", "R", "A", "I", "B", "K", "F"]}
+```
