@@ -1,0 +1,7 @@
+```reasoning
+Both trajectories occupy the same set of distinct angular lobe regions, so their inferred lobe counts—and hence complexity—are equal. Series B shows substantially greater irregularity in excursion amplitudes, residence times, and recurrence patterns, while Series A exhibits more repeatable local cycles. These features support greater dynamical instability in B.
+```
+
+```json
+{"claims":[4,5]}
+```

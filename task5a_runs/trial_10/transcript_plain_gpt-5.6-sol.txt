@@ -1,0 +1,7 @@
+```reasoning
+Both trajectories repeatedly occupy the same set of approximately eight angular lobe regions in the x–y plane, so their complexity is equal. Series A shows comparatively regular, repeated loops and longer quasi-periodic stretches, whereas Series B has more irregular residence times, peak amplitudes, and transitions between lobes. This supports greater dynamical instability for B.
+```
+
+```json
+{"claims":[4,5]}
+```

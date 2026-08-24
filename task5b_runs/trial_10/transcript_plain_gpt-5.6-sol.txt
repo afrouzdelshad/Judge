@@ -1,0 +1,9 @@
+```reasoning
+Angular clustering shows that B visits more distinct orientations around the central axis, whereas A repeatedly occupies a coarser set of lobes. Thus B has greater lobe complexity.
+
+Despite this geometric difference, the two series have essentially matching radial-amplitude evolution and synchronized expansions and contractions. Their irregular fluctuations therefore reflect the same level of dynamical instability; the differing angular geometry does not support a chaos difference.
+```
+
+```json
+{"claims":[3,6]}
+```

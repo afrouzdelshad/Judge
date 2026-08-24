@@ -1,0 +1,7 @@
+```reasoning
+The angular distribution shows that Series B occupies more distinct, recurring orbital sectors around the central axis than Series A, indicating more lobes and therefore greater complexity. Both trajectories display similarly irregular oscillation amplitudes, residence times, and transitions, without a clear systematic difference in dynamical instability. Thus, B is more complex, while their chaos levels are best judged equal.
+```
+
+```json
+{"claims":[3,6]}
+```

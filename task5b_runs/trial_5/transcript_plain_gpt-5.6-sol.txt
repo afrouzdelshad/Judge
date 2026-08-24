@@ -1,0 +1,9 @@
+```reasoning
+The phase-plane geometry shows that A repeatedly occupies about eight distinct angular lobe regions, whereas B resolves roughly twice as many, about sixteen. Thus B has greater lobe complexity.
+
+The trajectories exhibit closely matched short-term radial oscillation structure and comparable irregular amplitude modulation, followed by divergence consistent with sensitivity to initial conditions. There is no clear evidence that either has a systematically larger instability rate; the main difference is the angular lobe structure rather than chaos strength. Equal chaos is therefore best supported.
+```
+
+```json
+{"claims":[3,6]}
+```

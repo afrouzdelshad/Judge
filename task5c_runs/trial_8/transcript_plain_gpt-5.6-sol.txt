@@ -1,0 +1,7 @@
+```reasoning
+Both phase-plane trajectories repeatedly occupy the same eight angularly separated lobe regions, so their geometric complexity is equal. Series A, however, shows less regular return amplitudes and more variable residence and transition behavior between lobes, whereas Series B contains longer, more nearly repetitive orbital episodes. These features support greater dynamical instability in A.
+```
+
+```json
+{"claims":[2,5]}
+```

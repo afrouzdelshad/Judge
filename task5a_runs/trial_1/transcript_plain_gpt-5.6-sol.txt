@@ -1,0 +1,7 @@
+```reasoning
+Both trajectories occupy the same set of eight recurring angular lobe regions, so their geometric complexity is equal. Series A exhibits comparatively regular rotations and more orderly lobe-to-lobe progression, whereas Series B has less regular residence times, excursions, and transitions, supporting greater dynamical instability in B.
+```
+
+```json
+{"claims":[4,5]}
+```

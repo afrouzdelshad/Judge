@@ -1,0 +1,7 @@
+```reasoning
+The phase-plane geometry indicates that B occupies a larger set of distinct, recurrent angular lobe regions than A, so B has greater lobe complexity. In contrast, both series show comparable irregular amplitude modulation, recurrence behavior, and unpredictability in lobe residence and transitions; there is no clear evidence of a systematic difference in dynamical instability. Thus their chaos levels are best judged equal.
+```
+
+```json
+{"claims":[3,6]}
+```

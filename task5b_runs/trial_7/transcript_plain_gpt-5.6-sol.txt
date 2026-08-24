@@ -1,0 +1,9 @@
+```reasoning
+The trajectories have effectively identical radial evolution, including matching expansions, contractions, and irregular amplitude fluctuations. Their dynamical instability is therefore equally strong; the difference is primarily angular geometry rather than chaos.
+
+Series B’s recurrent orbital centers are distributed across more distinct angular directions, with substantially narrower angular spacing between neighboring lobes than in Series A. Thus B visits more lobes and is more complex.
+```
+
+```json
+{"claims":[3,6]}
+```

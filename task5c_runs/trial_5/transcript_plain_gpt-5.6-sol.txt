@@ -1,0 +1,9 @@
+```reasoning
+The phase-plane geometry indicates that Series B repeatedly occupies a larger number of distinct angularly separated lobe regions, whereas Series A revisits fewer such regions. Thus B has greater structural complexity.
+
+Series A shows stronger irregularity in return amplitudes, residence times, and local recurrence patterns. Comparable loops vary more substantially from one visit to the next, indicating greater dynamical instability than the more repeatable local cycling in B. Therefore A is more chaotic despite being less complex.
+```
+
+```json
+{"claims":[2,3]}
+```

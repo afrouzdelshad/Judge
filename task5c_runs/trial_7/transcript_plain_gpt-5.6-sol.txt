@@ -1,0 +1,7 @@
+```reasoning
+The trajectories’ angular occupancy indicates that B visits substantially more distinct lobe directions around the central axis than A, so B has greater structural complexity. Separately, A shows more irregular lobe residence times, amplitudes, and return patterns, whereas B contains longer, more repeatable local oscillatory episodes. These features support greater dynamical instability—and hence greater chaos—in A.
+```
+
+```json
+{"claims":[2,3]}
+```

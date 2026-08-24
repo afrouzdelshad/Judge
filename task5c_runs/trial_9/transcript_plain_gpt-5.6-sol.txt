@@ -1,0 +1,7 @@
+```reasoning
+Both trajectories repeatedly occupy the same set of approximately eight angular sectors around the central axis, so their lobe counts—and therefore their complexity—are equal. Series A shows less regular recurrence, more variable residence and transition behavior, and greater amplitude/timing irregularity. Series B contains longer intervals of coherent, nearly repeating oscillations within individual lobes. These features support greater dynamical instability in A.
+```
+
+```json
+{"claims":[2,5]}
+```

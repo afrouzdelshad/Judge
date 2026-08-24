@@ -1,0 +1,7 @@
+```reasoning
+The phase-plane geometry indicates that B occupies a larger number of distinct angularly separated lobes, so B has greater geometric complexity. In contrast, A shows stronger irregularity in loop amplitudes, return patterns, and residence/transition behavior, while B’s local oscillations are comparatively more coherent and repeatable. Thus A is more dynamically unstable, despite having fewer lobes.
+```
+
+```json
+{"claims":[2,3]}
+```

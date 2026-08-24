@@ -1,0 +1,9 @@
+```reasoning
+The phase-plane occupancy indicates that A repeatedly visits about eight broad angular lobes, whereas B resolves a larger number of distinct angular sectors around the central axis. Thus B has greater lobe complexity.
+
+A shows stronger irregularity in orbit amplitudes, residence times, and transition timing. B’s local loops and angular progression are comparatively coherent and repetitive, indicating lower dynamical instability. Therefore A is more chaotic despite being less complex.
+```
+
+```json
+{"claims":[2,3]}
+```

@@ -1,0 +1,13 @@
+{
+  "model": "gpt-5.6-sol",
+  "variant": "b",
+  "true_claims": [
+    3,
+    6
+  ],
+  "plain": [
+    2,
+    5
+  ],
+  "plain_f1": 0.0
+}

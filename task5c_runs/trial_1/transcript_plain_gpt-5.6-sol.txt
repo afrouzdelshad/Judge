@@ -1,0 +1,9 @@
+```reasoning
+Series A occupies about eight distinct angular lobe regions, including axial and diagonal sectors, whereas Series B predominantly occupies four quadrant-like lobes. Thus A is more complex.
+
+For chaos, A follows a comparatively orderly progression among neighboring lobes with more stereotyped returns. B shows substantially less regular residence times, radial excursions, and transition timing, including prolonged trapping episodes. These are stronger empirical indicators of dynamical instability, so B appears more chaotic.
+```
+
+```json
+{"claims":[1,4]}
+```

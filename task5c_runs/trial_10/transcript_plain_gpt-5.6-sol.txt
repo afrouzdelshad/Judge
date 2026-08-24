@@ -1,0 +1,7 @@
+```reasoning
+The phase-plane trajectories occupy the same number of distinct angular lobe regions, so their geometric complexity is equal. Series A shows less regular recurrence, larger cycle-to-cycle variation, and more erratic lobe residence and return behavior. Series B exhibits comparatively coherent repeated loops and longer, more regular residence episodes. These instability proxies support A as the more chaotic trajectory.
+```
+
+```json
+{"claims":[2,5]}
+```
