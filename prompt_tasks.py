@@ -115,29 +115,10 @@ Structure your response as two fenced blocks, in this order: a ```reasoning bloc
 
 
 # ---------------------------------------------------------------------------
-# Task 4: estimate the lobe count N of every trajectory
+# Task 4: evaluate pairwise complexity/chaos claims about two trajectories
 # ---------------------------------------------------------------------------
 
-TASK4_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis; N is an unknown positive integer that differs between trajectories. You are given only the raw (t, x, y) data and must infer N for each trajectory from its shape and statistics.
-
-You will be given {n} trajectories, each labeled with a single letter, in no particular order. Estimate the lobe count N for each trajectory independently.
-
-Structure your response as two fenced blocks, in this order: a ```reasoning block containing your reasoning process, followed by a ```json block containing your final answer with all {n} labels, each exactly once. Each block must appear exactly once, with the json block last. Do not restate the raw data in your response.
-
-```reasoning
-<your reasoning process>
-```
-
-```json
-{{"estimates": {{"<label>": <N>, "...": <N>}}}}
-```"""
-
-
-# ---------------------------------------------------------------------------
-# Task 5: evaluate pairwise complexity/chaos claims about two trajectories
-# ---------------------------------------------------------------------------
-
-TASK5_PLAIN_PROMPT = """You are analyzing two trajectories, labeled A and B, from a dynamical system. Each trajectory orbits some number of distinct "lobes" around a central axis and may exhibit chaotic behavior to some degree; both properties are unknown and must be inferred from the raw (t, x, y) data.
+TASK4_PLAIN_PROMPT = """You are analyzing two trajectories, labeled A and B, from a dynamical system. Each trajectory orbits some number of distinct "lobes" around a central axis and may exhibit chaotic behavior to some degree; both properties are unknown and must be inferred from the raw (t, x, y) data.
 
 Complexity means the number of lobes a trajectory visits; chaos means its dynamical instability (sensitivity to initial conditions). The two properties are distinct and need not covary.
 

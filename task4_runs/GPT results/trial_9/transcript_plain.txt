@@ -1,7 +1,0 @@
-```reasoning
-I treated each trajectory in polar coordinates and emphasized high-radius samples, which concentrate near lobe centers. I then estimated the recurring angular separation between those centers and used N ≈ 360°/Δθ. Repeated estimates from different time intervals were used to distinguish true lobe directions from transitions and transient excursions. Several trajectories independently exhibited the same rotational symmetry and therefore received the same count.
-```
-
-```json
-{"estimates":{"A":8,"B":5,"C":16,"D":14,"E":11,"F":7,"G":6,"H":3,"I":5,"J":16,"K":2,"L":20,"M":4,"N":18,"O":3,"P":12,"Q":18,"R":2,"S":8,"T":11}}
-```
