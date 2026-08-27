@@ -1,0 +1,9 @@
+{
+  "model": "claude-opus-5",
+  "variant": "b",
+  "plain": {
+    "groups": null,
+    "X": null,
+    "Y": null
+  }
+}

@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using phase-plane geometry, angular progression about the central axis, recurrence patterns, amplitude statistics, and the ordering of angular-rate signatures among trajectories sharing the same projected initial coordinates. These features support seven complexity levels. The resulting groups are ordered by increasing inferred lobe count.
+```
+
+```json
+{"groups":[["F","I","Q"],["B","J","N"],["C","P","T"],["E","M","R"],["D","G","L"],["K","O"],["A","H","S"]]}
+```

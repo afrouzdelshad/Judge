@@ -1,0 +1,7 @@
+```reasoning
+I centered each trajectory robustly, converted it to polar coordinates, and compared three shape diagnostics: the number of persistent angular-density peaks, rotational harmonics of the radial signal, and recurrence patterns near radial maxima. I also used phase-insensitive similarity of those diagnostics to match trajectories started from different phases. The resulting pairs have matching dominant lobe counts; ordering their dominant angular harmonic gives the least-to-most-complex sequence below.
+```
+
+```json
+{"groups":[["A","T"],["B","M"],["C","E"],["D","O"],["F","L"],["G","N"],["H","K"],["I","J"],["P","Q"],["R","S"]]}
+```

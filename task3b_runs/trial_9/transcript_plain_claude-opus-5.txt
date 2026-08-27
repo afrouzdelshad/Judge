@@ -1,23 +1,32 @@
-## Analysis Approach
+```reasoning
+Approach: For a multi-lobe attractor, the trajectory makes radial excursions along a discrete set of directions (one per lobe), equally spaced by 360/N degrees. So I computed θ = atan2(y,x) at moments of large radius for each trajectory and collected the distinct preferred directions, then N = 360/(mean angular spacing).
 
-For each trajectory I computed the polar angle θ = atan2(y,x) at every local radius maximum (the "excursions" into a lobe). The lobes sit at fixed angular positions spaced 360°/N apart, and each trajectory marches monotonically around the ring, so counting the angular steps needed to complete one full 360° revolution gives N directly.
+Sampling results (preferred lobe directions, degrees):
 
-**Representative measurements (angular step per lobe → N):**
+- A: 1.4, 46.7, 92, 138, -178, -132, -88, -44 → spacing 45 → N=8
+- B: same set (2.9, 48, 92, 138, -179, -131, -88, -43) → N=8
+- C: 178.5, 159.7, 140.8, 122.5, 102.5, 84.4, 64.2, 46, 26.7, … → spacing ≈19.0 → N=19
+- D: 72, 46, 20, -5, -31, -56, -82, -107, -134, -159, 175, 149, 122, 97 → spacing ≈25.7 → N=14
+- E: 178, 146, 112, 78, 45, 15, -18, -50, -84, -117, -149 → spacing ≈32.7 → N=11
+- F: 1.5, 48, 91, 137, -178, -134, -88, -43 → N=8
+- G: 3, 48, 94, 139, -178, -131, -87, -43 → N=8
+- H: only two clusters, ≈47 and ≈-127 (broad wings) → N=2
+- I: 45, 3, -42, -88, -131, -178, 136, 90 → N=8
+- J: 68, 47, 23, 1, -21, -44, -66, -88, -112, -134, -157, -178, 159, 137, 114, 92 → spacing ≈22.5 → N=16
+- K: 45, 3, -44, -88, -133, -178, 138, 92 → N=8
+- L: 19 directions spaced ≈18.9 → N=19
+- M: 169, 108, 46, -12, -72, -133 → spacing 60 → N=6
+- N: 19 directions spaced ≈18.9 → N=19
+- O: 169, 106, 48, -10, -73, -131 → N=6
+- P: 178, 145, 113, 78, 46, 15, -18, -51, -85, -117, -149 → N=11
+- Q: 19 directions spaced ≈19.0 → N=19
+- R: 45, 2, -43, -87, -132, -177, 137, 91 → N=8
+- S: two clusters, ≈52 and ≈-125 → N=2
+- T: 176, 145, 113, 80, 47, 14, -18, -50, -84, -114, -148 → N=11
 
-| Traj | typical lobe angles | Δθ | N |
-|---|---|---|---|
-| H, S | ≈ +52°, −128° only | 180° | 2 |
-| M, O | 168, 108, 47, −13, −72, −132 | 60° | 6 |
-| A,B,F,G,I,K,R | 0, ±45, ±90, ±135, 180 | 45° | 8 |
-| E, P, T | 79, 46, 15, −19, −52, −86, −117, −149, −183… | 32.7° | 11 |
-| D | 97, 72, 46, 20, −4, −31, −56, −83… | 25.7° | 14 |
-| J | 68, 45, 23, 1, −22, −44, −66, −89… | 22.4° | 16 |
-| C, L, N, Q | 64, 46, 27, 8, −11, −30, −49, −67… | 18.9° | 19 |
-
-**Consistency check:** the raw data contains only 7 distinct initial conditions, repeated across trajectories. Within every inferred group each member starts from a *different* initial condition (e.g. the N=8 group uses all 7 distinct starts exactly once; the N=19 group uses 4 distinct starts), which independently corroborates the clustering.
-
-Group sizes come out uneven (7, 4, 3, 2, 2, 1, 1), so Y is best reported as the typical/average size ≈ 3.
+Groups (ascending N): 2:{H,S}, 6:{M,O}, 8:{A,B,F,G,I,K,R}, 11:{E,P,T}, 14:{D}, 16:{J}, 19:{C,L,N,Q}. Total = 20 labels.
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```

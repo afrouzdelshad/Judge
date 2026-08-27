@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using phase-plane geometry, recurrence patterns, turning-point structure, radial excursions, and long-run coordinate statistics. Several especially strong matches anchored the clustering: C–E, D–O, I–J, R–S, B–M, and G–N share closely corresponding geometric and temporal signatures. Extending those matches by phase-shifted waveform similarity and attractor occupancy produced four balanced clusters. Their relative complexity was determined from the increasing number of distinct recurrent lobes and associated turning structures.
+```
+
+```json
+{"groups":[["A","B","C","E","M"],["H","I","J","K","L"],["D","G","N","O","P"],["F","Q","R","S","T"]]}
+```

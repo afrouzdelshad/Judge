@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using polar angle and radius rather than raw Cartesian coordinates. Large-radius excursions reveal preferred angular sectors corresponding to lobes; trajectories with the same angular spacing and similar radial statistics were grouped together. Near-identical early evolution from rounded-equal initial states, especially for B/M, I/J, and P/Q, provided additional confirmation. The groups were then ordered by decreasing angular separation between adjacent preferred sectors, i.e. increasing inferred lobe count.
+```
+
+```json
+{"groups":[["E","H"],["A","B","G","K","M","R","S"],["O","P","Q","T"],["D"],["I","J"],["C","F","L","N"]]}
+```

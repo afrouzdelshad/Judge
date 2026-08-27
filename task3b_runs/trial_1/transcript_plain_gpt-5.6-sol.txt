@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using phase-independent geometric features: the angular locations of radial maxima, recurrence among those angular sectors, turning-number behavior, and normalized radial/curvature statistics. Trajectories with matching sector patterns and recurrence spectra were grouped together. The seven resulting clusters show progressively more occupied lobe directions and denser angular recurrence, which determines the least-to-most-complex ordering. Identical projected starting points were treated as belonging to different clusters because their subsequent lobe structures differ.
+```
+
+```json
+{"groups":[["A","O","P"],["D","K","Q"],["B","J","S"],["I","M"],["C","G","H"],["E","F","N"],["L","R","T"]]}
+```

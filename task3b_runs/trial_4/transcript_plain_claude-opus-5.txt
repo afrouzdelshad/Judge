@@ -1,23 +1,36 @@
-## Analysis approach
+```reasoning
+Approach: In each trajectory the point makes fast radial in‑and‑out excursions ("petals") along a fixed direction from the origin, then hops to a neighboring direction. The set of petal directions is the set of lobes, so N = 360° / (angular spacing between adjacent petal directions).
 
-For each trajectory I converted (x,y) to a polar angle and tracked where the orbit "dwells" (repeated radial excursions at a nearly fixed angle) before jumping to the next dwell angle. The dwell angles always fall on an evenly‑spaced ring, and the angular step Δθ between successive lobes gives **N = 360°/Δθ**.
+Key extra clue: at t=0 several trajectories share identical initial conditions:
+IC1 (1.908,-7.837): A
+IC2 (-11.92,-10.08): B,H,M,P,Q
+IC3 (0.5911,22.52): C,D,E,I,J,O,S
+IC4 (22.15,0.5664): F,L
+IC5 (-20.72,-13.16): G,N,T
+IC6 (6.255,19.86): K
+IC7 (15.25,15.4): R
+Since members of a group must have different ICs, there are at least 7 groups and each group has at most one member from each IC set.
 
-Representative measurements:
+Measured petal directions (angle at large radius) and spacings:
+- A: 138.5, 93.5, 47.5, 2.5, -41, -87, -132, 180 → Δ≈45 → N=8
+- B: 175, 137.8, 94.2, 42, 3.5, -41.5, -86.4, -131.2 → Δ≈45 → N=8
+- F, G, I, K, R: same set (…138, 93, 48, 3, -42, -87, -132, 177) → N=8
+- C: 46.7, 27.7, 8.8, -10.1, -29, -48, … full circle in 19 steps of ≈18.95 → N=19
+- L, N, Q: identical 18.95° spacing → N=19
+- D: 47.3, 21.7, -4, -30, -55, -81.5, -107, -133, -158, 176, 150, 125, 99, 73 → Δ≈25.7 → N=14
+- E: 47.6, 15, -17.8, -50, -83, 113, 80.5, 146, 179 → Δ≈32.7 → N=11
+- P, T: same 32.7° spacing → N=11
+- J: 69.3, 46.8, 24.3, 1.8, -21, -43.5, -66, -88, -111, -133 → Δ≈22.5 → N=16
+- M: -12, -70.5, -130, 169, 107, 50 → Δ≈60 → N=6
+- O: 50, -11, -72, -132, 170, 110 → Δ≈60 → N=6
+- H: only two petal directions (~55 and ~-125) → N=2
+- S: only two petal directions (~58 and ~-121) → N=2
 
-| Δθ (deg) | N | trajectories |
-|---|---|---|
-| ~180 | 2 | H, S (only two angular clusters, ≈ +52° and ≈ −128°) |
-| ~60 | 6 | M, O (lobes at 168, 108, 48, −12, −72, −132) |
-| ~45 | 8 | A, B, F, G, I, K, R (lobes at multiples of 45°) |
-| ~32.7 | 11 | E, P, T (lobes 47, 15, −18, −50, −85, −117, −150, 178, 145, 111, 78) |
-| ~25.7 | 14 | D |
-| ~22.5 | 16 | J (−178, 159, 137, 114, 92, 69 …) |
-| ~19.0 | 19 | C, L, N, Q |
+Consistency check with ICs: the N=8 group contains exactly one trajectory from each of the 7 IC sets (A,B,I,F,G,K,R); N=19 has IC2,3,4,5 (Q,C,L,N); N=11 has IC2,3,5 (P,E,T); N=6 has IC2,3 (M,O); N=2 has IC2,3 (H,S); N=14 (D) and N=16 (J) are IC3 only. Every IC appears at most once per group, and IC3 appears exactly once in each of the 7 groups — fully consistent.
 
-**Consistency check:** the runs share only 7 distinct initial (x,y) values. In every group I obtained, each initial condition appears at most once (the N=8 group uses all 7 ICs, the N=19 group uses the 4 most common ICs, etc.), exactly as expected if the same seed points were integrated under each different‑N system. This nesting strongly corroborates the clustering.
-
-Group sizes are 7, 4, 3, 2, 2, 1, 1 → X = 7, typical size ≈ 3.
+Ordering: 2 < 6 < 8 < 11 < 14 < 16 < 19.
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```

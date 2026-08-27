@@ -1,37 +1,45 @@
 ```reasoning
-To determine the number of lobes $N$ for each trajectory, we analyze the spatial structure, fixed-point/saddle-focus equilibria, and angular distributions of the orbital loops (lobes) in the $(x, y)$ plane.
+To determine the number of distinct lobes $N$ for each trajectory, we analyze the spatial distribution and angular coordinates $\theta = \operatorname{atan2}(y, x)$ of the centers of oscillation (lobes) around the central origin $(0,0)$.
 
-1. **Equilibria and Lobe Geometry**:
-   The dynamical system exhibits $N$-fold rotational symmetry where the lobes/equilibria are located at radius $R \approx 12$ from the origin, oriented at discrete angles given by:
-   $$\theta_k = 90^\circ - \frac{180^\circ}{N} + k \frac{360^\circ}{N}, \quad k = 0, 1, \dots, N-1$$
-   As trajectories transition between lobes, they loop around these equilibrium centers with outer loop excursions reaching $r \approx 20\text{--}28$. The angular step between adjacent lobes is $\Delta \theta = \frac{360^\circ}{N}$.
+In generalized multi-wing/multi-lobe dynamical systems with rotational symmetry around the central axis, the $N$ lobes are symmetrically arranged at angular intervals of $\Delta \theta = \frac{360^\circ}{N}$.
 
-2. **Classification by $N$**:
-   - **$N = 3$** ($\Delta \theta = 120^\circ$): Trajectories exhibit 3 distinct lobe regions around the central axis.
-     - Members: **F, H, I, S**
-   - **$N = 7$** ($\Delta \theta \approx 51.4^\circ$): Trajectories visit 7 distinct lobe centers with angular separation $\approx 51.4^\circ$ (e.g., initial spiral of C around $\theta \approx 64.3^\circ$).
-     - Members: **C, G, M, O**
-   - **$N = 11$** ($\Delta \theta \approx 32.7^\circ$): Trajectories visit 11 distinct lobe centers with angular separation $\approx 32.7^\circ$.
-     - Members: **E, K, P, T**
-   - **$N = 15$** ($\Delta \theta = 24.0^\circ$): Trajectories visit 15 distinct lobe centers with angular separation $24.0^\circ$.
-     - Members: **A, B, J, R**
-   - **$N = 19$** ($\Delta \theta \approx 18.9^\circ$): Trajectories visit 19 distinct lobe centers with angular separation $\approx 18.9^\circ$.
-     - Members: **D, L, N, Q**
+By tracking the centers of rotation/extrema visited by each trajectory across $t \in [0, 100]$:
+1. **$N = 2$ ($\Delta \theta = 180^\circ$)**:
+   - **H**: Alternates between two lobes at $\approx +50^\circ$ and $\approx -130^\circ$ ($230^\circ$).
+   - **S**: Alternates between two lobes at $\approx +50^\circ$ and $\approx -130^\circ$ ($230^\circ$).
 
-3. **Group Counts**:
-   There are $X = 5$ groups of trajectories, each containing $Y = 4$ trajectories, arranged in increasing order of complexity ($N = 3, 7, 11, 15, 19$).
+2. **$N = 6$ ($\Delta \theta = 60^\circ$)**:
+   - **M**: Visits 6 lobe centers at angles $\approx 168^\circ, 108^\circ, 48^\circ, -12^\circ, -72^\circ, -132^\circ$.
+   - **O**: Visits 6 lobe centers at angles $\approx 48^\circ, -12^\circ, -72^\circ, -132^\circ, 168^\circ, 108^\circ$.
+
+3. **$N = 8$ ($\Delta \theta = 45^\circ$)**:
+   - **A, B, F, G, I, K, R**: Visit 8 symmetric lobes spaced by $45^\circ$ at angles $\approx 0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ, -135^\circ, -90^\circ, -45^\circ$.
+
+4. **$N = 11$ ($\Delta \theta \approx 32.7^\circ$)**:
+   - **E, P, T**: Visit 11 symmetric lobes spaced by $\approx 32.7^\circ$ at angles $\approx 79^\circ, 46^\circ, 13^\circ, -20^\circ, -52^\circ, -85^\circ, -118^\circ, -151^\circ, 177^\circ, 144^\circ, 112^\circ$.
+
+5. **$N = 14$ ($\Delta \theta \approx 25.7^\circ$)**:
+   - **D**: Visits 14 symmetric lobes spaced by $\approx 25.7^\circ$ at angles $\approx 72^\circ, 46^\circ, 21^\circ, -4^\circ, -31^\circ, -57^\circ, -83^\circ, -108^\circ, -134^\circ, -159^\circ, 175^\circ, 149^\circ, 123^\circ, 97^\circ$.
+
+6. **$N = 16$ ($\Delta \theta = 22.5^\circ$)**:
+   - **J**: Visits 16 symmetric lobes spaced by $22.5^\circ$ at angles $\approx 68^\circ, 46^\circ, 23.5^\circ, 1.5^\circ, -21^\circ, -44^\circ, -66.5^\circ, -88.5^\circ, -111^\circ, -133.5^\circ, -156^\circ, 178.5^\circ, 156^\circ, 133.5^\circ, 111^\circ, 88.5^\circ$.
+
+7. **$N = 19$ ($\Delta \theta \approx 18.95^\circ$)**:
+   - **C, L, N, Q**: Visit 19 symmetric lobes spaced by $\approx 18.95^\circ$ around the circle.
+
+Ordering the groups from lowest to highest $N$ yields the final clustering.
 ```
 
 ```json
 {
   "groups": [
-    ["F", "H", "I", "S"],
-    ["C", "G", "M", "O"],
-    ["E", "K", "P", "T"],
-    ["A", "B", "J", "R"],
-    ["D", "L", "N", "Q"]
-  ],
-  "X": 5,
-  "Y": 4
+    ["H", "S"],
+    ["M", "O"],
+    ["A", "B", "F", "G", "I", "K", "R"],
+    ["E", "P", "T"],
+    ["D"],
+    ["J"],
+    ["C", "L", "N", "Q"]
+  ]
 }
 ```

@@ -1,0 +1,7 @@
+```reasoning
+I converted each trajectory to polar coordinates about the central axis and compared angular occupancy, turning-rate statistics, radial excursions, and recurrence patterns. Trajectories were clustered by matching their persistent angular-lobe signatures rather than phase, since different initial conditions shift the timing and orientation of visits. The resulting seven clusters show progressively greater angular subdivision and turning complexity; the first two are close but are separated by their distinct angular recurrence rates.
+```
+
+```json
+{"groups":[["I","H"],["J","B","T"],["C","Q","R"],["E","N","A"],["D","P","L"],["O","G","K"],["S","M","F"]]}
+```

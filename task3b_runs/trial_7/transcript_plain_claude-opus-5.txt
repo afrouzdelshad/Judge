@@ -1,21 +1,29 @@
-## Analysis Approach
+```reasoning
+Each trajectory, plotted in (x,y), sits at a nearly fixed polar angle for a while (radius oscillating in/out), then hops to an adjacent angle. The set of distinct angles is evenly spaced by 360/N, so counting the distinct lobe angles gives N.
 
-Each trajectory oscillates radially along a fixed direction (a "lobe"), then hops to an adjacent lobe. Converting to polar angle θ = atan2(y,x) and looking only at large‑radius points, each trajectory reveals a discrete set of preferred directions spaced evenly by 360°/N. Counting the steps required to precess a full 360° gives N directly.
+Working through representative samples (angle = atan2(y,x), using large-radius points):
 
-**Measured lobe spacings / lobe counts:**
+- A: angles ≈ 2, 47, 93, 137, 180, −133, −88, −44 → spacing 45° → N=8
+- B: same set {0,±45,±90,±135,180} → N=8
+- F, G, I, K, R: also cycle through 45°-spaced angles → N=8
+- C: 64, 46, 27, 7, −11, −30, −49, −67, −87, −106, −126, −144, −163, 178, 159, 141, 122, 102, 84 → spacing ≈18.9° → N=19
+- L, N, Q: identical 19-value angle set → N=19
+- D: 72, 46, 21, −4, −31, −56, −82, −108, −134, −159, 175, 149, 123, 98 → spacing ≈25.7° → N=14
+- E: 45, 15, −18, −50, −85, −116, −148, 178, 146, 112, 79 → spacing ≈32.7° → N=11
+- P, T: same 11-value set → N=11
+- J: 68, 46, 23, 1, −22, −44, −67, −89, −112, −134, −157, −179, 158, 136, 113, 91 → spacing 22.5° → N=16
+- M: 169, 110, 49, −10, −70, −130 → spacing ≈60° → N=6
+- O: 170, 110, 49, −11, −72, −131 → N=6
+- H and S: only two broad angular clusters (~+48 and ~−128, i.e. opposite) → N=2
 
-| Trajectory | angular step | N |
-|---|---|---|
-| H, S | ~180° (two wings at +45°/−135°, Lorenz‑like) | 2 |
-| M, O | ~60° (48°,108°,168°,−132°,−72°,−12°) | 6 |
-| A,B,F,G,I,K,R | ~45° (2°,47°,92°,137°,−178°,−133°,−88°,−43°) | 8 |
-| E, P, T | ~32.7° (15°,47°,79°,112°,145°,177°,…) | 11 |
-| D | ~25.7° (20°,46°,72°,97°,122°,149°,175°,…) | 14 |
-| J | ~22.5° (1.5°,24°,46.5°,69°,91.5°,114°,…) | 16 |
-| C, L, N, Q | ~18.95° (8°,27°,46°,65°,84°,103°,…) | 19 |
-
-Consistency check: all systems share a lobe near +45°, and no two trajectories starting from the same (x,y) seed ever land in the same group — e.g. the seven runs starting at (0.591, 22.52) turn out to be one from each of the seven distinct N values.
+Consistency check: trajectories sharing an identical initial condition must lie in different groups.
+- (0.5911,22.52): C(19), D(14), E(11), I(8), J(16), O(6), S(2) — all distinct ✓
+- (−11.92,−10.08): B(8), H(2), M(6), P(11), Q(19) — distinct ✓
+- (−20.72,−13.16): G(8), N(19), T(11) — distinct ✓
+- (22.15,0.5664): F(8), L(19) — distinct ✓
+All 20 labels accounted for.
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H", "S"], ["M", "O"], ["A", "B", "F", "G", "I", "K", "R"], ["E", "P", "T"], ["D"], ["J"], ["C", "L", "N", "Q"]]}
 ```

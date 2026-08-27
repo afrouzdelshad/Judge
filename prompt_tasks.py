@@ -101,16 +101,16 @@ Structure your response as two fenced blocks, in this order: a ```reasoning bloc
 
 TASK3B_PLAIN_PROMPT = """You are analyzing trajectories from a dynamical system. Each trajectory orbits N distinct "lobes" around a central axis; N is an unknown positive integer that differs between trajectories. You are given only the raw (t, x, y) data and must infer N for each trajectory from its shape and statistics.
 
-You will be given {n} trajectories, each labeled with a single letter, in no particular order. They form some unknown number of groups (call it X), each containing some unknown number of trajectories (call it Y): every trajectory in a group shares the same N (each started from a different initial condition, so their paths differ in phase and shape), and every group has a different N from every other group. Neither X nor Y is disclosed to you. Cluster the labels into groups, order the groups from least to most complex (lowest-N group first), and report your own estimates of X and Y.
+You will be given {n} trajectories, each labeled with a single letter, in no particular order. They form some unknown number of groups, each containing some unknown number of trajectories: every trajectory in a group shares the same N (each started from a different initial condition, so their paths differ in phase and shape), and every group has a different N from every other group. Cluster the labels into groups, order the groups from least to most complex (lowest-N group first).
 
-Structure your response as two fenced blocks, in this order: a ```reasoning block containing your reasoning process, followed by a ```json block containing your final answer with all {n} labels, each exactly once, grouped as a list of lists ordered from least to most complex, plus your estimates of X and Y. Each block must appear exactly once, with the json block last. Do not restate the raw data in your response.
+Structure your response as two fenced blocks, in this order: a ```reasoning block containing your reasoning process, followed by a ```json block containing your final answer with all {n} labels, each exactly once, grouped as a list of lists ordered from least to most complex. Each block must appear exactly once, with the json block last. Do not restate the raw data in your response.
 
 ```reasoning
 <your reasoning process>
 ```
 
 ```json
-{{"groups": [["<label>", "...", "<label>"], ...], "X": <int>, "Y": <int>}}
+{{"groups": [["<label>", "...", "<label>"], ..., ["<label>", "...", "<label>"]]}}
 ```"""
 
 

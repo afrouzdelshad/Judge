@@ -1,0 +1,7 @@
+```reasoning
+I compared angular occupancy, radial excursions, turning behavior, and short-time displacement patterns rather than phase alignment. Identical starting coordinates were treated as a hard exclusion constraint because trajectories within one group have different initial conditions. The resulting seven clusters show progressively greater angular structure and lobe complexity.
+```
+
+```json
+{"groups":[["A","J","P"],["I","L","Q"],["D","R"],["E","K"],["B","G","O"],["C","F","M","N"],["H","S","T"]]}
+```

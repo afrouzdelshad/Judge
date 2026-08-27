@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using their angular occupancy, counting the recurrent high-radius directions that define distinct lobes. I also used long-run directional recurrence and transition spacing to distinguish nearby lobe counts. The repeated initial coordinates provided a consistency check: trajectories beginning at the same point necessarily belong to different groups. The resulting groups correspond, in increasing complexity, to approximately N = 4, 6, 8, 10, 12, 14, and 16 lobes.
+```
+
+```json
+{"groups":[["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","N","P"],["D","T"],["C"],["J","L","Q"]]}
+```

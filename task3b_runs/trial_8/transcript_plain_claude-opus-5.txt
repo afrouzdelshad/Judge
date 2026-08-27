@@ -1,31 +1,47 @@
-## Analysis Approach
+```reasoning
+Approach: For each trajectory I located the large-radius "excursion" peaks and computed their polar angle atan2(y,x). The peaks always land on a discrete set of preferred directions (lobe axes) spaced by 360/N; N is then read off from the angular step between successive distinct lobes.
 
-For each trajectory I computed the polar angle θ = atan2(y, x) at the points of locally maximal radius (the lobe "tips"). In every trajectory these angles fall into a small set of sharply defined directions, and the spacing between adjacent directions gives N = 360°/Δθ directly.
+Useful constraint: several trajectories share identical t=0 states, and same-N trajectories must have different initial conditions. IC groups:
+(0.5911,22.52): C,D,E,I,J,O,S (7 → at least 7 groups, one each)
+(-11.92,-10.08): B,H,M,P,Q
+(22.15,0.5664): F,L
+(-20.72,-13.16): G,N,T
+singletons: A, K, R
 
-Examples:
+Measurements:
+A: peaks at ≈ -90,-135,180,137,93,46,0,-44 → step 45° → N=8
+B: -140,180,138,92,48,2,-44,-90 → N=8
+F: 1.5,-44,-86,-134,-177,137,92,48 → N=8
+G: 3,-45,-87,-130,-178,137,92,45 → N=8
+I: 45,3,-45,-89,-133,-178,136,93 → N=8
+K: 45,2,-42,-88,-133,-177,138,92 → N=8
+R: 45,3,-43,-88,-132,180,135,91 → N=8
+(all seven show the identical 45°-spaced lobe set; ICs all distinct, so allowed)
 
-- **A**: tips at ≈ 2°, 48°, 93°, 138°, 183°, 227°, 272°, 317° → Δθ ≈ 45° → **N = 8**
-- **C**: tips at ≈ 8°, 27°, 46°, 65°, 84°, 103°, 122°, 141°, 160°, 179°, … → Δθ ≈ 18.9° → **N = 19**
-- **D**: Δθ ≈ 25.7° → **N = 14**;  **J**: Δθ ≈ 22.5° → **N = 16**
-- **E/P/T**: Δθ ≈ 32.7° → **N = 11**;  **M/O**: Δθ ≈ 60° → **N = 6**
-- **H/S**: only two broad spiral wings, centred ≈ 45° and ≈ 225° → **N = 2**
+H: peaks alternate only between ≈ +50° and ≈ -130° → N=2
+S: large-r peaks cluster only at ≈ +55° and ≈ -128° → N=2
 
-(Every attractor turns out to have one lobe near 46°, with the others evenly spaced by 360/N, which makes the identification unambiguous.)
+M: 168,110,48,-10,-70,-130 → step 60° → N=6
+O: 47,-12,-72,-132,168,108 → identical set → N=6
 
-## Resulting groups (ordered by increasing N)
+E: 45.5,15,-18,-50,-84,-117,-149,178,145,113,79 → step ≈32.7° → N=11
+P: -149,178,145,113,78,47,15,-18,-51,-85 → N=11
+T: 177,146,113,79,46,13,-19,-50 → N=11
 
-| Group | N | Members |
-|---|---|---|
-| 1 | 2 | H, S |
-| 2 | 6 | M, O |
-| 3 | 8 | A, B, F, G, I, K, R |
-| 4 | 11 | E, P, T |
-| 5 | 14 | D |
-| 6 | 16 | J |
-| 7 | 19 | C, L, N, Q |
+D: 71.7,46,20,-4,-31,-56,-83,-108,-135,-159,175,149,123,97 → step ≈25.7° → N=14
 
-Group sizes are not uniform (7, 4, 3, 2, 2, 1, 1), so Y is reported as the typical/average size ≈ 3.
+J: 68,45.5,23,1,-21,-44.5,-67,-89,-112,-134,-157,-178,159 → step 22.5° → N=16
+
+C: 64.9,46.1,26.7,7.3,-10.9,-30.1,-48.5,... → step ≈18.95° → N=19
+L: -11,-30,-49,-68,-87,-106,-125,-144,-163,176,160,140,122,102,84,65,46,27 → N=19
+N: -162.6,178.3,159.8,140.9,122,102,84.6,64.5 → N=19
+Q: -143,-162,178,160,141,121,103,84,64,46,27,7,-11 → N=19
+
+Consistency check: each IC-sharing set is spread over distinct N values ✓; totals 2+2+7+3+1+1+4 = 20 ✓.
+
+Order by N: 2 (H,S) < 6 (M,O) < 8 (A,B,F,G,I,K,R) < 11 (E,P,T) < 14 (D) < 16 (J) < 19 (C,L,N,Q).
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```

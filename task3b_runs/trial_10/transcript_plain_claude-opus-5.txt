@@ -1,21 +1,31 @@
-## Analysis Approach
+```reasoning
+Approach: For an N-lobe attractor around a central axis, the trajectory's large-radius excursions cluster at N angular positions spaced 360/N apart, and the trajectory steps from lobe to adjacent lobe. So for each trajectory I computed θ = atan2(y,x) at successive radius maxima, identified the "lobe angles," and measured the mean angular step Δθ. Then N ≈ 360/Δθ.
 
-For each trajectory I converted (x,y) to polar angle θ = atan2(y,x) and tracked the **angular positions of the radial excursions**. Every trajectory turns out to make repeated out‑and‑back radial spikes along a set of *discrete, evenly spaced rays* (the lobes), stepping monotonically from one ray to the next. The angular step Δθ between successive lobes then gives N = 360°/Δθ.
+A useful structural clue: at t=0 many trajectories share identical (x,y):
+- (0.5911,22.52): C,D,E,I,J,O,S  → 7 trajectories, so there must be at least 7 groups (same IC can't repeat in a group).
+- (-11.92,-10.08): B,H,M,P,Q (5); (-20.72,-13.16): G,N,T (3); (22.15,0.5664): F,L (2); A, K, R unique.
+Total 7+5+3+2+1+1+1 = 20 → exactly 7 groups, each containing one of {C,D,E,I,J,O,S}.
 
-Representative measurements:
+Measured lobe-angle sequences and steps:
+- A: −90,−133,180,137,90,45,0,−45 → Δθ≈45 → N=8
+- B: −140,180,138,92,48,2,−44,−89 → Δθ≈45 → N=8
+- F: 1.5,−43,−87,−134,−178,137,92,46 → Δθ≈45 → N=8
+- G, I, K, R: same 45° ladder → N=8
+- E: 45,13,−19,−50,−84,−117,−150,178,144,111,79 → Δθ≈32.7 → N=11
+- P: −149,177,143,112,79,47,15,−18,−51,−84,−117 → Δθ≈32.8 → N=11
+- T: 176,145,113,79,45,12,−20,−50,−85,−117,−149 → Δθ≈32.7 → N=11
+- D: −31,−57,−83,−107,−134,−159,175,149,123,97 → Δθ≈25.8 → N=14
+- J: 68,47,23,1,−22,−44,−67,−89,−112,−134,−156,−179,159 → Δθ≈22.5 → N=16
+- C: 46,27,7,−11,−30,−48,−67,−86,−105,−124,−143,−162,178,160,140,122,102,84,65 → Δθ≈18.9 → N=19
+- L, N, Q: identical ~19° ladders → N=19
+- O: 48,−14,−73,−131,169,108,46 → Δθ≈60 → N=6
+- M: 168,108,46,−13,−72,−134 → Δθ≈60 → N=6
+- S: peaks alternate only between ≈+53 and ≈−124 (≈180° apart) → N=2
+- H: peaks alternate between ≈+55 and ≈−131 → N=2
 
-| Traj | successive lobe angles (°) | Δθ | N |
-|---|---|---|---|
-| H, S | ≈ +50, −129 | 180 | 2 |
-| M, O | 168, 108, 48, −12, −72, −132 | 60 | 6 |
-| A,B,F,G,I,K,R | 137, 92, 46, 2, −44, −88, −133, −177 | 45 | 8 |
-| E, P, T | 178, 145, 113, 80, 47, 14, −19, −51, −85, −117, −149 | 32.7 | 11 |
-| D | 72, 46, 20, −5, −31, −56, −82, −108, −134, −159, 175, 149, 123, 98 | 25.7 | 14 |
-| J | −44, −68, −88, −111, −134, −157, −179, 158, 136, 114, 92, 68, 47, 24, 1, −22 | 22.5 | 16 |
-| C, L, N, Q | 84, 65, 46, 27, 8, −11, −30, −49, −67, −87, −105, −124, −143, −163, 178, 159, 141, 122, 103 | 18.9 | 19 |
-
-Each cycle's angles sum to exactly 360°, confirming the integer lobe counts. Group sizes turn out uneven (7, 4, 3, 2, 2, 1, 1), so Y is reported as a typical/average size.
+Consistency check with initial conditions: each group has all-distinct ICs, and the counts work out exactly (8-group has all 7 distinct ICs; 19-group: C(IC1),Q(IC2),N(IC3),L(IC4); 11-group: E(IC1),P(IC2),T(IC3); 6-group: O(IC1),M(IC2); 2-group: S(IC1),H(IC2); 14: D; 16: J). Total 20 in 7 groups. ✓
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["S","H"],["O","M"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```

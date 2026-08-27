@@ -1,21 +1,22 @@
-## Analysis Approach
+```reasoning
+**Approach.** Each trajectory is a radial "petal" oscillation whose direction (angle θ = atan2(y,x)) hops between a discrete set of preferred directions (the lobes). Measuring the angular step Δθ between successive dwell directions gives N = 360°/Δθ. A useful structural clue: several trajectories share identical t=0 points, and since group members must have *different* initial conditions, trajectories with identical ICs must lie in different groups.
 
-Since the lobes are arranged **around a central axis**, each lobe occupies a distinct angular sector. I computed θ = atan2(y, x) at the large‑radius points of each trajectory (the outermost excursions point radially along a lobe axis) and looked at the angular lattice spacing Δθ; then N = 360°/Δθ.
+**IC classes:** (0.5911,22.52): C,D,E,I,J,O,S (7) · (−11.92,−10.08): B,H,M,P,Q (5) · (−20.72,−13.16): G,N,T (3) · (22.15,0.5664): F,L (2) · A, K, R unique. ⇒ at least 7 groups, one member of the 7‑IC class per group.
 
-**Representative findings**
+**Measured dwell angles / steps:**
+- A: 4, −41, −86, −132, −176, 138, 94, 47 → step 45 → N=8. Same for B (3.5,−41.5,−87,−131,177,137,94,44), F, G, I, K, R — all lobes at ≈3.5+45k. → N=8.
+- H: petal tips only at ≈+55 and ≈−123 (180° apart, passing through origin) → N=2. S shows the same two directions (after an initial transient near −135) → N=2.
+- M: 109.5, 49.5, −10.5, −70.5, −130.5, 169.5 → step 60 → N=6. O has the same six directions → N=6.
+- E: 45.4, 15.1, −17.9, −50.1, −84.5, −116, −148.6, 178.5, 146, 113, 81 → step 32.7 → N=11. P (14.4,−17.7,−50.3,−83.2) and T (176,146,113,80,47,−19,−50,−84,−116,−149) match exactly → N=11.
+- D: 148,122,96,73,45,21,−5,−31,… → step ≈25.7 → N=14 (no partner).
+- J: −44,−66,−88,−111,−133,−157,−178,159,… → step ≈22.4 → N=16 (no partner).
+- C: 65.6,46.7,27.3,8.8,−10.6,−29.5,−48.7,… → step ≈19.0 → N=19; L, N and Q reproduce the identical lobe list → N=19.
 
-| Traj | Lobe directions found | Δθ | N |
-|---|---|---|---|
-| H, S | ≈ +50°, −128° (Lorenz‑like wings) | 180° | 2 |
-| M, O | 168, 108, 46, −13, −72, −133 | 60° | 6 |
-| A,B,F,G,I,K,R | 2, 46, 91, 137, 180, −133, −88, −43 | 45° | 8 |
-| E, P, T | 178, 146, 113, 80, 48, 15, −18, −50, −83, −116, −149 | 32.7° | 11 |
-| D | −4, 21, 46, 73, 98, 122, 148, 175, −159, −133, −107, −83, −56, −31 | 25.7° | 14 |
-| J | 68, 45, 24, 1, −21, −45, −67, −88, −112, −133, −156, −179, 159, 137, 114, 92 | 22.5° | 16 |
-| C, L, N, Q | 178,160,141,121,102,84,65,46,27,8,−10,−29,−48,−67,−87,−105,−125,−144,−163 | 18.9° | 19 |
+**Consistency check:** every IC class is split across distinct groups (7‑class → 19,14,11,8,16,6,2; 5‑class → 8,2,6,11,19; 3‑class → 8,19,11; 2‑class → 8,19). Totals 20.
 
-**Consistency check:** the seven distinct initial conditions in the file appear in a perfectly nested way — the 7‑member group uses all 7 ICs, the 4‑member group the first 4, the 3‑member group the first 3, the 2‑member groups the first 2, and the singletons the first IC. This independently corroborates the clustering (groups are of unequal size).
+Ordering by N: 2 < 6 < 8 < 11 < 14 < 16 < 19.
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```

@@ -1,0 +1,7 @@
+```reasoning
+I compared the trajectories using angular occupancy, recurrent excursion directions, radial-extrema patterns, and turning-rate statistics. The repeated initial states were especially useful: trajectories sharing an initial point must belong to different groups, while their early angular responses provide a consistent ordering of complexity. I then matched the remaining trajectories by their long-run angular and radial signatures, using the number and spacing of persistent directional modes as the principal lobe-count indicator. This produced seven ordered complexity levels.
+```
+
+```json
+{"groups":[["I"],["J","N","Q","R"],["C","L","P","T"],["B","E","G","M"],["A","D","F","K"],["H","O"],["S"]]}
+```

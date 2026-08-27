@@ -1,0 +1,7 @@
+```reasoning
+I compared trajectories using phase-plane geometry rather than pointwise phase: angular occupancy about the central axis, recurrent high-radius directions, radial peak structure, and long-run coordinate statistics. Trajectories were grouped when these phase-invariant signatures indicated the same lobe count. The resulting seven clusters were then ordered by increasing number of distinct recurrent lobes.
+```
+
+```json
+{"groups":[["H","S"],["K","O"],["D","N","P"],["J","T"],["I","L","Q"],["E","F","G","M"],["A","B","C","R"]]}
+```

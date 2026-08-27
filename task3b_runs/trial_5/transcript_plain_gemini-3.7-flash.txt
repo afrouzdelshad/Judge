@@ -1,29 +1,45 @@
 ```reasoning
-To cluster the 20 trajectories (A through T) into $X$ groups of $Y$ trajectories each (such that $X \times Y = 20$), we analyze the dynamical behavior and geometry of each trajectory in the $(x, y)$ plane.
+To determine the number of lobes $N$ for each trajectory, we analyze the spatial distribution, rotational symmetries, and clustering of fixed points/centers of rotation in the $(x, y)$ plane for each of the 20 trajectories over $t \in [0, 100]$.
 
-Each system exhibits rotational symmetry around the central axis, characterized by $N$ distinct orbiting lobes located at angular intervals $\Delta \theta = 360^\circ / N$.
+1. **Initial Condition Analysis**:
+   - The trajectories share identical initial conditions across different systems:
+     - $\text{IC}_1 = (0.5911, 22.52)$: C, D, E, I, J, O, S (7 trajectories, implying exactly 7 distinct dynamical systems/groups with $N \in \{2, 3, 4, 5, 6, 7, 8\}$).
+     - $\text{IC}_2 = (-11.92, -10.08)$: B, H, M, P, Q (5 trajectories).
+     - $\text{IC}_3 = (-20.72, -13.16)$: G, N, T (3 trajectories).
+     - $\text{IC}_4 = (22.15, 0.5664)$: F, L (2 trajectories).
+     - $\text{IC}_5 = (1.908, -7.837)$: A (1 trajectory).
+     - $\text{IC}_6 = (6.255, 19.86)$: K (1 trajectory).
+     - $\text{IC}_7 = (15.25, 15.4)$: R (1 trajectory).
 
-By analyzing the angular positions $\theta = \text{atan2}(y, x)$ of the lobe centers visited by each trajectory across $t \in [0, 100]$:
+2. **Lobe Counting and Angular Symmetry**:
+   - **$N = 2$**: Trajectories orbit 2 lobes with $180^\circ$ separation (e.g. at $(+8.5, +8.5)$ and $(-8.5, -8.5)$).
+     - Trajectories: **H, S**
+   - **$N = 3$**: Trajectories orbit 3 distinct lobes separated by $120^\circ$.
+     - Trajectories: **E**
+   - **$N = 4$**: Trajectories orbit 4 distinct lobes centered in the 4 quadrants / separated by $90^\circ$.
+     - Trajectories: **B, D, F, K, N, R**
+   - **$N = 5$**: Trajectories orbit 5 distinct lobes separated by $72^\circ$.
+     - Trajectories: **J, Q**
+   - **$N = 6$**: Trajectories orbit 6 distinct lobes separated by $60^\circ$.
+     - Trajectories: **L, M, O, T**
+   - **$N = 7$**: Trajectories orbit 7 distinct lobes separated by $\approx 51.4^\circ$.
+     - Trajectories: **C**
+   - **$N = 8$**: Trajectories orbit 8 distinct lobes separated by $45^\circ$.
+     - Trajectories: **A, G, I, P**
 
-1. **Group with $N = 6$ ($\Delta \theta = 60^\circ$):**
-   - The lobes are positioned at intervals of $60^\circ$ (e.g. $45^\circ, -15^\circ, -75^\circ, -135^\circ, 165^\circ, 105^\circ$ or rotated).
-   - Trajectories: **D, F, H, M, O**
-
-2. **Group with $N = 8$ ($\Delta \theta = 45^\circ$):**
-   - The lobes are positioned at 8 cardinal and intercardinal directions: $0^\circ, 45^\circ, 90^\circ, 135^\circ, 180^\circ, -135^\circ, -90^\circ, -45^\circ$.
-   - Trajectories: **A, B, G, K, R**
-
-3. **Group with $N = 11$ ($\Delta \theta \approx 32.7^\circ$):**
-   - The lobes are positioned at intervals of $360^\circ / 11 \approx 32.7^\circ$ (e.g., $14^\circ, 46^\circ, 78^\circ, 112^\circ, 145^\circ, 178^\circ, -151^\circ, -118^\circ, -85^\circ, -52^\circ, -18^\circ$).
-   - Trajectories: **E, I, P, S, T**
-
-4. **Group with $N = 19$ ($\Delta \theta \approx 18.95^\circ$):**
-   - The lobes are positioned at intervals of $360^\circ / 19 \approx 18.95^\circ$.
-   - Trajectories: **C, J, L, N, Q**
-
-This gives $X = 4$ groups of $Y = 5$ trajectories each, with $N \in \{6, 8, 11, 19\}$ in increasing order of complexity.
+Ordering the groups from lowest to highest $N$ (least to most complex): $N = 2, 3, 4, 5, 6, 7, 8$.
 ```
 
 ```json
-{"groups": [["D", "F", "H", "M", "O"], ["A", "B", "G", "K", "R"], ["E", "I", "P", "S", "T"], ["C", "J", "L", "N", "Q"]], "X": 4, "Y": 5}
+{
+  "groups": [
+    ["H", "S"],
+    ["E"],
+    ["B", "D", "F", "K", "N", "R"],
+    ["J", "Q"],
+    ["L", "M", "O", "T"],
+    ["C"],
+    ["A", "G", "I", "P"]
+  ]
+}
 ```

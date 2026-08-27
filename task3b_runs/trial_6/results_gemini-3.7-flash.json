@@ -2,8 +2,44 @@
   "model": "gemini-3.7-flash",
   "variant": "b",
   "plain": {
-    "groups": null,
+    "groups": [
+      [
+        "H"
+      ],
+      [
+        "M",
+        "O"
+      ],
+      [
+        "A",
+        "B",
+        "F",
+        "G",
+        "I",
+        "K",
+        "R"
+      ],
+      [
+        "E",
+        "P",
+        "S",
+        "T"
+      ],
+      [
+        "D"
+      ],
+      [
+        "J"
+      ],
+      [
+        "C",
+        "L",
+        "N",
+        "Q"
+      ]
+    ],
     "X": null,
     "Y": null
-  }
+  },
+  "plain_ari": 0.9266692396758008
 }

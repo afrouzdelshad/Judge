@@ -1,23 +1,20 @@
-## Analysis Approach
+```reasoning
+Approach: For each trajectory I computed θ = atan2(y,x) over time. Each trajectory turns out to sit on a "lobe" (a fixed angular direction) while its radius oscillates, then hops to the next lobe. The lobes lie on a regular angular grid with spacing Δ = 360°/N, and the trajectory slowly precesses through all of them. So N was obtained by measuring the angular spacing between successive lobe plateaus (and cross-checked by counting distinct lobes in one full 360° precession).
 
-For each trajectory I converted (x,y) to a polar angle θ = atan2(y,x). All of these trajectories show the same qualitative behaviour: the angle sits on a **plateau** (the trajectory oscillates radially inside one lobe), then jumps by a fixed increment Δθ to the neighbouring lobe. Measuring Δθ (and, where possible, counting the hops needed for a full 360° revolution) gives N = 360°/Δθ.
+Examples:
+- H, S: only two plateau directions ~+58° and ~−120° (180° apart) → N = 2.
+- M: plateaus at 168, 108, 48, −12, −72, −132 (Δ≈60) → N = 6. O: 47, −12, −73, −131 → N = 6.
+- A: −86, −131.5, −177.5, 137.3 … (Δ≈45) → N = 8. Same for B, F, G, I, K, R (each counted exactly 8 lobes per revolution).
+- E, P, T: Δ≈32.7 (e.g. T: 178 →145.8 →113.5 →80) → N = 11.
+- D: Δ≈25.9 (72 →46 →20 →−5 →−31; 14 lobes per revolution) → N = 14.
+- J: Δ≈22.6 (114 →92 →69 →47 →23.5; also −21,−43,−65,−89; 16 per revolution) → N = 16.
+- C, L, N, Q: Δ≈18.95 (e.g. L: 103.4 →84.4 →65.7 →46.3; C counted 19 lobes per revolution) → N = 19.
 
-Representative measurements:
+Consistency check with initial conditions: seven trajectories share IC (0.5911,22.52) — C,D,E,I,J,O,S — so there must be ≥7 groups, and each group can contain at most one of them. The grouping above gives exactly 7 groups, each containing exactly one of these, and likewise the IC-duplicates (B,H,M,P,Q), (G,N,T), (F,L) each land in distinct groups. Perfectly consistent.
 
-| Traj. | plateau angles (°) | Δθ | N |
-|---|---|---|---|
-| H, S | +58, −123 | 180 | 2 |
-| M, O | 169, 109, 49, −11, −71, −131 | 60 | 6 |
-| A, B, F, G, I, K, R | 3, 48, 93, 138, −177, −132, −87, −42 | 45 | 8 |
-| E, P, T | 45, 13, −20, −53, −85, … | 32.7 | 11 |
-| D | 72, 46, 20, −4, −32, −56, … | 25.8 | 14 |
-| J | 68, 46, 23, 1, −21, −44, … | 22.5 | 16 |
-| C, L, N, Q | 8.8 + 19k (19 hops per full turn) | 18.9 | 19 |
-
-Full‑revolution checks confirmed the counts (e.g. A returns to −87° after exactly 8 hops; L and N close a full 360° after exactly 19 hops; D after 14; J after 16).
-
-Note also that the seven distinct initial (x,y) values are re‑used across systems, consistent with the same seeds being integrated under different N.
+Ordering by N: 2 < 6 < 8 < 11 < 14 < 16 < 19.
+```
 
 ```json
-{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]], "X": 7, "Y": 3}
+{"groups": [["H","S"],["M","O"],["A","B","F","G","I","K","R"],["E","P","T"],["D"],["J"],["C","L","N","Q"]]}
 ```
